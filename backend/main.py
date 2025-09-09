@@ -3,7 +3,6 @@ from fastapi import FastAPI, Request, Form, HTTPException, Depends, UploadFile, 
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
 import sqlite3
 import os
 import uuid
@@ -48,16 +47,6 @@ from models import (
 )
 
 app = FastAPI()
-
-# Добавляем CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
 templates = Jinja2Templates(directory="templates")
 
 # Добавляем фильтр для JSON
@@ -850,6 +839,14 @@ async def get_messages_api(
 ):
     """API для получения новых сообщений"""
     try:
+        # Получаем параметры из query string
+        job_id = request.query_params.get("job_id")
+        if job_id:
+            job_id = int(job_id)
+        
+        last_message_id = request.query_params.get("last_message_id", "0")
+        last_message_id = int(last_message_id)
+        
         # Получаем сообщения между пользователями
         messages = get_messages_between_users(user["email"], other_user_email, job_id)
         messages = [dict(msg) if isinstance(msg, sqlite3.Row) else msg for msg in messages]
@@ -1014,4 +1011,4 @@ async def user_profile_get(request: Request, user_email: str, user: dict = Depen
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 10000))
-    uvicorn.run(app, host="0.0.0.0", port=port
+    uvicorn.run(app, host="0.0.0.0", port=port)
