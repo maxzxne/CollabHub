@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Профиль {{ profile_user.name or profile_user.email }}{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
+    <!-- Заголовок профиля -->
+    <div class="flex items-center justify-between mb-6">
+        <div class="flex items-center space-x-4">
+            <img src="{{ profile_user.avatar or '/static/defaultAvatar.jpg' }}" 
+                 alt="{{ profile_user.name }}" 
+                 class="w-20 h-20 rounded-full object-cover">
+            <div>
+                <h2 class="text-2xl font-bold">{{ profile_user.name or profile_user.email }}</h2>
+                <p class="text-gray-600">{{ profile_user.email }}</p>
+                <div class="flex items-center space-x-4 mt-2">
+                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                        {% if profile_user.role == 'freelancer' %}👨‍💻 Фрилансер{% else %}👔 Заказчик{% endif %}
+                    </span>
+                    {% if profile_user.role == 'freelancer' %}
+                    <div class="flex items-center space-x-1">
+                        <span class="text-yellow-500">⭐</span>
+                        <span class="font-medium">{{ profile_user.rating or 0 }}</span>
+                    </div>
+                    <div class="flex items-center space-x-1">
+                        <span class="text-gray-500">📁</span>
+                        <span>{{ profile_user.completed_projects or 0 }} проектов</span>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% if user.email != profile_user.email %}
+        <div class="flex space-x-2">
+            <a href="/chat/{{ profile_user.email }}" 
+               class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                💬 Написать
+            </a>
+            <a href="/profile/{{ profile_user.email }}" 
+               class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
+                👤 Профиль
+            </a>
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Информация о пользователе -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+        {% if profile_user.about_me %}
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="font-semibold mb-2">О себе</h3>
+            <p class="text-gray-700">{{ profile_user.about_me }}</p>
+        </div>
+        {% endif %}
+        
+        {% if profile_user.activity %}
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="font-semibold mb-2">Деятельность</h3>
+            <p class="text-gray-700">{{ profile_user.activity }}</p>
+        </div>
+        {% endif %}
+        
+        {% if profile_user.skills %}
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="font-semibold mb-2">Навыки</h3>
+            <div class="flex flex-wrap gap-2">
+                {% for skill in profile_user.skills.split(',') %}
+                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">{{ skill.strip() }}</span>
+                {% endfor %}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if profile_user.phone or profile_user.telegram %}
+        <div class="bg-gray-50 p-4 rounded-lg">
+            <h3 class="font-semibold mb-2">Контакты</h3>
+            <div class="space-y-1">
+                {% if profile_user.phone %}
+                <p class="text-gray-700">📞 {{ profile_user.phone }}</p>
+                {% endif %}
+                {% if profile_user.telegram %}
+                <p class="text-gray-700">📱 {{ profile_user.telegram }}</p>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+        
+    </div>
+    
+    <!-- Блок портфолио -->
+    {% if profile_user.portfolio_links or (profile_user.portfolio_files and profile_user.portfolio_files|length > 0) %}
+    <div class="max-w-4xl mx-auto bg-white rounded-lg shadow mt-6">
+        <div class="p-6">
+            <h2 class="text-2xl font-bold mb-6 flex items-center">
+                <span class="mr-2">🎨</span>
+                Портфолио
+            </h2>
+            
+            <!-- Ссылки на портфолио -->
+            {% if profile_user.portfolio_links %}
+            <div class="mb-8">
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">Ссылки на работы</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    {% for link in profile_user.portfolio_links.split('\n') %}
+                        {% if link.strip() %}
+                        <a href="{{ link.strip() }}" target="_blank" 
+                           class="group bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 hover:shadow-md">
+                            <div class="flex items-center">
+                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 transition-colors">
+                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
+                                    </svg>
+                                </div>
+                                <div class="flex-1 min-w-0">
+                                    <p class="text-sm font-medium text-gray-900 truncate">{{ link.strip() }}</p>
+                                    <p class="text-xs text-gray-500">Открыть в новой вкладке</p>
+                                </div>
+                            </div>
+                        </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- Файлы портфолио -->
+            {% set portfolio_files_list = profile_user.portfolio_files|from_json if profile_user.portfolio_files else [] %}
+            {% if portfolio_files_list and portfolio_files_list|length > 0 %}
+            <div>
+                <h3 class="text-lg font-semibold mb-4 text-gray-800">Файлы работ</h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                    {% for file_path in portfolio_files_list %}
+                        {% if file_path and file_path.strip() %}
+                            {% set file_name = file_path.split('/')[-1] %}
+                            {% set file_ext = file_name.split('.')[-1].lower() if '.' in file_name else 'unknown' %}
+                            <a href="{{ file_path }}" target="_blank" 
+                               class="group bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200 hover:border-green-300 transition-all duration-200 hover:shadow-md">
+                                <div class="flex items-start">
+                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors flex-shrink-0">
+                                        {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp'] %}
+                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                            </svg>
+                                        {% elif file_ext == 'pdf' %}
+                                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                            </svg>
+                                        {% elif file_ext in ['doc', 'docx'] %}
+                                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        {% else %}
+                                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                            </svg>
+                                        {% endif %}
+                                    </div>
+                                    <div class="flex-1 min-w-0">
+                                        <p class="text-sm font-medium text-gray-900 truncate">{{ file_name }}</p>
+                                        <p class="text-xs text-gray-500 capitalize">{{ file_ext }} файл</p>
+                                    </div>
+                                </div>
+                            </a>
+                        {% endif %}
+                    {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+    {% endif %}
+    
+    <!-- Отзывы для фрилансеров -->
+    {% if profile_user.role == 'freelancer' and reviews %}
+    <div class="border-t pt-6">
+        <h3 class="text-xl font-semibold mb-4">⭐ Отзывы ({{ reviews|length }})</h3>
+        <div class="space-y-4">
+            {% for review in reviews %}
+            <div class="border rounded-lg p-4">
+                <div class="flex items-center justify-between mb-2">
+                    <div class="flex items-center space-x-2">
+                        <span class="font-medium">{{ review.client_name or review.client_email }}</span>
+                        <div class="flex">
+                            {% for i in range(5) %}
+                                <span class="text-yellow-500">{% if i < review.rating %}★{% else %}☆{% endif %}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                    <span class="text-sm text-gray-500">{{ review.created_at[:16] }}</span>
+                </div>
+                <p class="text-gray-700 mb-2">{{ review.title }}</p>
+                {% if review.comment %}
+                <p class="text-gray-600">{{ review.comment }}</p>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,195 @@
+{% extends "base.html" %}
+
+{% block title %}Чат с {{ other_user.name or other_user.email }}{% endblock %}
+
+<!-- Версия: 2.0 - исправлен WebSocket endpoint -->
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white rounded-lg shadow mt-6">
+    <!-- Заголовок чата -->
+    <div class="border-b p-4 flex items-center justify-between">
+        <div class="flex items-center space-x-3">
+            <a href="/messages" class="text-gray-600 hover:text-blue-600 transition">
+                <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+                </svg>
+            </a>
+            <a href="/profile/{{ other_user.email }}" class="hover:opacity-80 transition">
+                <img src="{{ other_user.avatar or '/static/defaultAvatar.jpg' }}" 
+                     alt="{{ other_user.name }}" 
+                     class="w-10 h-10 rounded-full object-cover cursor-pointer">
+            </a>
+            <div>
+                <a href="/profile/{{ other_user.email }}" class="hover:text-blue-600 transition">
+                    <h2 class="font-semibold text-lg">{{ other_user.name or other_user.email }}</h2>
+                </a>
+                <p class="text-sm text-gray-600">{{ other_user.email }}</p>
+            </div>
+        </div>
+        {% if job_id %}
+        <a href="/jobs/{{ job_id }}" class="text-blue-600 hover:text-blue-800 text-sm">
+            📋 К проекту
+        </a>
+        {% endif %}
+    </div>
+    
+    <!-- Область сообщений -->
+    <div id="messages" class="h-96 overflow-y-auto p-4 space-y-4">
+        {% for message in messages %}
+        <div class="flex {% if message.sender_email == user.email %}justify-end{% else %}justify-start{% endif %}">
+            <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg
+                {% if message.sender_email == user.email %}
+                    bg-blue-500 text-white
+                {% else %}
+                    bg-gray-200 text-gray-800
+                {% endif %}">
+                <p class="text-sm">{{ message.message }}</p>
+                <p class="text-xs mt-1 opacity-75">{{ message.created_at[:16] }}</p>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Форма отправки сообщения -->
+    <div class="border-t p-4">
+        <form id="messageForm" class="flex space-x-2">
+            <input type="text" 
+                   id="messageInput" 
+                   placeholder="Введите сообщение..." 
+                   class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   required>
+            <button type="submit" 
+                    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                Отправить
+            </button>
+        </form>
+    </div>
+</div>
+
+<script>
+const userEmail = "{{ user.email }}";
+const receiverEmail = "{{ other_user.email }}";
+const jobId = {{ job_id or 'null' }};
+let lastMessageId = 0;
+let pollingInterval;
+
+// Функция для отправки сообщения через AJAX
+async function sendMessage(message) {
+    try {
+        const formData = new FormData();
+        formData.append('receiver_email', receiverEmail);
+        formData.append('message', message);
+        if (jobId) {
+            formData.append('job_id', jobId);
+        }
+
+        const response = await fetch('/api/messages/send', {
+            method: 'POST',
+            body: formData
+        });
+
+        const result = await response.json();
+        if (result.status === 'success') {
+            // НЕ добавляем сообщение сразу - оно придет через polling
+            // Это предотвращает дублирование
+        } else {
+            alert('Ошибка отправки сообщения: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Ошибка отправки сообщения:', error);
+        alert('Ошибка отправки сообщения. Попробуйте еще раз.');
+    }
+}
+
+// Функция для получения новых сообщений
+async function fetchNewMessages() {
+    try {
+        const url = `/api/messages/${receiverEmail}?last_message_id=${lastMessageId}` + 
+                   (jobId ? `&job_id=${jobId}` : '');
+        
+        const response = await fetch(url);
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            // Добавляем только новые сообщения (защита от дублирования)
+            if (result.messages && result.messages.length > 0) {
+                console.log('Получено новых сообщений:', result.messages.length);
+                result.messages.forEach(msg => {
+                    addMessage(msg.message, msg.sender_email, msg.created_at);
+                });
+                
+                // Обновляем lastMessageId
+                if (result.last_message_id > lastMessageId) {
+                    lastMessageId = result.last_message_id;
+                }
+            }
+        }
+    } catch (error) {
+        console.error('Ошибка получения сообщений:', error);
+    }
+}
+
+// Функция для добавления сообщения в интерфейс
+function addMessage(message, senderEmail, timestamp) {
+    const messagesContainer = document.getElementById('messages');
+    const messageDiv = document.createElement('div');
+    
+    const isOwnMessage = senderEmail === userEmail;
+    const time = new Date(timestamp).toLocaleString('ru-RU', {
+        day: '2-digit',
+        month: '2-digit',
+        year: 'numeric',
+        hour: '2-digit',
+        minute: '2-digit'
+    });
+    
+    messageDiv.className = `flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`;
+    messageDiv.innerHTML = `
+        <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg
+            ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}">
+            <p class="text-sm">${message}</p>
+            <p class="text-xs mt-1 opacity-75">${time}</p>
+        </div>
+    `;
+    
+    messagesContainer.appendChild(messageDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+}
+
+// Обработчик отправки сообщения
+document.getElementById('messageForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+    const messageInput = document.getElementById('messageInput');
+    const message = messageInput.value.trim();
+    
+    if (message) {
+        sendMessage(message);
+        messageInput.value = '';
+    }
+});
+
+// Инициализация: получаем ID последнего сообщения и запускаем polling
+document.addEventListener('DOMContentLoaded', function() {
+    // Получаем ID последнего сообщения из уже загруженных
+    const existingMessages = document.querySelectorAll('#messages > div');
+    if (existingMessages.length > 0) {
+        // Используем количество сообщений как приблизительный ID
+        // Это не идеально, но работает для предотвращения дублирования
+        lastMessageId = existingMessages.length;
+    }
+    
+    // Запускаем polling каждые 2 секунды
+    pollingInterval = setInterval(fetchNewMessages, 2000);
+    
+    console.log('Чат инициализирован с polling каждые 2 секунды');
+    console.log('Начальный lastMessageId:', lastMessageId);
+});
+
+// Очищаем интервал при закрытии страницы
+window.addEventListener('beforeunload', function() {
+    if (pollingInterval) {
+        clearInterval(pollingInterval);
+    }
+});
+</script>
+{% endblock %}

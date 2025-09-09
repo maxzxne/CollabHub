@@ -1,0 +1,60 @@
+{% extends "base.html" %}
+
+{% block title %}Оставить отзыв{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
+    <h2 class="text-3xl font-bold mb-6">Оставить отзыв</h2>
+    
+    {% if already_reviewed %}
+    <div class="bg-green-100 border border-green-400 text-green-700 px-4 py-3 rounded mb-6">
+        Вы уже оставили отзыв по этому проекту
+    </div>
+    {% endif %}
+    
+    <div class="mb-6">
+        <h3 class="text-xl font-semibold mb-2">{{ job.title }}</h3>
+        <p class="text-gray-600 mb-2">{{ job.description }}</p>
+        <p class="text-sm text-gray-500">Фрилансер: {{ freelancer_email }}</p>
+    </div>
+    
+    {% if not already_reviewed %}
+    <form method="post" class="space-y-4">
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-2">Оценка работы</label>
+            <div class="flex space-x-2">
+                {% for i in range(1, 6) %}
+                <label class="flex items-center">
+                    <input type="radio" name="rating" value="{{ i }}" class="mr-1" required>
+                    <span class="text-yellow-400">★</span>
+                </label>
+                {% endfor %}
+            </div>
+        </div>
+        
+        <div>
+            <label class="block text-sm font-medium text-gray-700 mb-1">Комментарий (необязательно)</label>
+            <textarea name="comment" rows="4" 
+                      class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      placeholder="Расскажите о качестве выполненной работы..."></textarea>
+        </div>
+        
+        <div class="flex space-x-3">
+            <button type="submit" 
+                    class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+                Оставить отзыв
+            </button>
+            <a href="/reviews" 
+               class="px-4 py-2 border rounded hover:bg-gray-50 transition">
+                Отмена
+            </a>
+        </div>
+    </form>
+    {% else %}
+    <a href="/reviews" 
+       class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+        Вернуться к отзывам
+    </a>
+    {% endif %}
+</div>
+{% endblock %}

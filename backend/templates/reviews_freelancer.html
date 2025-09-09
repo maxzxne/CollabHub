@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+
+{% block title %}Мои отзывы{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
+    <h2 class="text-3xl font-bold mb-6">Отзывы о моей работе</h2>
+    
+    {% if reviews %}
+    <div class="space-y-4">
+        {% for review in reviews %}
+        <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-800">{{ review.title }}</h3>
+                    <p class="text-sm text-gray-600 mb-2">
+                        Клиент: <a href="/profile/{{ review.client_email }}" class="text-blue-600 hover:text-blue-800 hover:underline">{{ review.client_name or review.client_email }}</a>
+                    </p>
+                    
+                    <div class="flex items-center space-x-2 mb-2">
+                        <span class="text-sm text-gray-700">Рейтинг:</span>
+                        <div class="flex">
+                            {% for i in range(5) %}
+                                {% if i < review.rating %}
+                                    <span class="text-yellow-400">★</span>
+                                {% else %}
+                                    <span class="text-gray-300">★</span>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                        <span class="text-sm text-gray-600">({{ review.rating }}/5)</span>
+                    </div>
+                    
+                    {% if review.comment %}
+                    <p class="text-gray-700 mt-2">{{ review.comment }}</p>
+                    {% endif %}
+                    
+                    <p class="text-xs text-gray-500 mt-2">{{ review.created_at }}</p>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-8">
+        <p class="text-gray-500 text-lg">У вас пока нет отзывов</p>
+        <p class="text-gray-400 text-sm mt-2">Завершите проекты, чтобы получить отзывы от клиентов</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

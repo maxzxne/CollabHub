@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+
+{% block title %}Оставить отзывы{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
+    <h2 class="text-3xl font-bold mb-6">Завершенные проекты для оценки</h2>
+    
+    {% if reviews %}
+    <div class="space-y-4">
+        {% for job in reviews %}
+        <div class="border rounded-lg p-4 bg-gray-50">
+            <div class="flex justify-between items-start">
+                <div class="flex-1">
+                    <h3 class="text-lg font-semibold text-gray-800">{{ job.title }}</h3>
+                    <p class="text-sm text-gray-600 mb-2">{{ job.description[:100] }}{% if job.description|length > 100 %}...{% endif %}</p>
+                    <p class="text-sm text-gray-500">Дедлайн: {{ job.deadline }}</p>
+                </div>
+                
+                <div class="flex space-x-2">
+                    <a href="/jobs/{{ job.id }}/review" 
+                       class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm">
+                        Оставить отзыв
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-8">
+        <p class="text-gray-500 text-lg">У вас пока нет завершенных проектов для оценки</p>
+        <p class="text-gray-400 text-sm mt-2">Дождитесь завершения ваших проектов фрилансерами</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

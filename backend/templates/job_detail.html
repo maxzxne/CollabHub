@@ -1,0 +1,147 @@
+{% extends "base.html" %}
+
+{% block title %}Проект — {{ job['title'] }}{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
+    <div class="flex items-center justify-between mb-4">
+        <a href="/" class="flex items-center text-gray-600 hover:text-blue-600 transition">
+            <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+            </svg>
+            Назад к списку
+        </a>
+    </div>
+    <h2 class="text-2xl font-bold mb-4">{{ job['title'] }}</h2>
+    <p class="mb-4 text-gray-700">{{ job['description'] }}</p>
+    <p class="text-sm text-gray-500">Дедлайн: {{ job['deadline'] }}</p>
+    <p class="text-sm text-gray-500">Статус: {{ job['status'] }}</p>
+    <p class="text-sm text-gray-400">
+        Создал: <a href="/profile/{{ job['creator_email'] }}" class="text-blue-600 hover:text-blue-800 hover:underline">{{ job['creator_name'] }}</a>
+    </p>
+    
+    {% if job.get('files') %}
+    <div class="mt-4">
+        <h4 class="text-sm font-medium text-gray-700 mb-2">Файлы проекта:</h4>
+        <div class="space-y-1">
+            {% for file_path in job.files %}
+            <a href="{{ file_path }}" target="_blank" 
+               class="block text-sm text-blue-600 hover:text-blue-800 hover:underline">
+                📎 {{ file_path.split('/')[-1] }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+
+    {% if user and user['role'] == 'freelancer' and job['creator_email'] != user['email'] %}
+        {% set app_status = user.get('application_status') %}
+        {% if app_status == 'accepted' %}
+            <div class="mt-4 flex space-x-2">
+                <form method="post" action="/jobs/{{ job['id'] }}/complete" class="inline">
+                    <button type="submit" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm">
+                        ✅ Завершить проект
+                    </button>
+                </form>
+                <a href="/jobs/{{ job['id'] }}/chat" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm">
+                    💬 Чат
+                </a>
+            </div>
+        {% elif app_status == 'pending' %}
+            <div class="mt-4 px-3 py-1 bg-yellow-100 text-yellow-800 rounded text-sm">
+                ⏳ Ожидает рассмотрения
+            </div>
+        {% elif app_status == 'rejected' %}
+            <div class="mt-4 px-3 py-1 bg-red-100 text-red-800 rounded text-sm">
+                ❌ Отклонен
+            </div>
+        {% elif app_status == 'completed' %}
+            <div class="mt-4 px-3 py-1 bg-green-100 text-green-800 rounded text-sm">
+                ✅ Проект завершен
+            </div>
+        {% else %}
+            <form method="post" action="/jobs/{{ job['id'] }}/apply" class="mt-4">
+                <button type="submit" class="px-3 py-1 border rounded hover:bg-gray-50 transition text-sm">
+                    Откликнуться
+                </button>
+            </form>
+        {% endif %}
+    {% elif user and user['email'] == job['creator_email'] %}
+        <!-- Для создателя проекта показываем чат если есть принятый фрилансер -->
+        {% set has_accepted = false %}
+        {% set accepted_freelancer = None %}
+        {% for app in applications %}
+            {% if app.status == 'accepted' %}
+                {% set has_accepted = true %}
+                {% set accepted_freelancer = app.freelancer_email %}
+            {% endif %}
+        {% endfor %}
+        {% if has_accepted %}
+            <div class="mt-4 flex space-x-2">
+                <a href="/jobs/{{ job['id'] }}/chat" class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm">
+                    💬 Чат с исполнителем
+                </a>
+                {% if job['status'] == 'done' %}
+                    <!-- Проверяем, есть ли принятый фрилансер для оценки -->
+                    {% set has_accepted_freelancer = false %}
+                    {% for app in applications %}
+                        {% if app.status == 'accepted' %}
+                            {% set has_accepted_freelancer = true %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if has_accepted_freelancer %}
+                        <a href="/jobs/{{ job['id'] }}/review" class="px-3 py-1 bg-yellow-500 text-white rounded hover:bg-yellow-600 transition text-sm">
+                            ⭐ Оценить работу
+                        </a>
+                    {% endif %}
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endif %}
+
+    <!-- Отклики на проект -->
+    {% if user and user.email == job['creator_email'] and applications %}
+    <div class="mt-8">
+        <h3 class="text-xl font-semibold mb-4">Отклики на проект</h3>
+        <div class="space-y-3">
+            {% for app in applications %}
+            <div class="border rounded-lg p-4 {% if app.status == 'accepted' %}bg-green-50 border-green-200{% elif app.status == 'rejected' %}bg-red-50 border-red-200{% else %}bg-yellow-50 border-yellow-200{% endif %}">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <p class="font-medium">
+                            <a href="/profile/{{ app.freelancer_email }}" class="text-blue-600 hover:text-blue-800 hover:underline">{{ app.freelancer_name or app.freelancer_email }}</a>
+                        </p>
+                        <span class="px-2 py-1 rounded text-sm font-medium
+                            {% if app.status == 'accepted' %}bg-green-100 text-green-800
+                            {% elif app.status == 'rejected' %}bg-red-100 text-red-800
+                            {% else %}bg-yellow-100 text-yellow-800{% endif %}">
+                            {% if app.status == 'accepted' %}✅ Принят
+                            {% elif app.status == 'rejected' %}❌ Отклонен
+                            {% else %}⏳ Ожидает рассмотрения{% endif %}
+                        </span>
+                    </div>
+                    
+                    {% if app.status == 'pending' %}
+                    <div class="flex space-x-2">
+                        <form method="post" action="/applications/{{ app.id }}/accept" class="inline">
+                            <button type="submit" 
+                                    class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm">
+                                ✅ Принять
+                            </button>
+                        </form>
+                        <form method="post" action="/applications/{{ app.id }}/reject" class="inline">
+                            <button type="submit" 
+                                    class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm">
+                                ❌ Отклонить
+                            </button>
+                        </form>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

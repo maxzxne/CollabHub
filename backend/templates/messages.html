@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}Мои сообщения{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
+    <h2 class="text-3xl font-bold mb-6">💬 Мои сообщения</h2>
+    
+    {% if conversations %}
+    <div class="space-y-4">
+        {% for conv in conversations %}
+        <div class="border rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer" 
+             onclick="window.location.href='/chat/{{ conv.other_user_email }}'">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <img src="{{ conv.other_user_avatar or '/static/defaultAvatar.jpg' }}" 
+                         alt="{{ conv.other_user_name }}" 
+                         class="w-12 h-12 rounded-full object-cover">
+                    <div>
+                        <h3 class="font-semibold text-lg">{{ conv.other_user_name or conv.other_user_email }}</h3>
+                        <p class="text-sm text-gray-600">{{ conv.other_user_email }}</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-500">{{ conv.last_message_time[:16] }}</p>
+                    {% if conv.unread_count > 0 %}
+                    <span class="inline-block bg-red-500 text-white text-xs rounded-full px-2 py-1 mt-1">
+                        {{ conv.unread_count }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    {% else %}
+    <div class="text-center py-8">
+        <p class="text-gray-500 text-lg">У вас пока нет сообщений</p>
+        <p class="text-gray-400 text-sm mt-2">Начните общение с другими пользователями!</p>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

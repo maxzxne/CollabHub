@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}CollabHub{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100 min-h-screen">
+
+<!-- Header -->
+<header class="bg-white shadow p-4 flex justify-between items-center">
+    <a href="/" class="text-xl font-bold text-gray-800 hover:text-blue-600 transition">CollabHub</a>
+    
+    {% if user %}
+    <!-- User info and burger menu -->
+    <div class="flex items-center space-x-4">
+        <!-- User avatar and name (clickable) -->
+        <a href="/profile" class="flex flex-col items-center space-y-1 hover:opacity-80 transition">
+            <img src="{{ user.avatar or '/static/defaultAvatar.jpg' }}" 
+                 alt="avatar" class="w-8 h-8 rounded-full object-cover">
+            <span class="text-gray-700 text-xs hidden sm:block">Привет, {{ user.name or user.email }}</span>
+        </a>
+        
+        <!-- Burger menu button -->
+        <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 transition" aria-label="Открыть меню">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+        </button>
+    </div>
+    
+    <!-- Dropdown Menu -->
+    <div id="mobile-menu" class="hidden absolute top-16 right-4 w-64 bg-white border rounded-lg shadow-lg z-50">
+        <div class="p-4 border-b">
+            <a href="/profile" class="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded transition">
+                <img src="{{ user.avatar or '/static/defaultAvatar.jpg' }}" 
+                     alt="avatar" class="w-10 h-10 rounded-full object-cover">
+                <div>
+                    <p class="font-medium text-gray-900">{{ user.name or user.email }}</p>
+                    <p class="text-sm text-gray-600">{{ user.email }}</p>
+                </div>
+            </a>
+        </div>
+        <div class="p-2">
+            <a href="/" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">📋 Проекты</a>
+            <a href="/applications" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">📝 Отклики</a>
+            <a href="/reviews" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">⭐ Отзывы</a>
+            <a href="/messages" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">💬 Сообщения</a>
+            <a href="/profiles/freelancers" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">👨‍💻 Фрилансеры</a>
+            <a href="/profiles/clients" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">👔 Заказчики</a>
+            <a href="/profile" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">👤 Профиль</a>
+            <a href="/logout" class="block px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded">🚪 Выйти</a>
+        </div>
+    </div>
+    {% else %}
+    <nav class="flex space-x-4">
+        <a href="/login" class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
+            🔑 Войти
+        </a>
+        <a href="/register" class="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-sm">
+            📝 Регистрация
+        </a>
+    </nav>
+    {% endif %}
+</header>
+
+<script>
+// Mobile menu toggle
+document.addEventListener('DOMContentLoaded', function() {
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const mobileMenu = document.getElementById('mobile-menu');
+    
+    if (mobileMenuButton && mobileMenu) {
+        mobileMenuButton.addEventListener('click', function() {
+            mobileMenu.classList.toggle('hidden');
+        });
+        
+        // Close menu when clicking outside
+        document.addEventListener('click', function(event) {
+            if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
+                mobileMenu.classList.add('hidden');
+            }
+        });
+    }
+});
+</script>
+
+{% block content %}{% endblock %}
+
+</body>
+</html>
