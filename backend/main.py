@@ -1,5 +1,5 @@
 
-from fastapi import FastAPI, Request, Form, HTTPException, Depends, UploadFile, File, Query
+from fastapi import FastAPI, Request, Form, HTTPException, Depends, UploadFile, File
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
@@ -845,23 +845,17 @@ async def get_messages_api(
     request: Request,
     other_user_email: str,
     user: dict = Depends(require_login),
-    job_id: int = Query(None),
-    last_message_id: int = Query(0)
+    job_id: int = None,
+    last_message_id: int = 0
 ):
     """API для получения новых сообщений"""
     try:
-        print(f"API Debug: user={user['email']}, other_user={other_user_email}, job_id={job_id}, last_message_id={last_message_id}")
-        
         # Получаем сообщения между пользователями
         messages = get_messages_between_users(user["email"], other_user_email, job_id)
         messages = [dict(msg) if isinstance(msg, sqlite3.Row) else msg for msg in messages]
         
-        print(f"API Debug: found {len(messages)} total messages")
-        
         # Фильтруем только новые сообщения (с ID больше last_message_id)
         new_messages = [msg for msg in messages if msg["id"] > last_message_id]
-        
-        print(f"API Debug: found {len(new_messages)} new messages")
         
         # Отмечаем сообщения как прочитанные
         if new_messages:
@@ -873,7 +867,6 @@ async def get_messages_api(
             "last_message_id": max([msg["id"] for msg in messages]) if messages else 0
         }
     except Exception as e:
-        print(f"API Error: {str(e)}")
         return {"status": "error", "message": str(e)}
 
 
