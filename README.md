@@ -150,3 +150,6 @@ DATABASE_URL=sqlite:///./freelance.db
 - FastAPI за отличный фреймворк
 - Tailwind CSS за красивые стили
 - SQLite за простую базу данных
+
+
+Постится демка на: https://collabhub-re4t.onrender.com/
