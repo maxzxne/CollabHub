@@ -172,3 +172,6 @@ secrets.json
 # Backup files
 *.bak
 *.backup
+
+# Database access documentation (contains sensitive info)
+DATABASE_ACCESS.md

@@ -53,6 +53,7 @@ DEPLOYMENT.md
 RENDER_DEPLOY.md
 GIT_GUIDE.md
 QUICK_START.md
+DATABASE_ACCESS.md
 
 # Docker
 Dockerfile
