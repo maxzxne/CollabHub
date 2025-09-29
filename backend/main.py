@@ -1206,6 +1206,44 @@ async def remove_portfolio_link(request: Request, user: dict = Depends(require_l
     return {"success": True}
 
 
+# --- Обработчики ошибок ---
+@app.exception_handler(404)
+async def not_found_handler(request: Request, exc):
+    """Обработчик 404 ошибок"""
+    return templates.TemplateResponse("error.html", {
+        "request": request,
+        "error_code": 404,
+        "message": "Страница не найдена"
+    }, status_code=404)
+
+@app.exception_handler(500)
+async def internal_error_handler(request: Request, exc):
+    """Обработчик 500 ошибок"""
+    return templates.TemplateResponse("error.html", {
+        "request": request,
+        "error_code": 500,
+        "message": "Внутренняя ошибка сервера"
+    }, status_code=500)
+
+@app.exception_handler(403)
+async def forbidden_handler(request: Request, exc):
+    """Обработчик 403 ошибок"""
+    return templates.TemplateResponse("error.html", {
+        "request": request,
+        "error_code": 403,
+        "message": "Доступ запрещен"
+    }, status_code=403)
+
+@app.exception_handler(Exception)
+async def general_exception_handler(request: Request, exc):
+    """Общий обработчик исключений"""
+    return templates.TemplateResponse("error.html", {
+        "request": request,
+        "error_code": 500,
+        "message": "Произошла непредвиденная ошибка"
+    }, status_code=500)
+
+
 if __name__ == "__main__":
     import uvicorn
     port = int(os.environ.get("PORT", 10000))
