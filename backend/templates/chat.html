@@ -36,7 +36,7 @@
     <!-- Область сообщений -->
     <div id="messages" class="h-96 overflow-y-auto p-4 space-y-4">
         {% for message in messages %}
-        <div class="flex {% if message.sender_email == user.email %}justify-end{% else %}justify-start{% endif %}">
+        <div class="flex {% if message.sender_email == user.email %}justify-end{% else %}justify-start{% endif %}" data-message-id="{{ message.id }}">
             <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg
                 {% if message.sender_email == user.email %}
                     bg-black text-white
@@ -115,7 +115,7 @@ async function fetchNewMessages() {
             if (result.messages && result.messages.length > 0) {
                 console.log('Получено новых сообщений:', result.messages.length);
                 result.messages.forEach(msg => {
-                    addMessage(msg.message, msg.sender_email, msg.created_at);
+                    addMessage(msg.message, msg.sender_email, msg.created_at, msg.id);
                 });
                 
                 // Обновляем lastMessageId
@@ -130,8 +130,18 @@ async function fetchNewMessages() {
 }
 
 // Функция для добавления сообщения в интерфейс
-function addMessage(message, senderEmail, timestamp) {
+function addMessage(message, senderEmail, timestamp, messageId = null) {
     const messagesContainer = document.getElementById('messages');
+    
+    // Проверяем, не существует ли уже такое сообщение
+    if (messageId) {
+        const existingMessage = messagesContainer.querySelector(`[data-message-id="${messageId}"]`);
+        if (existingMessage) {
+            console.log('Сообщение уже существует, пропускаем:', messageId);
+            return;
+        }
+    }
+    
     const messageDiv = document.createElement('div');
     
     const isOwnMessage = senderEmail === userEmail;
@@ -144,6 +154,9 @@ function addMessage(message, senderEmail, timestamp) {
     });
     
     messageDiv.className = `flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`;
+    if (messageId) {
+        messageDiv.setAttribute('data-message-id', messageId);
+    }
     messageDiv.innerHTML = `
         <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg
             ${isOwnMessage ? 'bg-black text-white' : 'bg-gray-200 text-gray-800'}">
@@ -178,10 +191,10 @@ document.addEventListener('DOMContentLoaded', function() {
         lastMessageId = existingMessages.length;
     }
     
-    // Запускаем polling каждые 2 секунды
-    pollingInterval = setInterval(fetchNewMessages, 2000);
+    // Запускаем polling каждые 3 секунды (увеличили интервал)
+    pollingInterval = setInterval(fetchNewMessages, 3000);
     
-    console.log('Чат инициализирован с polling каждые 2 секунды');
+    console.log('Чат инициализирован с polling каждые 3 секунды');
     console.log('Начальный lastMessageId:', lastMessageId);
 });
 
