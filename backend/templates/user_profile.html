@@ -14,7 +14,7 @@
                 <h2 class="text-2xl font-bold">{{ profile_user.name or profile_user.email }}</h2>
                 <p class="text-gray-600">{{ profile_user.email }}</p>
                 <div class="flex items-center space-x-4 mt-2">
-                    <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
+                    <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
                         {% if profile_user.role == 'freelancer' %}Исполнитель{% else %}Заказчик{% endif %}
                     </span>
                     {% if profile_user.role == 'freelancer' %}
@@ -61,7 +61,7 @@
             <h3 class="font-semibold mb-2">Навыки</h3>
             <div class="flex flex-wrap gap-2">
                 {% for skill in profile_user.skills.split(',') %}
-                <span class="bg-blue-100 text-blue-800 px-3 py-1 rounded-full text-sm">{{ skill.strip() }}</span>
+                <span class="bg-gray-100 text-gray-800 px-3 py-1 rounded-full text-sm">{{ skill.strip() }}</span>
                 {% endfor %}
             </div>
         </div>
@@ -100,10 +100,10 @@
                     {% for link in profile_user.portfolio_links.split('\n') %}
                         {% if link and link.strip() %}
                         <a href="{{ link.strip() }}" target="_blank" 
-                           class="group bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 hover:shadow-md">
+                           class="group bg-gradient-to-r from-gray-50 to-gray-100 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200 hover:shadow-md">
                             <div class="flex items-center">
-                                <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-blue-200 transition-colors">
-                                    <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <div class="w-10 h-10 bg-gray-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-gray-200 transition-colors">
+                                    <svg class="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path>
                                     </svg>
                                 </div>
