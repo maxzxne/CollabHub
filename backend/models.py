@@ -1,3 +1,4 @@
+# Импорты для работы с базой данных и аутентификацией
 from database import get_connection
 from passlib.hash import bcrypt
 import sqlite3
@@ -6,7 +7,10 @@ from datetime import datetime, timedelta
 import os
 
 
+# ===== БАЗОВЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С ПОЛЬЗОВАТЕЛЯМИ =====
+
 def get_user(email, password):
+	"""Получает пользователя по email и паролю (устаревшая функция)"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT * FROM Users WHERE email=? AND password=?", (email, password))
@@ -15,6 +19,7 @@ def get_user(email, password):
 	return user
 
 def get_jobs(status=None):
+	"""Получает список проектов с возможностью фильтрации по статусу"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	if status:
@@ -28,42 +33,50 @@ def get_jobs(status=None):
 
 
 
+# ===== НАСТРОЙКИ JWT И АУТЕНТИФИКАЦИИ =====
+
 # JWT настройки
 SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 30
 
-# Хэширование пароля
+# Функции для работы с паролями
 def hash_password(password: str) -> str:
+	"""Хэширует пароль с помощью bcrypt"""
 	return bcrypt.hash(password)
 
-# Проверка пароля
 def verify_password(password: str, hashed: str) -> bool:
+	"""Проверяет пароль против хэша"""
 	return bcrypt.verify(password, hashed)
 
 # JWT функции
 def create_access_token(data: dict, expires_delta: timedelta = None):
-    to_encode = data.copy()
-    if expires_delta:
-        expire = datetime.utcnow() + expires_delta
-    else:
-        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
-    to_encode.update({"exp": expire})
-    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
-    return encoded_jwt
+	"""Создает JWT токен для аутентификации"""
+	to_encode = data.copy()
+	if expires_delta:
+		expire = datetime.utcnow() + expires_delta
+	else:
+		expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+	to_encode.update({"exp": expire})
+	encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+	return encoded_jwt
 
 def verify_token(token: str):
-    try:
-        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        email: str = payload.get("sub")
-        if email is None:
-            return None
-        return email
-    except JWTError:
-        return None
+	"""Проверяет JWT токен и возвращает email пользователя"""
+	try:
+		payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+		email: str = payload.get("sub")
+		if email is None:
+			return None
+		return email
+	except JWTError:
+		return None
 
+
+# ===== ФУНКЦИИ ДЛЯ РАБОТЫ С ПОЛЬЗОВАТЕЛЯМИ =====
 
 def get_user_by_email(email):
+	"""Получает пользователя по email"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT * FROM Users WHERE email= ?", (email,))
@@ -71,9 +84,8 @@ def get_user_by_email(email):
 	conn.close()
 	return user
 
-
-
 def create_user(email: str, hashed_password: str, role: str, name: str | None = None, avatar: str | None = None):
+	"""Создает нового пользователя в базе данных"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute(
@@ -87,6 +99,7 @@ def create_user(email: str, hashed_password: str, role: str, name: str | None = 
 def update_user_profile(user_id: int, name: str = None, about_me: str = None, activity: str = None, 
                        skills: str = None, phone: str = None, telegram: str = None, avatar: str = None, 
                        email: str = None, portfolio_files: str = None, portfolio_links: str = None):
+	"""Обновляет профиль пользователя (только переданные поля)"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	
@@ -135,6 +148,7 @@ def update_user_profile(user_id: int, name: str = None, about_me: str = None, ac
 
 
 def get_user_by_id(user_id: int):
+	"""Получает пользователя по ID"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT * FROM Users WHERE id = ?", (user_id,))
@@ -142,8 +156,10 @@ def get_user_by_id(user_id: int):
 	conn.close()
 	return user
 
+# ===== ФУНКЦИИ ДЛЯ РАБОТЫ С ПРОЕКТАМИ =====
 
 def create_job(title, description, deadline, creator_email, status="open", priority: str = "medium", files: list = None):
+	"""Создает новый проект в базе данных"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	
@@ -162,6 +178,7 @@ def create_job(title, description, deadline, creator_email, status="open", prior
 
 
 def update_job(job_id, title, description, deadline, status, priority: str = None):
+	"""Обновляет данные проекта"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	if priority is None:
@@ -178,6 +195,7 @@ def update_job(job_id, title, description, deadline, status, priority: str = Non
 	conn.close()
 
 def delete_job(job_id):
+	"""Удаляет проект из базы данных"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("DELETE FROM Jobs WHERE id=?", (job_id,))
@@ -186,6 +204,7 @@ def delete_job(job_id):
 	return True
 
 def get_job_by_id(job_id):
+	"""Получает проект по ID"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT * FROM Jobs WHERE id=?", (job_id,))
@@ -195,7 +214,10 @@ def get_job_by_id(job_id):
 
 
 
+# ===== ФУНКЦИИ ДЛЯ РАБОТЫ С ОТКЛИКАМИ =====
+
 def apply_to_job(job_id: int, freelancer_email: str):
+	"""Добавляет отклик фрилансера на проект"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	try:
@@ -206,11 +228,12 @@ def apply_to_job(job_id: int, freelancer_email: str):
 		conn.commit()
 		return True
 	except sqlite3.IntegrityError:
-		return False
+		return False  # Отклик уже существует
 	finally:
 		conn.close()
 
 def get_applications(job_id: int):
+	"""Получает все отклики на проект"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("""
@@ -224,8 +247,8 @@ def get_applications(job_id: int):
 	conn.close()
 	return apps
 
-
 def get_applications_by_freelancer(freelancer_email: str):
+	"""Получает все отклики конкретного фрилансера"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("""
@@ -239,8 +262,8 @@ def get_applications_by_freelancer(freelancer_email: str):
 	conn.close()
 	return apps
 
-
 def get_applications_for_client(creator_email: str):
+	"""Получает все отклики на проекты клиента"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("""
@@ -257,6 +280,7 @@ def get_applications_for_client(creator_email: str):
 
 
 def update_application_status(application_id: int, status: str):
+	"""Обновляет статус отклика (принят/отклонен)"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("UPDATE Applications SET status = ? WHERE id = ?", (status, application_id))
@@ -270,8 +294,8 @@ def update_application_status(application_id: int, status: str):
 	conn.commit()
 	conn.close()
 
-
 def get_application_by_id(application_id: int):
+	"""Получает отклик по ID"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT * FROM Applications WHERE id = ?", (application_id,))
@@ -279,8 +303,8 @@ def get_application_by_id(application_id: int):
 	conn.close()
 	return app
 
-
 def has_user_applied_to_job(job_id: int, freelancer_email: str):
+	"""Проверяет, откликался ли пользователь на проект"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT id FROM Applications WHERE job_id = ? AND freelancer_email = ?", (job_id, freelancer_email))
@@ -288,8 +312,8 @@ def has_user_applied_to_job(job_id: int, freelancer_email: str):
 	conn.close()
 	return result is not None
 
-
 def get_user_application_status(job_id: int, freelancer_email: str):
+	"""Получает статус отклика пользователя на проект"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT status FROM Applications WHERE job_id = ? AND freelancer_email = ?", (job_id, freelancer_email))
@@ -299,6 +323,7 @@ def get_user_application_status(job_id: int, freelancer_email: str):
 
 
 def complete_job(job_id: int, freelancer_email: str):
+	"""Завершает проект и обновляет статистику фрилансера"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	# Обновляем статус проекта на "done"
@@ -312,6 +337,8 @@ def complete_job(job_id: int, freelancer_email: str):
 	conn.commit()
 	conn.close()
 
+
+# ===== ФУНКЦИИ ДЛЯ РАБОТЫ СО СТАТИСТИКОЙ =====
 
 def update_freelancer_stats(freelancer_email: str, cursor=None):
 	"""Обновляет рейтинг и количество завершенных проектов для фрилансера"""
@@ -355,9 +382,8 @@ def update_freelancer_stats(freelancer_email: str, cursor=None):
 		conn.commit()
 		conn.close()
 
-
 def update_all_freelancer_stats():
-	"""Обновляет статистику всех фрилансеров (для исправления существующих данных)"""
+	"""Обновляет статистику всех фрилансеров (админская функция)"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	
@@ -373,7 +399,10 @@ def update_all_freelancer_stats():
 	print(f"Updated stats for {len(freelancers)} freelancers")
 
 
+# ===== ФУНКЦИИ ДЛЯ РАБОТЫ С ОТЗЫВАМИ =====
+
 def create_review(job_id: int, freelancer_email: str, client_email: str, rating: int, comment: str = None):
+	"""Создает отзыв и обновляет статистику фрилансера"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute(
@@ -387,8 +416,8 @@ def create_review(job_id: int, freelancer_email: str, client_email: str, rating:
 	conn.commit()
 	conn.close()
 
-
 def get_reviews_for_freelancer(freelancer_email: str):
+	"""Получает все отзывы для фрилансера"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("""
@@ -403,8 +432,8 @@ def get_reviews_for_freelancer(freelancer_email: str):
 	conn.close()
 	return reviews
 
-
 def get_job_reviews(job_id: int):
+	"""Получает все отзывы по проекту"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT * FROM Reviews WHERE job_id = ?", (job_id,))
@@ -412,8 +441,8 @@ def get_job_reviews(job_id: int):
 	conn.close()
 	return reviews
 
-
 def has_reviewed_job(job_id: int, client_email: str, freelancer_email: str):
+	"""Проверяет, оставил ли клиент отзыв по проекту"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT id FROM Reviews WHERE job_id = ? AND client_email = ? AND freelancer_email = ?", 
@@ -423,8 +452,10 @@ def has_reviewed_job(job_id: int, client_email: str, freelancer_email: str):
 	return result is not None
 
 
-# Функции для работы с сообщениями
+# ===== ФУНКЦИИ ДЛЯ РАБОТЫ С СООБЩЕНИЯМИ =====
+
 def create_message(sender_email: str, receiver_email: str, message: str, job_id: int = None):
+	"""Создает новое сообщение в чате"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute(
@@ -436,6 +467,7 @@ def create_message(sender_email: str, receiver_email: str, message: str, job_id:
 
 
 def get_messages_between_users(user1_email: str, user2_email: str, job_id: int = None):
+	"""Получает сообщения между двумя пользователями (обычный или проектный чат)"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	if job_id:
@@ -464,6 +496,7 @@ def get_messages_between_users(user1_email: str, user2_email: str, job_id: int =
 
 
 def get_user_conversations(user_email: str):
+	"""Получает все диалоги пользователя (обычные и проектные)"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	
@@ -531,7 +564,6 @@ def mark_messages_as_read(current_user_email: str, other_user_email: str, job_id
 	conn.commit()
 	conn.close()
 
-
 def get_unread_messages_count(user_email: str):
 	"""Получает общее количество непрочитанных сообщений для пользователя"""
 	conn = get_connection()
@@ -546,8 +578,10 @@ def get_unread_messages_count(user_email: str):
 	return result['unread_count'] if result else 0
 
 
-# Функции для работы с профилями пользователей
+# ===== ФУНКЦИИ ДЛЯ РАБОТЫ С ПРОФИЛЯМИ ПОЛЬЗОВАТЕЛЕЙ =====
+
 def get_users_by_role(role: str):
+	"""Получает пользователей по роли с сортировкой по рейтингу"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT * FROM Users WHERE role = ? ORDER BY rating DESC, completed_projects DESC", (role,))
@@ -555,9 +589,8 @@ def get_users_by_role(role: str):
 	conn.close()
 	return users
 
-
 def get_all_users_with_filters(role_filter: str = None, min_rating: str = None):
-	"""Получает всех пользователей с возможностью фильтрации"""
+	"""Получает всех пользователей с возможностью фильтрации по роли и рейтингу"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	
@@ -583,8 +616,8 @@ def get_all_users_with_filters(role_filter: str = None, min_rating: str = None):
 	conn.close()
 	return users
 
-
 def get_user_profile_by_email(email: str):
+	"""Получает профиль пользователя по email"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("SELECT * FROM Users WHERE email = ?", (email,))
@@ -593,8 +626,10 @@ def get_user_profile_by_email(email: str):
 	return user
 
 
-# Функции для работы с комментариями к проектам
+# ===== ФУНКЦИИ ДЛЯ РАБОТЫ С КОММЕНТАРИЯМИ К ПРОЕКТАМ =====
+
 def create_project_comment(job_id: int, user_email: str, comment: str):
+	"""Создает комментарий к проекту"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute(
@@ -604,8 +639,8 @@ def create_project_comment(job_id: int, user_email: str, comment: str):
 	conn.commit()
 	conn.close()
 
-
 def get_project_comments(job_id: int):
+	"""Получает все комментарии к проекту"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute("""
@@ -618,7 +653,6 @@ def get_project_comments(job_id: int):
 	comments = cursor.fetchall()
 	conn.close()
 	return comments
-
 
 def can_user_comment_on_project(job_id: int, user_email: str):
 	"""Проверяет, может ли пользователь комментировать проект (только участники)"""
@@ -646,7 +680,6 @@ def can_user_comment_on_project(job_id: int, user_email: str):
 	
 	conn.close()
 	return application is not None
-
 
 def get_project_participants(job_id: int):
 	"""Получает всех участников проекта (создатель + принятые фрилансеры)"""

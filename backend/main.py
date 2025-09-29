@@ -1,8 +1,11 @@
 
+# Импорты для FastAPI и веб-функциональности
 from fastapi import FastAPI, Request, Form, HTTPException, Depends, UploadFile, File
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+
+# Стандартные библиотеки Python
 import sqlite3
 import os
 import uuid
@@ -10,9 +13,8 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import re
 import json
-# Удален неиспользуемый импорт
 
-
+# Импорты из локальных модулей
 from database import init_db
 from models import (
     get_user_by_email,
@@ -54,11 +56,13 @@ from models import (
     get_unread_messages_count,
 )
 
+# Создание экземпляра FastAPI приложения
 app = FastAPI()
 templates = Jinja2Templates(directory="templates")
 
-# Добавляем фильтр для JSON
+# Добавляем фильтр для JSON в шаблоны
 def from_json(value):
+    """Парсит JSON строку в объект Python"""
     import json
     try:
         return json.loads(value)
@@ -67,26 +71,27 @@ def from_json(value):
 
 templates.env.filters["from_json"] = from_json
 
+# Монтирование статических файлов
 app.mount("/static", StaticFiles(directory="static"), name="static")
 
-# Создаем папку для загрузок
+# Настройка папок для загрузки файлов
 UPLOAD_DIR = Path("uploads")
 UPLOAD_DIR.mkdir(exist_ok=True)
 
-# Создаем подпапки
-(UPLOAD_DIR / "avatars").mkdir(exist_ok=True)
-(UPLOAD_DIR / "projects").mkdir(exist_ok=True)
-(UPLOAD_DIR / "portfolio").mkdir(exist_ok=True)
+# Создаем подпапки для разных типов файлов
+(UPLOAD_DIR / "avatars").mkdir(exist_ok=True)      # Аватарки пользователей
+(UPLOAD_DIR / "projects").mkdir(exist_ok=True)     # Файлы проектов
+(UPLOAD_DIR / "portfolio").mkdir(exist_ok=True)    # Файлы портфолио
 
-# Монтируем папку загрузок как статическую
+# Монтируем папку загрузок как статическую для доступа через URL
 app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 
+# Инициализация базы данных
 init_db()
 
-# Удален WebSocket менеджер - теперь используем простое AJAX решение
 
+# ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С ФАЙЛАМИ =====
 
-# --- Вспомогательные функции для файлов ---
 def save_uploaded_file(file: UploadFile, subfolder: str) -> str:
     """Сохраняет загруженный файл и возвращает путь к нему"""
     # Проверяем тип файла
@@ -171,7 +176,8 @@ def validate_date(date_str: str) -> str:
         raise e
 
 
-# --- Вспомогательная функция ---
+# ===== ФУНКЦИИ АУТЕНТИФИКАЦИИ И АВТОРИЗАЦИИ =====
+
 def get_current_user(request: Request):
     # Сначала проверяем JWT токен
     auth_header = request.headers.get("Authorization")
@@ -228,7 +234,7 @@ def get_current_user(request: Request):
     return None
 
 
-# --- Depends для авторизации ---
+# Функции-декораторы для проверки авторизации
 def require_login(request: Request):
     user = get_current_user(request)
     if not user:
@@ -244,7 +250,8 @@ def require_role(role: str):
     return role_checker
 
 
-# --- Аутентификация ---
+# ===== МАРШРУТЫ АУТЕНТИФИКАЦИИ =====
+
 @app.get("/login")
 async def login_get(request: Request):
     return templates.TemplateResponse("login.html", {"request": request, "error": None})
@@ -314,7 +321,8 @@ async def logout():
     return response
 
 
-# --- Главная ---
+# ===== ГЛАВНАЯ СТРАНИЦА И ПРОЕКТЫ =====
+
 @app.get("/")
 async def home(request: Request, user: dict = Depends(require_login), status: str = None):
     jobs = get_jobs(status)
@@ -371,7 +379,8 @@ async def home(request: Request, user: dict = Depends(require_login), status: st
     })
 
 
-# --- Создание проекта ---
+# ===== СОЗДАНИЕ И УПРАВЛЕНИЕ ПРОЕКТАМИ =====
+
 @app.get("/jobs/create")
 async def job_create_get(request: Request, user: dict = Depends(require_role("client"))):
     return templates.TemplateResponse("create_job.html", {"request": request, "user": user})
@@ -414,7 +423,7 @@ async def job_create_post(request: Request, user: dict = Depends(require_role("c
     return RedirectResponse(url="/", status_code=302)
 
 
-# --- Детальная страница проекта ---
+# Детальная страница проекта
 @app.get("/jobs/{job_id}")
 async def job_detail(request: Request, job_id: int, user: dict = Depends(require_login)):
     job = get_job_by_id(job_id)
@@ -469,14 +478,14 @@ async def job_detail(request: Request, job_id: int, user: dict = Depends(require
     })
 
 
-# --- Откликнуться ---
+# Отклик на проект
 @app.post("/jobs/{job_id}/apply")
 async def apply_post(request: Request, job_id: int, user: dict = Depends(require_role("freelancer"))):
     apply_to_job(job_id, user["email"])
     return RedirectResponse(url=f"/jobs/{job_id}", status_code=302)
 
 
-# --- Редактирование проекта ---
+# Редактирование проекта
 @app.get("/jobs/{job_id}/edit")
 async def edit_job_get(request: Request, job_id: int, user: dict = Depends(require_login)):
     job = get_job_by_id(job_id)
@@ -538,7 +547,7 @@ async def edit_job_post(
     return RedirectResponse(url=f"/jobs/{job_id}", status_code=302)
 
 
-# --- Удаление проекта ---
+# Удаление проекта
 @app.get("/jobs/{job_id}/delete")
 async def delete_job_get(request: Request, job_id: int, user: dict = Depends(require_login)):
     job = get_job_by_id(job_id)
@@ -558,7 +567,8 @@ async def delete_job_get(request: Request, job_id: int, user: dict = Depends(req
     return RedirectResponse(url="/", status_code=302)
 
 
-# --- Профиль пользователя ---
+# ===== ПРОФИЛЬ ПОЛЬЗОВАТЕЛЯ =====
+
 @app.get("/profile")
 async def profile_get(request: Request, user: dict = Depends(require_login)):
     return templates.TemplateResponse("profile.html", {"request": request, "user": user})
@@ -689,7 +699,8 @@ async def profile_post(
     })
 
 
-# --- Управление откликами ---
+# ===== УПРАВЛЕНИЕ ОТКЛИКАМИ =====
+
 @app.get("/applications")
 async def applications_get(request: Request, user: dict = Depends(require_login)):
     if user["role"] == "freelancer":
@@ -753,7 +764,7 @@ async def reject_application(request: Request, application_id: int, user: dict =
     return RedirectResponse(url="/applications", status_code=302)
 
 
-# --- Завершение проекта ---
+# Завершение проекта
 @app.post("/jobs/{job_id}/complete")
 async def complete_job_post(request: Request, job_id: int, user: dict = Depends(require_role("freelancer"))):
     job = get_job_by_id(job_id)
@@ -772,7 +783,8 @@ async def complete_job_post(request: Request, job_id: int, user: dict = Depends(
     return RedirectResponse(url=f"/jobs/{job_id}", status_code=302)
 
 
-# --- Отзывы ---
+# ===== СИСТЕМА ОТЗЫВОВ =====
+
 @app.get("/reviews")
 async def reviews_get(request: Request, user: dict = Depends(require_login)):
     if user["role"] == "freelancer":
@@ -902,7 +914,8 @@ async def review_form_post(
     return RedirectResponse(url="/reviews", status_code=302)
 
 
-# --- Тестовые endpoints ---
+# ===== ТЕСТОВЫЕ И АДМИНИСТРАТИВНЫЕ ENDPOINTS =====
+
 @app.get("/test")
 async def test_endpoint():
     return {"message": "Server is working", "status": "ok"}
@@ -916,7 +929,8 @@ async def update_all_stats():
 
 # Удален тестовый WebSocket endpoint - больше не нужен
 
-# --- API для чата (простое решение без WebSocket) ---
+# ===== API ДЛЯ ЧАТА =====
+
 @app.post("/api/messages/send")
 async def send_message_api(
     request: Request,
@@ -977,7 +991,8 @@ async def get_messages_api(
         return {"status": "error", "message": str(e)}
 
 
-# --- Страница сообщений ---
+# ===== СТРАНИЦЫ ЧАТА И СООБЩЕНИЙ =====
+
 @app.get("/messages")
 async def messages_get(request: Request, user: dict = Depends(require_login)):
     conversations = get_user_conversations(user["email"])
@@ -993,7 +1008,7 @@ async def messages_get(request: Request, user: dict = Depends(require_login)):
     })
 
 
-# --- Чат с конкретным пользователем ---
+# Чат с конкретным пользователем
 @app.get("/chat/{other_user_email}")
 async def chat_get(request: Request, other_user_email: str, user: dict = Depends(require_login), job_id: int = None):
     # Получаем сообщения между пользователями
@@ -1020,7 +1035,7 @@ async def chat_get(request: Request, other_user_email: str, user: dict = Depends
     })
 
 
-# --- Проектный чат ---
+# Проектный чат
 @app.get("/jobs/{job_id}/chat")
 async def project_chat_get(request: Request, job_id: int, user: dict = Depends(require_login)):
     job = get_job_by_id(job_id)
@@ -1072,7 +1087,8 @@ async def project_chat_get(request: Request, job_id: int, user: dict = Depends(r
     })
 
 
-# --- Страница профилей пользователей ---
+# ===== ПРОФИЛИ ПОЛЬЗОВАТЕЛЕЙ =====
+
 @app.get("/profiles")
 async def profiles_get(request: Request, user: dict = Depends(require_login), 
                       role: str = None, min_rating: str = None):
@@ -1125,7 +1141,8 @@ async def user_profile_get(request: Request, user_email: str, user: dict = Depen
     })
 
 
-# --- Комментарии к проектам ---
+# ===== КОММЕНТАРИИ К ПРОЕКТАМ =====
+
 @app.post("/jobs/{job_id}/comment")
 async def add_project_comment(
     request: Request,
@@ -1144,7 +1161,8 @@ async def add_project_comment(
     return RedirectResponse(url=f"/jobs/{job_id}", status_code=302)
 
 
-# --- Удаление файлов и ссылок портфолио ---
+# ===== AJAX ENDPOINTS ДЛЯ УПРАВЛЕНИЯ ПОРТФОЛИО =====
+
 @app.post("/profile/remove-portfolio-file")
 async def remove_portfolio_file(request: Request, user: dict = Depends(require_login)):
     data = await request.json()
@@ -1206,7 +1224,8 @@ async def remove_portfolio_link(request: Request, user: dict = Depends(require_l
     return {"success": True}
 
 
-# --- Обработчики ошибок ---
+# ===== ОБРАБОТЧИКИ ОШИБОК =====
+
 @app.exception_handler(404)
 async def not_found_handler(request: Request, exc):
     """Обработчик 404 ошибок"""

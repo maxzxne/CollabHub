@@ -1,14 +1,18 @@
+# Импорты для работы с базой данных
 import sqlite3
 import os
 
+# Название файла базы данных
 DB_NAME = "freelance.db"
 
 def get_connection():
+    """Создает подключение к базе данных SQLite"""
     conn = sqlite3.connect(DB_NAME)
-    conn.row_factory = sqlite3.Row
+    conn.row_factory = sqlite3.Row  # Возвращает результаты как словари
     return conn
 
 def init_db():
+    """Инициализирует базу данных и создает все необходимые таблицы"""
     conn = get_connection()
     cursor = conn.cursor()
     
@@ -32,7 +36,7 @@ def init_db():
         )
     """)
     
-    # Добавляем новые колонки, если их нет
+    # Добавляем новые колонки, если их нет (для совместимости с существующими БД)
     try:
         cursor.execute("ALTER TABLE Users ADD COLUMN about_me TEXT")
     except sqlite3.OperationalError:
@@ -83,7 +87,7 @@ def init_db():
     except sqlite3.OperationalError:
         pass
     
-    # Таблица заданий
+    # Таблица проектов/заданий
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -97,7 +101,7 @@ def init_db():
         )
     """)
 
-    # Добавляем недостающие колонки в Jobs
+    # Добавляем недостающие колонки в Jobs (для совместимости)
     try:
         cursor.execute("ALTER TABLE Jobs ADD COLUMN priority TEXT DEFAULT 'medium'")
     except sqlite3.OperationalError:
@@ -108,7 +112,7 @@ def init_db():
     except sqlite3.OperationalError:
         pass
     
-    # Таблица откликов
+    # Таблица откликов фрилансеров на проекты
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -119,7 +123,7 @@ def init_db():
         )
     """)
     
-    # Таблица отзывов
+    # Таблица отзывов клиентов о фрилансерах
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Reviews (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -133,7 +137,7 @@ def init_db():
         )
     """)
     
-    # Таблица сообщений
+    # Таблица сообщений в чате
     cursor.execute("""
         CREATE TABLE IF NOT EXISTS Messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -158,5 +162,6 @@ def init_db():
         )
     """)
 
+    # Сохраняем изменения и закрываем соединение
     conn.commit()
     conn.close()
