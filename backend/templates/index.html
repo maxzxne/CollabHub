@@ -5,9 +5,9 @@
 {% block content %}
 <!-- Фильтр статуса + кнопка -->
 <div class="bg-white border-b border-gray-200">
-    <div class="max-w-7xl mx-auto px-6 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div class="flex flex-wrap gap-3">
+            <div class="flex flex-wrap gap-2 sm:gap-3">
                 <a href="/" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 {{ 'bg-black text-white shadow-lg' if not selected_status else 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200' }}">
                     <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
@@ -35,21 +35,24 @@
             </div>
 
             {% if user and user['role'] == 'client' %}
-                <a href="/jobs/create" class="inline-flex items-center bg-black text-white px-6 py-3 rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                    <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                    Создать проект
-                </a>
+                <div class="flex justify-end">
+                    <a href="/jobs/create" class="inline-flex items-center bg-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-full hover:bg-gray-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base">
+                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                        <span class="hidden sm:inline">Создать проект</span>
+                        <span class="sm:hidden">Создать проект</span>
+                    </a>
+                </div>
             {% endif %}
         </div>
     </div>
 </div>
 
 <!-- Список проектов -->
-<main class="max-w-7xl mx-auto px-6 py-8">
+<main class="max-w-7xl mx-auto px-4 sm:px-6 py-6 sm:py-8">
     {% if jobs %}
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
     {% for job in jobs %}
     <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col group cursor-pointer relative overflow-hidden border border-gray-200" 
          onclick="window.location.href='/jobs/{{ job['id'] }}'">
@@ -77,7 +80,7 @@
         {% endif %}
         
         <!-- Заголовок -->
-        <div class="relative p-6 pb-4">
+        <div class="relative p-4 sm:p-6 pb-4">
             <div class="relative">
                 <h3 class="font-bold text-xl mb-3 group-hover:text-gray-600 transition-colors duration-200 pr-16 text-gray-800">
                     {{ job['title'] }}
@@ -87,7 +90,7 @@
         </div>
         
         <!-- Информация о проекте -->
-        <div class="px-6 pb-4 space-y-4">
+        <div class="px-4 sm:px-6 pb-4 space-y-3 sm:space-y-4">
             <!-- Дедлайн -->
             <div class="flex items-center text-sm text-gray-500">
                 <svg class="w-4 h-4 mr-2 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -97,22 +100,22 @@
             </div>
             
             <!-- Статус и приоритет -->
-            <div class="flex items-center gap-3 flex-wrap">
-                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold
-                    {% if job['status']=='open' %} bg-gray-100 text-gray-800 border border-gray-200
-                    {% elif job['status']=='in_progress' %} bg-gray-200 text-gray-800 border border-gray-300
-                    {% elif job['status']=='done' %} bg-gray-300 text-gray-800 border border-gray-400
-                    {% else %} bg-gray-100 text-gray-700 border border-gray-200 {% endif %}">
-                    {% if job['status']=='open' %}🟢 Открыт
-                    {% elif job['status']=='in_progress' %}🔵 В работе
-                    {% elif job['status']=='done' %}✅ Завершен
+            <div class="flex items-center gap-2 flex-wrap">
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                    {% if job['status']=='open' %} bg-green-50 text-green-700 border border-green-200
+                    {% elif job['status']=='in_progress' %} bg-yellow-50 text-yellow-700 border border-yellow-200
+                    {% elif job['status']=='done' %} bg-gray-100 text-gray-600 border border-gray-300
+                    {% else %} bg-gray-50 text-gray-600 border border-gray-200 {% endif %}">
+                    {% if job['status']=='open' %}Открыт
+                    {% elif job['status']=='in_progress' %}В работе
+                    {% elif job['status']=='done' %}Завершен
                     {% else %}{{ job['status'] }}{% endif %}
                 </span>
-                <span class="inline-flex items-center px-3 py-1.5 rounded-full text-xs font-semibold
-                    {% if job.get('priority')=='high' %} bg-gray-200 text-gray-800 border border-gray-300
-                    {% elif job.get('priority')=='low' %} bg-gray-100 text-gray-800 border border-gray-200
-                    {% else %} bg-gray-150 text-gray-800 border border-gray-250 {% endif %}">
-                    {% if job.get('priority')=='high' %}🔥 Высокий{% elif job.get('priority')=='low' %}📉 Низкий{% else %}📊 Средний{% endif %}
+                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
+                    {% if job.get('priority')=='high' %} bg-red-50 text-red-700 border border-red-200
+                    {% elif job.get('priority')=='low' %} bg-gray-50 text-gray-600 border border-gray-200
+                    {% else %} bg-blue-50 text-blue-700 border border-blue-200 {% endif %}">
+                    {% if job.get('priority')=='high' %}Высокий{% elif job.get('priority')=='low' %}Низкий{% else %}Средний{% endif %}
                 </span>
             </div>
             
@@ -206,15 +209,21 @@
             <svg class="w-24 h-24 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
             </svg>
+            {% if total_jobs_count == 0 %}
             <h3 class="text-xl font-semibold text-gray-600 mb-2">Проекты не найдены</h3>
-            <p class="text-gray-500 mb-6">Пока нет проектов с выбранным статусом</p>
+            <p class="text-gray-500 mb-6">В системе пока нет проектов</p>
             {% if user and user['role'] == 'client' %}
-            <a href="/jobs/create" class="inline-flex items-center bg-gradient-to-r from-blue-500 to-indigo-600 text-white px-6 py-3 rounded-xl hover:from-blue-600 hover:to-indigo-700 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
-                <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="/jobs/create" class="inline-flex items-center bg-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium text-sm sm:text-base">
+                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
-                Создать первый проект
+                <span class="hidden sm:inline">Создать первый проект</span>
+                <span class="sm:hidden">Создать</span>
             </a>
+            {% endif %}
+            {% else %}
+            <h3 class="text-xl font-semibold text-gray-600 mb-2">Проекты не найдены</h3>
+            <p class="text-gray-500">Пока нет проектов с выбранным статусом</p>
             {% endif %}
         </div>
     </div>

@@ -1,38 +1,36 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <meta charset="UTF-8">
-    <title>Создать проект</title>
-    <script src="https://cdn.tailwindcss.com"></script>
-</head>
-<body class="p-6">
-    <h1 class="text-xl font-bold mb-4">Создать проект</h1>
+{% extends "base.html" %}
+
+{% block title %}Создать проект{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow mt-4 sm:mt-6">
+    <h1 class="text-2xl sm:text-3xl font-bold mb-6 text-center">Создать проект</h1>
     {% if error %}
     <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
         {{ error }}
     </div>
     {% endif %}
     
-    <form method="post" enctype="multipart/form-data" class="space-y-4">
+    <form method="post" enctype="multipart/form-data" class="space-y-4 sm:space-y-6">
         <div>
-            <label class="block text-gray-700 mb-1">Название проекта</label>
-            <input name="title" placeholder="Заголовок" class="w-full border p-2 rounded" required>
+            <label class="block text-gray-700 mb-2 font-medium">Название проекта</label>
+            <input name="title" placeholder="Заголовок" class="w-full border border-gray-300 p-3 sm:p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-colors text-base" required>
         </div>
         
         <div>
-            <label class="block text-gray-700 mb-1">Описание</label>
-            <textarea name="description" placeholder="Описание" class="w-full border p-2 rounded" required></textarea>
+            <label class="block text-gray-700 mb-2 font-medium">Описание</label>
+            <textarea name="description" placeholder="Описание проекта" class="w-full border border-gray-300 p-3 sm:p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-colors text-base" rows="4" required></textarea>
         </div>
         
         <div>
-            <label class="block text-gray-700 mb-1">Дедлайн</label>
-            <input type="text" name="deadline" placeholder="25.12.2024" class="w-full border p-2 rounded" required>
+            <label class="block text-gray-700 mb-2 font-medium">Дедлайн</label>
+            <input type="text" name="deadline" placeholder="25.12.2024" class="w-full border border-gray-300 p-3 sm:p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-colors text-base" required>
             <p class="text-sm text-gray-500 mt-1">Формат: ДД.ММ.ГГГГ (например: 25.12.2024)</p>
         </div>
         
         <div>
-            <label class="block text-gray-700 mb-1">Приоритет</label>
-            <select name="priority" class="w-full border p-2 rounded">
+            <label class="block text-gray-700 mb-2 font-medium">Приоритет</label>
+            <select name="priority" class="w-full border border-gray-300 p-3 sm:p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-colors text-base">
                 <option value="low">Низкий</option>
                 <option value="medium" selected>Средний</option>
                 <option value="high">Высокий</option>
@@ -40,13 +38,20 @@
         </div>
         
         <div>
-            <label class="block text-gray-700 mb-1">Файлы проекта (необязательно)</label>
+            <label class="block text-gray-700 mb-2 font-medium">Файлы проекта (необязательно)</label>
             <input type="file" name="files" multiple accept=".pdf,.doc,.docx,.txt,.jpg,.jpeg,.png" 
-                   class="w-full border p-2 rounded">
+                   class="w-full border border-gray-300 p-3 sm:p-4 rounded-lg focus:ring-2 focus:ring-black focus:border-black transition-colors text-base">
             <p class="text-sm text-gray-500 mt-1">Можно загрузить несколько файлов. Максимум 10MB на файл.</p>
         </div>
         
-        <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">Создать проект</button>
+        <div class="flex flex-col sm:flex-row gap-3 sm:gap-4 pt-4">
+            <button type="submit" class="w-full sm:w-auto bg-black text-white px-6 py-3 sm:py-4 rounded-lg hover:bg-gray-800 transition-all duration-200 font-medium text-base">
+                Создать проект
+            </button>
+            <a href="/" class="w-full sm:w-auto bg-gray-100 text-gray-800 px-6 py-3 sm:py-4 rounded-lg hover:bg-gray-200 transition-all duration-200 font-medium text-base text-center">
+                Отмена
+            </a>
+        </div>
     </form>
-</body>
-</html>
+</div>
+{% endblock %}

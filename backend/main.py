@@ -358,11 +358,16 @@ async def home(request: Request, user: dict = Depends(require_login), status: st
         # Получаем участников проекта
         job["participants"] = get_project_participants(job["id"])
     
+    # Получаем общее количество проектов в системе
+    all_jobs = get_jobs()
+    total_jobs_count = len(all_jobs)
+    
     return templates.TemplateResponse("index.html", {
         "request": request,
         "jobs": visible_jobs,
         "user": user,
-        "selected_status": status
+        "selected_status": status,
+        "total_jobs_count": total_jobs_count
     })
 
 

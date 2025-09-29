@@ -3,18 +3,18 @@
 {% block title %}Отклики на мои проекты{% endblock %}
 
 {% block content %}
-<div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
+<div class="max-w-4xl mx-auto bg-white p-4 sm:p-6 rounded-lg shadow mt-4 sm:mt-6">
     <h2 class="text-3xl font-bold mb-6">Отклики на мои проекты</h2>
     
     {% if applications %}
     <div class="space-y-4">
         {% for app in applications %}
-        <div class="border rounded-lg p-4 {% if app.status == 'accepted' %}bg-green-50 border-green-200{% elif app.status == 'rejected' %}bg-red-50 border-red-200{% else %}bg-yellow-50 border-yellow-200{% endif %}">
-            <div class="flex justify-between items-start">
+        <div class="border rounded-lg p-4 {% if app.status == 'accepted' %}bg-green-50 border-green-200{% elif app.status == 'rejected' %}bg-red-50 border-red-200{% else %}bg-gray-50 border-gray-200{% endif %}">
+            <div class="flex flex-col sm:flex-row sm:justify-between sm:items-start">
                 <div class="flex-1">
                     <h3 class="text-lg font-semibold text-gray-800">{{ app.title }}</h3>
                     <p class="text-sm text-gray-600 mb-2">
-                        Фрилансер: <a href="/profile/{{ app.freelancer_email }}" class="text-blue-600 hover:text-blue-800 hover:underline">{{ app.freelancer_name or app.freelancer_email }}</a>
+                        Исполнитель: <a href="/profile/{{ app.freelancer_email }}" class="text-black hover:text-gray-600 hover:underline">{{ app.freelancer_name or app.freelancer_email }}</a>
                     </p>
                     
                     {% if app.about_me %}
@@ -33,20 +33,20 @@
                     {% endif %}
                     
                     <div class="flex items-center space-x-2">
-                        <span class="px-2 py-1 rounded text-sm font-medium
-                            {% if app.status == 'accepted' %}bg-green-100 text-green-800
-                            {% elif app.status == 'rejected' %}bg-red-100 text-red-800
-                            {% else %}bg-yellow-100 text-yellow-800{% endif %}">
-                            {% if app.status == 'accepted' %}✅ Принят
-                            {% elif app.status == 'rejected' %}❌ Отклонен
-                            {% else %}⏳ Ожидает рассмотрения{% endif %}
-                        </span>
+                    <span class="px-2 py-1 rounded text-sm font-medium
+                        {% if app.status == 'accepted' %}bg-green-100 text-green-800
+                        {% elif app.status == 'rejected' %}bg-red-100 text-red-800
+                        {% else %}bg-gray-100 text-gray-800{% endif %}">
+                        {% if app.status == 'accepted' %}Принят
+                        {% elif app.status == 'rejected' %}Отклонен
+                        {% else %}Ожидает рассмотрения{% endif %}
+                    </span>
                     </div>
                 </div>
                 
-                <div class="flex space-x-2">
+                <div class="flex flex-col sm:flex-row space-y-2 sm:space-y-0 sm:space-x-2 mt-4 sm:mt-0">
                     <a href="/jobs/{{ app.job_id }}" 
-                       class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm">
+                       class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition text-sm">
                         Посмотреть проект
                     </a>
                     
@@ -65,7 +65,7 @@
                     </form>
                     {% elif app.status == 'completed' and app.job_status == 'done' %}
                     <a href="/jobs/{{ app.job_id }}/review" 
-                       class="px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600 transition text-sm">
+                       class="px-3 py-1 bg-gray-500 text-white rounded hover:bg-gray-600 transition text-sm">
                         ⭐ Оставить отзыв
                     </a>
                     {% endif %}
@@ -77,7 +77,7 @@
     {% else %}
     <div class="text-center py-8">
         <p class="text-gray-500 text-lg">На ваши проекты пока нет откликов</p>
-        <a href="/" class="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600 transition">
+        <a href="/" class="mt-4 inline-block bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition">
             Создать проект
         </a>
     </div>

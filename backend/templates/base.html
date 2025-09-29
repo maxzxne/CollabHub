@@ -2,6 +2,7 @@
 <html lang="ru">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}CollabHub{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -23,29 +24,29 @@
 <body class="bg-gray-50 min-h-screen">
 
 <!-- Header -->
-<header class="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
-    <a href="/" class="text-xl font-bold text-black hover:text-gray-600 transition">CollabHub</a>
+<header class="bg-white border-b border-gray-200 p-3 sm:p-4 flex justify-between items-center sticky top-0 z-50">
+    <a href="/" class="text-lg sm:text-xl font-bold text-black hover:text-gray-600 transition">CollabHub</a>
     
     {% if user %}
     <!-- User info and burger menu -->
-    <div class="flex items-center space-x-4">
+    <div class="flex items-center space-x-2 sm:space-x-4">
         <!-- User avatar and name (clickable) -->
         <a href="/profile/{{ user.email }}" class="flex flex-col items-center space-y-1 hover:opacity-80 transition">
             <img src="{{ user.avatar or '/static/defaultAvatar.jpg' }}" 
-                 alt="avatar" class="w-8 h-8 rounded-full object-cover">
-            <span class="text-gray-700 text-xs hidden sm:block">Привет, {{ user.name or user.email }}</span>
+                 alt="avatar" class="w-7 h-7 sm:w-8 sm:h-8 rounded-full object-cover">
+            <span class="text-gray-700 text-xs hidden lg:block">Привет, {{ user.name or user.email }}</span>
         </a>
         
         <!-- Burger menu button -->
-        <button id="mobile-menu-button" class="text-gray-700 hover:text-black transition" aria-label="Открыть меню">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <button id="mobile-menu-button" class="text-gray-700 hover:text-black transition p-1" aria-label="Открыть меню">
+            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
         </button>
     </div>
     
     <!-- Dropdown Menu -->
-    <div id="mobile-menu" class="hidden absolute top-16 right-4 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
+    <div id="mobile-menu" class="hidden absolute top-14 sm:top-16 right-2 sm:right-4 w-56 sm:w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
         <div class="p-4 border-b">
             <a href="/profile/{{ user.email }}" class="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded transition">
                 <img src="{{ user.avatar or '/static/defaultAvatar.jpg' }}" 
@@ -57,29 +58,62 @@
             </a>
         </div>
         <div class="p-2">
-            <a href="/" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">📋 Проекты</a>
-            <a href="/applications" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">📝 Отклики</a>
-            <a href="/reviews" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">⭐ Отзывы</a>
-            <a href="/messages" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition relative">
-                💬 Сообщения
+            <a href="/" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                </svg>
+                Проекты
+            </a>
+            <a href="/applications" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+                </svg>
+                Отклики
+            </a>
+            <a href="/reviews" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"></path>
+                </svg>
+                Отзывы
+            </a>
+            <a href="/messages" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition relative">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z"></path>
+                </svg>
+                Сообщения
                 {% if user.unread_messages_count and user.unread_messages_count > 0 %}
                 <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
                     {{ user.unread_messages_count }}
                 </span>
                 {% endif %}
             </a>
-            <a href="/profiles" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">👥 Пользователи</a>
-            <a href="/profile" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">👤 Профиль</a>
-            <a href="/logout" class="block px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition">🚪 Выйти</a>
+            <a href="/profiles" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"></path>
+                </svg>
+                Пользователи
+            </a>
+            <a href="/profile" class="flex items-center px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+                </svg>
+                Личный кабинет
+            </a>
+            <a href="/logout" class="flex items-center px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition">
+                <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+                </svg>
+                Выйти
+            </a>
         </div>
     </div>
     {% else %}
     <nav class="flex space-x-4">
         <a href="/login" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition text-sm font-medium">
-            🔑 Войти
+            Войти
         </a>
         <a href="/register" class="px-4 py-2 border border-black text-black rounded-lg hover:bg-black hover:text-white transition text-sm font-medium">
-            📝 Регистрация
+            Регистрация
         </a>
     </nav>
     {% endif %}

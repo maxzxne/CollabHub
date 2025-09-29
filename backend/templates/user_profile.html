@@ -15,7 +15,7 @@
                 <p class="text-gray-600">{{ profile_user.email }}</p>
                 <div class="flex items-center space-x-4 mt-2">
                     <span class="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm">
-                        {% if profile_user.role == 'freelancer' %}👨‍💻 Фрилансер{% else %}👔 Заказчик{% endif %}
+                        {% if profile_user.role == 'freelancer' %}Исполнитель{% else %}Заказчик{% endif %}
                     </span>
                     {% if profile_user.role == 'freelancer' %}
                     <div class="flex items-center space-x-1">
@@ -166,7 +166,7 @@
     </div>
     {% endif %}
     
-    <!-- Отзывы для фрилансеров -->
+    <!-- Отзывы для исполнителей -->
     {% if profile_user.role == 'freelancer' and reviews %}
     <div class="border-t pt-6">
         <h3 class="text-xl font-semibold mb-4">⭐ Отзывы ({{ reviews|length }})</h3>

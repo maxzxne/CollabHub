@@ -9,7 +9,7 @@
     <!-- Заголовок чата -->
     <div class="border-b p-4 flex items-center justify-between">
         <div class="flex items-center space-x-3">
-            <a href="/jobs/{{ job.id }}" class="text-gray-600 hover:text-blue-600 transition">
+            <a href="/jobs/{{ job.id }}" class="text-gray-600 hover:text-black transition">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
                 </svg>
@@ -25,7 +25,7 @@
                      alt="{{ other_user.name }}" 
                      class="w-8 h-8 rounded-full object-cover cursor-pointer">
             </a>
-            <a href="/profile/{{ other_user.email }}" class="hover:text-blue-600 transition">
+            <a href="/profile/{{ other_user.email }}" class="hover:text-black transition">
                 <span class="text-sm">{{ other_user.name or other_user.email }}</span>
             </a>
         </div>
@@ -37,7 +37,7 @@
         <div class="flex {% if message.sender_email == user.email %}justify-end{% else %}justify-start{% endif %}">
             <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg
                 {% if message.sender_email == user.email %}
-                    bg-blue-500 text-white
+                    bg-black text-white
                 {% else %}
                     bg-gray-200 text-gray-800
                 {% endif %}">
@@ -54,10 +54,10 @@
             <input type="text" 
                    id="messageInput" 
                    placeholder="Введите сообщение..." 
-                   class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                   class="flex-1 border rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-black"
                    required>
             <button type="submit" 
-                    class="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600 transition">
+                    class="bg-black text-white px-4 py-2 rounded-lg hover:bg-gray-800 transition">
                 Отправить
             </button>
         </form>
@@ -141,7 +141,7 @@ function addMessage(message, senderEmail, timestamp) {
     messageDiv.className = `flex ${isOwnMessage ? 'justify-end' : 'justify-start'}`;
     messageDiv.innerHTML = `
         <div class="max-w-xs lg:max-w-md px-4 py-2 rounded-lg
-            ${isOwnMessage ? 'bg-blue-500 text-white' : 'bg-gray-200 text-gray-800'}">
+            ${isOwnMessage ? 'bg-black text-white' : 'bg-gray-200 text-gray-800'}">
             <p class="text-sm">${message}</p>
             <p class="text-xs mt-1 opacity-75">${time}</p>
         </div>
