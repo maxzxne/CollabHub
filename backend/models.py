@@ -532,7 +532,7 @@ def get_users_by_role(role: str):
 	return users
 
 
-def get_all_users_with_filters(role_filter: str = None, min_rating: float = None):
+def get_all_users_with_filters(role_filter: str = None, min_rating: str = None):
 	"""Получает всех пользователей с возможностью фильтрации"""
 	conn = get_connection()
 	cursor = conn.cursor()
@@ -544,9 +544,13 @@ def get_all_users_with_filters(role_filter: str = None, min_rating: float = None
 		query += " AND role = ?"
 		params.append(role_filter)
 	
-	if min_rating is not None:
-		query += " AND rating >= ?"
-		params.append(min_rating)
+	if min_rating and min_rating.strip():
+		try:
+			rating_value = float(min_rating)
+			query += " AND rating >= ?"
+			params.append(rating_value)
+		except ValueError:
+			pass
 	
 	query += " ORDER BY rating DESC, completed_projects DESC"
 	

@@ -1038,7 +1038,7 @@ async def project_chat_get(request: Request, job_id: int, user: dict = Depends(r
         for app in applications:
             if isinstance(app, sqlite3.Row):
                 app = dict(app)
-            if app["status"] == "accepted":
+            if app["status"] in ["accepted", "completed"]:
                 other_user_email = app["freelancer_email"]
                 break
     else:
@@ -1075,7 +1075,7 @@ async def project_chat_get(request: Request, job_id: int, user: dict = Depends(r
 # --- Страница профилей пользователей ---
 @app.get("/profiles")
 async def profiles_get(request: Request, user: dict = Depends(require_login), 
-                      role: str = None, min_rating: float = None):
+                      role: str = None, min_rating: str = None):
     # Получаем пользователей с фильтрацией
     users = get_all_users_with_filters(role, min_rating)
     users = [dict(u) if isinstance(u, sqlite3.Row) else u for u in users]
