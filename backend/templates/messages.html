@@ -4,11 +4,13 @@
 
 {% block content %}
 <div class="max-w-4xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
-    <h2 class="text-3xl font-bold mb-6">💬 Мои сообщения</h2>
+    <h2 class="text-3xl font-bold mb-6">Мои сообщения</h2>
     
     {% if conversations %}
     <div class="space-y-4">
         {% for conv in conversations %}
+        {% if conv.conversation_type == 'user' %}
+        <!-- Диалог с пользователем -->
         <div class="border rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer" 
              onclick="window.location.href='/chat/{{ conv.other_user_email }}'">
             <div class="flex items-center justify-between">
@@ -31,6 +33,33 @@
                 </div>
             </div>
         </div>
+        {% else %}
+        <!-- Диалог по проекту -->
+        <div class="border rounded-lg p-4 hover:bg-gray-50 transition cursor-pointer" 
+             onclick="window.location.href='/jobs/{{ conv.job_id }}/chat'">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-lg">{{ conv.job_title }}</h3>
+                        <p class="text-sm text-gray-600">Проект</p>
+                    </div>
+                </div>
+                <div class="text-right">
+                    <p class="text-sm text-gray-500">{{ conv.last_message_time[:16] }}</p>
+                    {% if conv.unread_count > 0 %}
+                    <span class="inline-block bg-red-500 text-white text-xs rounded-full px-2 py-1 mt-1">
+                        {{ conv.unread_count }}
+                    </span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
         {% endfor %}
     </div>
     {% else %}

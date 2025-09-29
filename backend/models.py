@@ -466,6 +466,8 @@ def get_messages_between_users(user1_email: str, user2_email: str, job_id: int =
 def get_user_conversations(user_email: str):
 	conn = get_connection()
 	cursor = conn.cursor()
+	
+	# Получаем обычные диалоги с пользователями
 	cursor.execute("""
 		SELECT DISTINCT 
 			CASE 
@@ -475,13 +477,35 @@ def get_user_conversations(user_email: str):
 			u.name as other_user_name,
 			u.avatar as other_user_avatar,
 			MAX(m.created_at) as last_message_time,
-			COUNT(CASE WHEN m.receiver_email = ? AND m.is_read = FALSE THEN 1 END) as unread_count
+			COUNT(CASE WHEN m.receiver_email = ? AND m.is_read = FALSE THEN 1 END) as unread_count,
+			NULL as job_id,
+			NULL as job_title,
+			'user' as conversation_type
 		FROM Messages m
 		JOIN Users u ON (CASE WHEN m.sender_email = ? THEN m.receiver_email ELSE m.sender_email END) = u.email
-		WHERE m.sender_email = ? OR m.receiver_email = ?
+		WHERE (m.sender_email = ? OR m.receiver_email = ?) AND m.job_id IS NULL
 		GROUP BY other_user_email, other_user_name, other_user_avatar
+		
+		UNION ALL
+		
+		-- Получаем диалоги по проектам
+		SELECT DISTINCT 
+			NULL as other_user_email,
+			NULL as other_user_name,
+			NULL as other_user_avatar,
+			MAX(m.created_at) as last_message_time,
+			COUNT(CASE WHEN m.receiver_email = ? AND m.is_read = FALSE THEN 1 END) as unread_count,
+			m.job_id,
+			j.title as job_title,
+			'project' as conversation_type
+		FROM Messages m
+		JOIN Jobs j ON m.job_id = j.id
+		WHERE (m.sender_email = ? OR m.receiver_email = ?) AND m.job_id IS NOT NULL
+		GROUP BY m.job_id, j.title
+		
 		ORDER BY last_message_time DESC
-	""", (user_email, user_email, user_email, user_email, user_email))
+	""", (user_email, user_email, user_email, user_email, user_email, user_email, user_email, user_email))
+	
 	conversations = cursor.fetchall()
 	conn.close()
 	return conversations
