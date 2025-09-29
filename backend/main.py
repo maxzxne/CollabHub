@@ -44,6 +44,14 @@ from models import (
     mark_messages_as_read,
     get_users_by_role,
     get_user_profile_by_email,
+    create_project_comment,
+    get_project_comments,
+    can_user_comment_on_project,
+    create_access_token,
+    verify_token,
+    get_all_users_with_filters,
+    get_project_participants,
+    get_unread_messages_count,
 )
 
 app = FastAPI()
@@ -165,6 +173,34 @@ def validate_date(date_str: str) -> str:
 
 # --- Вспомогательная функция ---
 def get_current_user(request: Request):
+    # Сначала проверяем JWT токен
+    auth_header = request.headers.get("Authorization")
+    if auth_header and auth_header.startswith("Bearer "):
+        token = auth_header.split(" ")[1]
+        email = verify_token(token)
+        if email:
+            user = get_user_by_email(email)
+            if user:
+                if isinstance(user, sqlite3.Row):
+                    user = dict(user)
+                if not user.get("avatar"):
+                    user["avatar"] = "/static/defaultAvatar.jpg"
+                
+                # Парсим JSON поля
+                if user.get("portfolio_files"):
+                    try:
+                        user["portfolio_files"] = json.loads(user["portfolio_files"])
+                    except Exception as e:
+                        user["portfolio_files"] = []
+                else:
+                    user["portfolio_files"] = []
+                
+                # Добавляем счетчик непрочитанных сообщений
+                user["unread_messages_count"] = get_unread_messages_count(email)
+                
+                return user
+    
+    # Fallback на cookie для совместимости
     email = request.cookies.get("user_email")
     if not email:
         return None
@@ -184,6 +220,9 @@ def get_current_user(request: Request):
                 user["portfolio_files"] = []
         else:
             user["portfolio_files"] = []
+        
+        # Добавляем счетчик непрочитанных сообщений
+        user["unread_messages_count"] = get_unread_messages_count(email)
         
         return user
     return None
@@ -227,8 +266,12 @@ async def login_post(request: Request, email: str = Form(...), password: str = F
     if error:
         return templates.TemplateResponse("login.html", {"request": request, "error": error}, status_code=400)
 
+    # Создаем JWT токен
+    access_token = create_access_token(data={"sub": email})
+    
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie(key="user_email", value=email, httponly=True)
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
     return response
 
 
@@ -254,8 +297,12 @@ async def register_post(
     hashed = hash_password(password)
     create_user(email=email, hashed_password=hashed, role=role, name=name, avatar=None)
 
+    # Создаем JWT токен
+    access_token = create_access_token(data={"sub": email})
+
     response = RedirectResponse(url="/", status_code=302)
     response.set_cookie(key="user_email", value=email, httponly=True)
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
     return response
 
 
@@ -263,6 +310,7 @@ async def register_post(
 async def logout():
     response = RedirectResponse(url="/login", status_code=302)
     response.delete_cookie("user_email")
+    response.delete_cookie("access_token")
     return response
 
 
@@ -306,6 +354,9 @@ async def home(request: Request, user: dict = Depends(require_login), status: st
         if creator and isinstance(creator, sqlite3.Row):
             creator = dict(creator)
         job["creator_name"] = creator.get("name") if creator else job["creator_email"]
+        
+        # Получаем участников проекта
+        job["participants"] = get_project_participants(job["id"])
     
     return templates.TemplateResponse("index.html", {
         "request": request,
@@ -392,11 +443,24 @@ async def job_detail(request: Request, job_id: int, user: dict = Depends(require
         creator = dict(creator)
     job["creator_name"] = creator.get("name") if creator else job["creator_email"]
     
+    # Получаем комментарии к проекту
+    comments = get_project_comments(job_id)
+    comments = [dict(comment) if isinstance(comment, sqlite3.Row) else comment for comment in comments]
+    
+    # Проверяем, может ли пользователь комментировать
+    can_comment = can_user_comment_on_project(job_id, user["email"])
+    
+    # Получаем участников проекта
+    participants = get_project_participants(job_id)
+    
     return templates.TemplateResponse("job_detail.html", {
         "request": request, 
         "job": job, 
         "user": user,
-        "applications": applications
+        "applications": applications,
+        "comments": comments,
+        "can_comment": can_comment,
+        "participants": participants
     })
 
 
@@ -570,6 +634,20 @@ async def profile_post(
     # Добавляем новые файлы к существующим
     all_files = existing_files + portfolio_file_paths
     
+    # Обрабатываем ссылки портфолио
+    existing_links = user.get("portfolio_links", "")
+    if existing_links and portfolio_links:
+        # Объединяем существующие и новые ссылки
+        existing_links_list = [link.strip() for link in existing_links.split('\n') if link.strip()]
+        new_links_list = [link.strip() for link in portfolio_links.split('\n') if link.strip()]
+        # Убираем дубликаты
+        all_links = list(dict.fromkeys(existing_links_list + new_links_list))
+        portfolio_links_final = '\n'.join(all_links) if all_links else None
+    elif portfolio_links:
+        portfolio_links_final = portfolio_links
+    else:
+        portfolio_links_final = existing_links if existing_links else None
+    
     # Обновляем профиль
     update_user_profile(
         user_id=user["id"],
@@ -581,7 +659,7 @@ async def profile_post(
         telegram=telegram if telegram else None,
         email=email if email else None,
         avatar=avatar_path,
-        portfolio_links=portfolio_links if portfolio_links else None,
+        portfolio_links=portfolio_links_final,
         portfolio_files=json.dumps(all_files) if all_files else None
     )
     
@@ -589,6 +667,15 @@ async def profile_post(
     updated_user = get_user_by_id(user["id"])
     if updated_user and isinstance(updated_user, sqlite3.Row):
         updated_user = dict(updated_user)
+    
+    # Парсим JSON поля
+    if updated_user.get("portfolio_files"):
+        try:
+            updated_user["portfolio_files"] = json.loads(updated_user["portfolio_files"])
+        except Exception as e:
+            updated_user["portfolio_files"] = []
+    else:
+        updated_user["portfolio_files"] = []
     
     return templates.TemplateResponse("profile.html", {
         "request": request, 
@@ -693,6 +780,24 @@ async def reviews_get(request: Request, user: dict = Depends(require_login)):
         jobs = [dict(job) if isinstance(job, sqlite3.Row) else job for job in jobs]
         # Фильтруем только свои завершенные проекты
         my_jobs = [job for job in jobs if job["creator_email"] == user["email"]]
+        
+        # Добавляем информацию о том, оставлен ли отзыв для каждого проекта
+        for job in my_jobs:
+            # Получаем принятого фрилансера для проекта
+            applications = get_applications(job["id"])
+            accepted_freelancer = None
+            for app in applications:
+                if isinstance(app, sqlite3.Row):
+                    app = dict(app)
+                if app["status"] in ["accepted", "completed"]:
+                    accepted_freelancer = app["freelancer_email"]
+                    break
+            
+            if accepted_freelancer:
+                job["has_review"] = has_reviewed_job(job["id"], user["email"], accepted_freelancer)
+            else:
+                job["has_review"] = False
+        
         template = "reviews_client.html"
         reviews = my_jobs
     
@@ -716,13 +821,13 @@ async def review_form_get(request: Request, job_id: int, user: dict = Depends(re
     if job["creator_email"] != user["email"]:
         raise HTTPException(status_code=403, detail="Нет доступа")
     
-    # Получаем принятого фрилансера
+    # Получаем принятого фрилансера (может быть accepted или completed)
     applications = get_applications(job_id)
     accepted_freelancer = None
     for app in applications:
         if isinstance(app, sqlite3.Row):
             app = dict(app)
-        if app["status"] == "accepted":
+        if app["status"] in ["accepted", "completed"]:
             accepted_freelancer = app["freelancer_email"]
             break
     
@@ -767,13 +872,13 @@ async def review_form_post(
     if job["creator_email"] != user["email"]:
         raise HTTPException(status_code=403, detail="Нет доступа")
     
-    # Получаем принятого фрилансера
+    # Получаем принятого фрилансера (может быть accepted или completed)
     applications = get_applications(job_id)
     accepted_freelancer = None
     for app in applications:
         if isinstance(app, sqlite3.Row):
             app = dict(app)
-        if app["status"] == "accepted":
+        if app["status"] in ["accepted", "completed"]:
             accepted_freelancer = app["freelancer_email"]
             break
     
@@ -856,7 +961,7 @@ async def get_messages_api(
         
         # Отмечаем сообщения как прочитанные
         if new_messages:
-            mark_messages_as_read(other_user_email, user["email"], job_id)
+            mark_messages_as_read(user["email"], other_user_email, job_id)
         
         return {
             "status": "success",
@@ -872,6 +977,9 @@ async def get_messages_api(
 async def messages_get(request: Request, user: dict = Depends(require_login)):
     conversations = get_user_conversations(user["email"])
     conversations = [dict(conv) if isinstance(conv, sqlite3.Row) else conv for conv in conversations]
+    
+    # Обновляем счетчик непрочитанных сообщений
+    user["unread_messages_count"] = get_unread_messages_count(user["email"])
     
     return templates.TemplateResponse("messages.html", {
         "request": request,
@@ -893,7 +1001,10 @@ async def chat_get(request: Request, other_user_email: str, user: dict = Depends
         other_user = dict(other_user)
     
     # Отмечаем сообщения как прочитанные
-    mark_messages_as_read(other_user_email, user["email"], job_id)
+    mark_messages_as_read(user["email"], other_user_email, job_id)
+    
+    # Обновляем счетчик непрочитанных сообщений
+    user["unread_messages_count"] = get_unread_messages_count(user["email"])
     
     return templates.TemplateResponse("chat.html", {
         "request": request,
@@ -942,7 +1053,10 @@ async def project_chat_get(request: Request, job_id: int, user: dict = Depends(r
         other_user = dict(other_user)
     
     # Отмечаем сообщения как прочитанные
-    mark_messages_as_read(other_user_email, user["email"], job_id)
+    mark_messages_as_read(user["email"], other_user_email, job_id)
+    
+    # Обновляем счетчик непрочитанных сообщений
+    user["unread_messages_count"] = get_unread_messages_count(user["email"])
     
     return templates.TemplateResponse("project_chat.html", {
         "request": request,
@@ -953,28 +1067,20 @@ async def project_chat_get(request: Request, job_id: int, user: dict = Depends(r
     })
 
 
-# --- Страницы профилей пользователей ---
-@app.get("/profiles/freelancers")
-async def freelancers_profiles_get(request: Request, user: dict = Depends(require_login)):
-    freelancers = get_users_by_role("freelancer")
-    freelancers = [dict(f) if isinstance(f, sqlite3.Row) else f for f in freelancers]
+# --- Страница профилей пользователей ---
+@app.get("/profiles")
+async def profiles_get(request: Request, user: dict = Depends(require_login), 
+                      role: str = None, min_rating: float = None):
+    # Получаем пользователей с фильтрацией
+    users = get_all_users_with_filters(role, min_rating)
+    users = [dict(u) if isinstance(u, sqlite3.Row) else u for u in users]
     
-    return templates.TemplateResponse("profiles_freelancers.html", {
+    return templates.TemplateResponse("profiles.html", {
         "request": request,
         "user": user,
-        "freelancers": freelancers
-    })
-
-
-@app.get("/profiles/clients")
-async def clients_profiles_get(request: Request, user: dict = Depends(require_login)):
-    clients = get_users_by_role("client")
-    clients = [dict(c) if isinstance(c, sqlite3.Row) else c for c in clients]
-    
-    return templates.TemplateResponse("profiles_clients.html", {
-        "request": request,
-        "user": user,
-        "clients": clients
+        "users": users,
+        "selected_role": role,
+        "selected_min_rating": min_rating
     })
 
 
@@ -993,6 +1099,12 @@ async def user_profile_get(request: Request, user_email: str, user: dict = Depen
             profile_user["portfolio_files"] = json.loads(profile_user["portfolio_files"])
         except:
             profile_user["portfolio_files"] = []
+    else:
+        profile_user["portfolio_files"] = []
+    
+    # Обрабатываем ссылки портфолио
+    if not profile_user.get("portfolio_links"):
+        profile_user["portfolio_links"] = ""
     
     # Получаем отзывы для фрилансера
     reviews = []
@@ -1006,6 +1118,87 @@ async def user_profile_get(request: Request, user_email: str, user: dict = Depen
         "profile_user": profile_user,
         "reviews": reviews
     })
+
+
+# --- Комментарии к проектам ---
+@app.post("/jobs/{job_id}/comment")
+async def add_project_comment(
+    request: Request,
+    job_id: int,
+    user: dict = Depends(require_login),
+    comment: str = Form(...)
+):
+    # Проверяем, может ли пользователь комментировать проект
+    if not can_user_comment_on_project(job_id, user["email"]):
+        raise HTTPException(status_code=403, detail="Нет доступа к комментированию")
+    
+    if not comment.strip():
+        raise HTTPException(status_code=400, detail="Комментарий не может быть пустым")
+    
+    create_project_comment(job_id, user["email"], comment.strip())
+    return RedirectResponse(url=f"/jobs/{job_id}", status_code=302)
+
+
+# --- Удаление файлов и ссылок портфолио ---
+@app.post("/profile/remove-portfolio-file")
+async def remove_portfolio_file(request: Request, user: dict = Depends(require_login)):
+    data = await request.json()
+    file_path = data.get("file_path")
+    
+    if not file_path:
+        return {"success": False, "error": "Путь к файлу не указан"}
+    
+    # Получаем текущие файлы пользователя
+    current_files = user.get("portfolio_files", [])
+    if isinstance(current_files, str):
+        try:
+            current_files = json.loads(current_files)
+        except:
+            current_files = []
+    
+    # Удаляем файл из списка
+    updated_files = [f for f in current_files if f != file_path]
+    
+    # Обновляем профиль
+    update_user_profile(
+        user_id=user["id"],
+        portfolio_files=json.dumps(updated_files) if updated_files else None
+    )
+    
+    # Обновляем данные пользователя в сессии
+    user["portfolio_files"] = updated_files
+    
+    return {"success": True}
+
+
+@app.post("/profile/remove-portfolio-link")
+async def remove_portfolio_link(request: Request, user: dict = Depends(require_login)):
+    data = await request.json()
+    link_to_remove = data.get("link")
+    
+    if not link_to_remove:
+        return {"success": False, "error": "Ссылка не указана"}
+    
+    # Получаем текущие ссылки пользователя
+    current_links = user.get("portfolio_links", "")
+    if current_links:
+        links_list = [link.strip() for link in current_links.split('\n') if link.strip()]
+        # Удаляем ссылку из списка
+        updated_links = [link for link in links_list if link != link_to_remove]
+        updated_links_str = '\n'.join(updated_links) if updated_links else None
+    else:
+        updated_links_str = None
+    
+    # Обновляем профиль
+    update_user_profile(
+        user_id=user["id"],
+        portfolio_links=updated_links_str
+    )
+    
+    # Обновляем данные пользователя в сессии
+    user["portfolio_links"] = updated_links_str
+    
+    return {"success": True}
 
 
 if __name__ == "__main__":

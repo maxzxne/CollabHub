@@ -1,6 +1,9 @@
 from database import get_connection
 from passlib.hash import bcrypt
 import sqlite3
+from jose import JWTError, jwt
+from datetime import datetime, timedelta
+import os
 
 
 def get_user(email, password):
@@ -25,6 +28,11 @@ def get_jobs(status=None):
 
 
 
+# JWT настройки
+SECRET_KEY = os.getenv("SECRET_KEY", "your-secret-key-here")
+ALGORITHM = "HS256"
+ACCESS_TOKEN_EXPIRE_MINUTES = 30
+
 # Хэширование пароля
 def hash_password(password: str) -> str:
 	return bcrypt.hash(password)
@@ -32,6 +40,27 @@ def hash_password(password: str) -> str:
 # Проверка пароля
 def verify_password(password: str, hashed: str) -> bool:
 	return bcrypt.verify(password, hashed)
+
+# JWT функции
+def create_access_token(data: dict, expires_delta: timedelta = None):
+    to_encode = data.copy()
+    if expires_delta:
+        expire = datetime.utcnow() + expires_delta
+    else:
+        expire = datetime.utcnow() + timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    to_encode.update({"exp": expire})
+    encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
+    return encoded_jwt
+
+def verify_token(token: str):
+    try:
+        payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
+        email: str = payload.get("sub")
+        if email is None:
+            return None
+        return email
+    except JWTError:
+        return None
 
 
 def get_user_by_email(email):
@@ -458,7 +487,8 @@ def get_user_conversations(user_email: str):
 	return conversations
 
 
-def mark_messages_as_read(sender_email: str, receiver_email: str, job_id: int = None):
+def mark_messages_as_read(current_user_email: str, other_user_email: str, job_id: int = None):
+	"""Отмечает как прочитанные сообщения, где current_user_email является получателем"""
 	conn = get_connection()
 	cursor = conn.cursor()
 	if job_id:
@@ -466,15 +496,30 @@ def mark_messages_as_read(sender_email: str, receiver_email: str, job_id: int = 
 			UPDATE Messages 
 			SET is_read = TRUE 
 			WHERE sender_email = ? AND receiver_email = ? AND job_id = ?
-		""", (sender_email, receiver_email, job_id))
+		""", (other_user_email, current_user_email, job_id))
 	else:
 		cursor.execute("""
 			UPDATE Messages 
 			SET is_read = TRUE 
 			WHERE sender_email = ? AND receiver_email = ? AND job_id IS NULL
-		""", (sender_email, receiver_email))
+		""", (other_user_email, current_user_email))
+	
 	conn.commit()
 	conn.close()
+
+
+def get_unread_messages_count(user_email: str):
+	"""Получает общее количество непрочитанных сообщений для пользователя"""
+	conn = get_connection()
+	cursor = conn.cursor()
+	cursor.execute("""
+		SELECT COUNT(*) as unread_count
+		FROM Messages 
+		WHERE receiver_email = ? AND is_read = FALSE
+	""", (user_email,))
+	result = cursor.fetchone()
+	conn.close()
+	return result['unread_count'] if result else 0
 
 
 # Функции для работы с профилями пользователей
@@ -487,6 +532,30 @@ def get_users_by_role(role: str):
 	return users
 
 
+def get_all_users_with_filters(role_filter: str = None, min_rating: float = None):
+	"""Получает всех пользователей с возможностью фильтрации"""
+	conn = get_connection()
+	cursor = conn.cursor()
+	
+	query = "SELECT * FROM Users WHERE 1=1"
+	params = []
+	
+	if role_filter and role_filter != "all":
+		query += " AND role = ?"
+		params.append(role_filter)
+	
+	if min_rating is not None:
+		query += " AND rating >= ?"
+		params.append(min_rating)
+	
+	query += " ORDER BY rating DESC, completed_projects DESC"
+	
+	cursor.execute(query, params)
+	users = cursor.fetchall()
+	conn.close()
+	return users
+
+
 def get_user_profile_by_email(email: str):
 	conn = get_connection()
 	cursor = conn.cursor()
@@ -494,6 +563,96 @@ def get_user_profile_by_email(email: str):
 	user = cursor.fetchone()
 	conn.close()
 	return user
+
+
+# Функции для работы с комментариями к проектам
+def create_project_comment(job_id: int, user_email: str, comment: str):
+	conn = get_connection()
+	cursor = conn.cursor()
+	cursor.execute(
+		"INSERT INTO ProjectComments (job_id, user_email, comment) VALUES (?, ?, ?)",
+		(job_id, user_email, comment)
+	)
+	conn.commit()
+	conn.close()
+
+
+def get_project_comments(job_id: int):
+	conn = get_connection()
+	cursor = conn.cursor()
+	cursor.execute("""
+		SELECT c.*, u.name as user_name, u.avatar as user_avatar
+		FROM ProjectComments c
+		JOIN Users u ON c.user_email = u.email
+		WHERE c.job_id = ?
+		ORDER BY c.created_at ASC
+	""", (job_id,))
+	comments = cursor.fetchall()
+	conn.close()
+	return comments
+
+
+def can_user_comment_on_project(job_id: int, user_email: str):
+	"""Проверяет, может ли пользователь комментировать проект (только участники)"""
+	conn = get_connection()
+	cursor = conn.cursor()
+	
+	# Получаем проект
+	cursor.execute("SELECT creator_email FROM Jobs WHERE id = ?", (job_id,))
+	job = cursor.fetchone()
+	if not job:
+		conn.close()
+		return False
+	
+	# Проверяем, является ли пользователь создателем проекта
+	if job['creator_email'] == user_email:
+		conn.close()
+		return True
+	
+	# Проверяем, является ли пользователь принятым фрилансером
+	cursor.execute("""
+		SELECT id FROM Applications 
+		WHERE job_id = ? AND freelancer_email = ? AND status IN ('accepted', 'completed')
+	""", (job_id, user_email))
+	application = cursor.fetchone()
+	
+	conn.close()
+	return application is not None
+
+
+def get_project_participants(job_id: int):
+	"""Получает всех участников проекта (создатель + принятые фрилансеры)"""
+	conn = get_connection()
+	cursor = conn.cursor()
+	
+	# Получаем создателя проекта
+	cursor.execute("""
+		SELECT j.creator_email, u.name, u.avatar, u.role
+		FROM Jobs j
+		JOIN Users u ON j.creator_email = u.email
+		WHERE j.id = ?
+	""", (job_id,))
+	creator = cursor.fetchone()
+	
+	# Получаем принятых фрилансеров
+	cursor.execute("""
+		SELECT a.freelancer_email, u.name, u.avatar, u.role, a.status
+		FROM Applications a
+		JOIN Users u ON a.freelancer_email = u.email
+		WHERE a.job_id = ? AND a.status IN ('accepted', 'completed')
+	""", (job_id,))
+	freelancers = cursor.fetchall()
+	
+	conn.close()
+	
+	participants = []
+	if creator:
+		participants.append(dict(creator))
+	
+	for freelancer in freelancers:
+		participants.append(dict(freelancer))
+	
+	return participants
 
 
 

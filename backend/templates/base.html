@@ -4,25 +4,40 @@
     <meta charset="UTF-8">
     <title>{% block title %}CollabHub{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'primary': '#000000',
+                        'secondary': '#1a1a1a',
+                        'accent': '#333333',
+                        'light': '#f8f9fa',
+                        'border': '#e5e7eb'
+                    }
+                }
+            }
+        }
+    </script>
 </head>
-<body class="bg-gray-100 min-h-screen">
+<body class="bg-gray-50 min-h-screen">
 
 <!-- Header -->
-<header class="bg-white shadow p-4 flex justify-between items-center">
-    <a href="/" class="text-xl font-bold text-gray-800 hover:text-blue-600 transition">CollabHub</a>
+<header class="bg-white border-b border-gray-200 p-4 flex justify-between items-center">
+    <a href="/" class="text-xl font-bold text-black hover:text-gray-600 transition">CollabHub</a>
     
     {% if user %}
     <!-- User info and burger menu -->
     <div class="flex items-center space-x-4">
         <!-- User avatar and name (clickable) -->
-        <a href="/profile" class="flex flex-col items-center space-y-1 hover:opacity-80 transition">
+        <a href="/profile/{{ user.email }}" class="flex flex-col items-center space-y-1 hover:opacity-80 transition">
             <img src="{{ user.avatar or '/static/defaultAvatar.jpg' }}" 
                  alt="avatar" class="w-8 h-8 rounded-full object-cover">
             <span class="text-gray-700 text-xs hidden sm:block">Привет, {{ user.name or user.email }}</span>
         </a>
         
         <!-- Burger menu button -->
-        <button id="mobile-menu-button" class="text-gray-700 hover:text-blue-600 transition" aria-label="Открыть меню">
+        <button id="mobile-menu-button" class="text-gray-700 hover:text-black transition" aria-label="Открыть меню">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
             </svg>
@@ -30,9 +45,9 @@
     </div>
     
     <!-- Dropdown Menu -->
-    <div id="mobile-menu" class="hidden absolute top-16 right-4 w-64 bg-white border rounded-lg shadow-lg z-50">
+    <div id="mobile-menu" class="hidden absolute top-16 right-4 w-64 bg-white border border-gray-200 rounded-lg shadow-xl z-50">
         <div class="p-4 border-b">
-            <a href="/profile" class="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded transition">
+            <a href="/profile/{{ user.email }}" class="flex items-center space-x-3 hover:bg-gray-50 p-2 rounded transition">
                 <img src="{{ user.avatar or '/static/defaultAvatar.jpg' }}" 
                      alt="avatar" class="w-10 h-10 rounded-full object-cover">
                 <div>
@@ -42,22 +57,28 @@
             </a>
         </div>
         <div class="p-2">
-            <a href="/" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">📋 Проекты</a>
-            <a href="/applications" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">📝 Отклики</a>
-            <a href="/reviews" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">⭐ Отзывы</a>
-            <a href="/messages" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">💬 Сообщения</a>
-            <a href="/profiles/freelancers" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">👨‍💻 Фрилансеры</a>
-            <a href="/profiles/clients" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">👔 Заказчики</a>
-            <a href="/profile" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded">👤 Профиль</a>
-            <a href="/logout" class="block px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded">🚪 Выйти</a>
+            <a href="/" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">📋 Проекты</a>
+            <a href="/applications" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">📝 Отклики</a>
+            <a href="/reviews" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">⭐ Отзывы</a>
+            <a href="/messages" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition relative">
+                💬 Сообщения
+                {% if user.unread_messages_count and user.unread_messages_count > 0 %}
+                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full px-2 py-1 min-w-[20px] text-center">
+                    {{ user.unread_messages_count }}
+                </span>
+                {% endif %}
+            </a>
+            <a href="/profiles" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">👥 Пользователи</a>
+            <a href="/profile" class="block px-3 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded transition">👤 Профиль</a>
+            <a href="/logout" class="block px-3 py-2 text-sm text-red-600 hover:bg-red-50 rounded transition">🚪 Выйти</a>
         </div>
     </div>
     {% else %}
     <nav class="flex space-x-4">
-        <a href="/login" class="px-3 py-2 bg-blue-500 text-white rounded-lg hover:bg-blue-600 transition text-sm">
+        <a href="/login" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition text-sm font-medium">
             🔑 Войти
         </a>
-        <a href="/register" class="px-3 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition text-sm">
+        <a href="/register" class="px-4 py-2 border border-black text-black rounded-lg hover:bg-black hover:text-white transition text-sm font-medium">
             📝 Регистрация
         </a>
     </nav>

@@ -189,10 +189,44 @@
                     <!-- Ссылки на портфолио -->
                     <div class="mb-6">
                         <label class="block text-sm font-medium text-gray-700 mb-2">Ссылки на работы</label>
-                        <textarea name="portfolio_links" rows="3" 
-                                  class="w-full p-3 border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
-                                  placeholder="Введите ссылки на ваши работы (каждая с новой строки)">{{ user.portfolio_links or '' }}</textarea>
+                        <div class="flex space-x-2">
+                            <input type="url" id="new-portfolio-link" 
+                                   class="flex-1 p-3 border border-purple-200 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition-colors"
+                                   placeholder="Введите ссылку на вашу работу">
+                            <button type="button" onclick="addPortfolioLink()" 
+                                    class="px-4 py-3 bg-purple-500 text-white rounded-lg hover:bg-purple-600 transition-colors">
+                                Добавить
+                            </button>
+                        </div>
                         <p class="text-xs text-gray-500 mt-1">Например: https://github.com/username, https://dribbble.com/username</p>
+                        
+                        <!-- Скрытое поле для хранения всех ссылок -->
+                        <input type="hidden" name="portfolio_links" id="portfolio-links-hidden" value="{{ user.portfolio_links or '' }}">
+                        
+                        <!-- Существующие ссылки -->
+                        <div class="mt-4">
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">Текущие ссылки:</h4>
+                            <div id="current-links" class="space-y-2">
+                                {% if user.portfolio_links %}
+                                    {% for link in user.portfolio_links.split('\n') %}
+                                        {% if link.strip() %}
+                                        <div class="flex items-center justify-between bg-white border border-gray-200 rounded-lg p-2">
+                                            <a href="{{ link.strip() }}" target="_blank" 
+                                               class="text-sm text-blue-600 hover:text-blue-800 truncate flex-1 mr-2">
+                                                {{ link.strip() }}
+                                            </a>
+                                            <button type="button" onclick="removePortfolioLink('{{ link.strip() }}')" 
+                                                    class="p-1 text-red-500 hover:text-red-700 transition" title="Удалить ссылку">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endif %}
+                            </div>
+                        </div>
                     </div>
                     
                     <!-- Файлы портфолио -->
@@ -219,6 +253,52 @@
                             <h4 class="text-sm font-medium text-gray-700 mb-2">Выбранные файлы:</h4>
                             <div id="file-list" class="space-y-2"></div>
                         </div>
+                        
+                        <!-- Существующие файлы портфолио -->
+                        {% if user.portfolio_files and user.portfolio_files|length > 0 %}
+                        <div class="mt-6">
+                            <h4 class="text-sm font-medium text-gray-700 mb-3">Загруженные файлы:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                                {% for file_path in user.portfolio_files %}
+                                    {% if file_path and file_path.strip() and file_path.strip() != '' and file_path.strip() != 'null' %}
+                                        {% set file_name = file_path.split('/')[-1] %}
+                                        {% if file_name and file_name.strip() and file_name.strip() != '' %}
+                                            {% set file_ext = file_name.split('.')[-1].lower() if '.' in file_name and file_name.split('.')[-1] else 'unknown' %}
+                                        <div class="bg-white border border-gray-200 rounded-lg p-3 flex items-center justify-between">
+                                            <div class="flex items-center space-x-2 flex-1 min-w-0">
+                                                <div class="w-8 h-8 bg-gray-100 rounded flex items-center justify-center flex-shrink-0">
+                                                    {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp'] %}
+                                                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                    {% elif file_ext == 'pdf' %}
+                                                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
+                                                        </svg>
+                                                    {% else %}
+                                                        <svg class="w-4 h-4 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+                                                        </svg>
+                                                    {% endif %}
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <p class="text-xs font-medium text-gray-900 truncate">{{ file_name }}</p>
+                                                    <p class="text-xs text-gray-500 capitalize">{{ file_ext }}</p>
+                                                </div>
+                                            </div>
+                                            <button type="button" onclick="removePortfolioFile('{{ file_path }}')" 
+                                                    class="ml-2 p-1 text-red-500 hover:text-red-700 transition" title="Удалить файл">
+                                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        {% endif %}
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        {% endif %}
                     </div>
                 </div>
                 
@@ -376,52 +456,134 @@
                 </div>
             </div>
             {% endif %}
-            
-            <!-- Файлы портфолио -->
-            {% set portfolio_files_list = user.portfolio_files|from_json if user.portfolio_files else [] %}
-            {% if portfolio_files_list and portfolio_files_list|length > 0 %}
-            <div>
-                <h3 class="text-lg font-semibold mb-4 text-gray-800">Файлы работ</h3>
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                    {% for file_path in portfolio_files_list %}
-                        {% if file_path and file_path.strip() %}
-                            {% set file_name = file_path.split('/')[-1] %}
-                            {% set file_ext = file_name.split('.')[-1].lower() if '.' in file_name else 'unknown' %}
-                            <a href="{{ file_path }}" target="_blank" 
-                               class="group bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200 hover:border-green-300 transition-all duration-200 hover:shadow-md">
-                                <div class="flex items-start">
-                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors flex-shrink-0">
-                                        {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp'] %}
-                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
-                                            </svg>
-                                        {% elif file_ext == 'pdf' %}
-                                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
-                                            </svg>
-                                        {% elif file_ext in ['doc', 'docx'] %}
-                                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                            </svg>
-                                        {% else %}
-                                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                                            </svg>
-                                        {% endif %}
-                                    </div>
-                                    <div class="flex-1 min-w-0">
-                                        <p class="text-sm font-medium text-gray-900 truncate">{{ file_name }}</p>
-                                        <p class="text-xs text-gray-500 capitalize">{{ file_ext }} файл</p>
-                                    </div>
-                                </div>
-                            </a>
-                        {% endif %}
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
         </div>
     </div>
     {% endif %}
 </div>
+
+<script>
+// Функция удаления файла портфолио
+function removePortfolioFile(filePath) {
+    if (confirm('Удалить этот файл из портфолио?')) {
+        fetch('/profile/remove-portfolio-file', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ file_path: filePath })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Ошибка при удалении файла');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при удалении файла');
+        });
+    }
+}
+
+// Функция добавления ссылки портфолио
+function addPortfolioLink() {
+    const input = document.getElementById('new-portfolio-link');
+    const link = input.value.trim();
+    
+    if (!link) {
+        alert('Введите ссылку');
+        return;
+    }
+    
+    // Проверяем, что это валидная ссылка
+    try {
+        new URL(link);
+    } catch (e) {
+        alert('Введите корректную ссылку');
+        return;
+    }
+    
+    // Получаем текущие ссылки
+    const hiddenField = document.getElementById('portfolio-links-hidden');
+    const currentLinks = hiddenField.value ? hiddenField.value.split('\n').filter(l => l.trim()) : [];
+    
+    // Проверяем, что ссылка не дублируется
+    if (currentLinks.includes(link)) {
+        alert('Эта ссылка уже добавлена');
+        return;
+    }
+    
+    // Добавляем новую ссылку
+    currentLinks.push(link);
+    hiddenField.value = currentLinks.join('\n');
+    
+    // Добавляем ссылку в интерфейс
+    const currentLinksDiv = document.getElementById('current-links');
+    const linkDiv = document.createElement('div');
+    linkDiv.className = 'flex items-center justify-between bg-white border border-gray-200 rounded-lg p-2';
+    linkDiv.innerHTML = `
+        <a href="${link}" target="_blank" class="text-sm text-blue-600 hover:text-blue-800 truncate flex-1 mr-2">
+            ${link}
+        </a>
+        <button type="button" onclick="removePortfolioLinkFromUI('${link}')" 
+                class="p-1 text-red-500 hover:text-red-700 transition" title="Удалить ссылку">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+    `;
+    currentLinksDiv.appendChild(linkDiv);
+    
+    // Очищаем поле ввода
+    input.value = '';
+}
+
+// Функция удаления ссылки из UI
+function removePortfolioLinkFromUI(link) {
+    if (confirm('Удалить эту ссылку из портфолио?')) {
+        // Удаляем из скрытого поля
+        const hiddenField = document.getElementById('portfolio-links-hidden');
+        const currentLinks = hiddenField.value ? hiddenField.value.split('\n').filter(l => l.trim()) : [];
+        const updatedLinks = currentLinks.filter(l => l !== link);
+        hiddenField.value = updatedLinks.join('\n');
+        
+        // Удаляем из интерфейса
+        const currentLinksDiv = document.getElementById('current-links');
+        const linkElements = currentLinksDiv.querySelectorAll('div');
+        linkElements.forEach(element => {
+            const linkElement = element.querySelector('a');
+            if (linkElement && linkElement.href === link) {
+                element.remove();
+            }
+        });
+    }
+}
+
+// Функция удаления ссылки портфолио
+function removePortfolioLink(link) {
+    if (confirm('Удалить эту ссылку из портфолио?')) {
+        fetch('/profile/remove-portfolio-link', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ link: link })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                location.reload();
+            } else {
+                alert('Ошибка при удалении ссылки');
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Ошибка при удалении ссылки');
+        });
+    }
+}
+</script>
 {% endblock %}

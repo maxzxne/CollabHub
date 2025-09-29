@@ -33,12 +33,8 @@
         {% if user.email != profile_user.email %}
         <div class="flex space-x-2">
             <a href="/chat/{{ profile_user.email }}" 
-               class="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition">
+               class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition">
                 💬 Написать
-            </a>
-            <a href="/profile/{{ profile_user.email }}" 
-               class="px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600 transition">
-                👤 Профиль
             </a>
         </div>
         {% endif %}
@@ -97,12 +93,12 @@
             </h2>
             
             <!-- Ссылки на портфолио -->
-            {% if profile_user.portfolio_links %}
+            {% if profile_user.portfolio_links and profile_user.portfolio_links.strip() %}
             <div class="mb-8">
                 <h3 class="text-lg font-semibold mb-4 text-gray-800">Ссылки на работы</h3>
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     {% for link in profile_user.portfolio_links.split('\n') %}
-                        {% if link.strip() %}
+                        {% if link and link.strip() %}
                         <a href="{{ link.strip() }}" target="_blank" 
                            class="group bg-gradient-to-r from-blue-50 to-indigo-50 p-4 rounded-lg border border-blue-200 hover:border-blue-300 transition-all duration-200 hover:shadow-md">
                             <div class="flex items-center">
@@ -124,7 +120,7 @@
             {% endif %}
             
             <!-- Файлы портфолио -->
-            {% set portfolio_files_list = profile_user.portfolio_files|from_json if profile_user.portfolio_files else [] %}
+            {% set portfolio_files_list = profile_user.portfolio_files if profile_user.portfolio_files else [] %}
             {% if portfolio_files_list and portfolio_files_list|length > 0 %}
             <div>
                 <h3 class="text-lg font-semibold mb-4 text-gray-800">Файлы работ</h3>
@@ -134,19 +130,19 @@
                             {% set file_name = file_path.split('/')[-1] %}
                             {% set file_ext = file_name.split('.')[-1].lower() if '.' in file_name else 'unknown' %}
                             <a href="{{ file_path }}" target="_blank" 
-                               class="group bg-gradient-to-r from-green-50 to-emerald-50 p-4 rounded-lg border border-green-200 hover:border-green-300 transition-all duration-200 hover:shadow-md">
+                               class="group bg-gray-50 p-4 rounded-lg border border-gray-200 hover:border-gray-300 transition-all duration-200 hover:shadow-md">
                                 <div class="flex items-start">
-                                    <div class="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-green-200 transition-colors flex-shrink-0">
+                                    <div class="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center mr-3 group-hover:bg-gray-200 transition-colors flex-shrink-0">
                                         {% if file_ext in ['jpg', 'jpeg', 'png', 'gif', 'webp'] %}
-                                            <svg class="w-6 h-6 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
                                             </svg>
                                         {% elif file_ext == 'pdf' %}
-                                            <svg class="w-6 h-6 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21h10a2 2 0 002-2V9.414a1 1 0 00-.293-.707l-5.414-5.414A1 1 0 0012.586 3H7a2 2 0 00-2 2v14a2 2 0 002 2z"></path>
                                             </svg>
                                         {% elif file_ext in ['doc', 'docx'] %}
-                                            <svg class="w-6 h-6 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <svg class="w-6 h-6 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
                                             </svg>
                                         {% else %}

@@ -145,6 +145,18 @@ def init_db():
             is_read BOOLEAN DEFAULT FALSE
         )
     """)
+    
+    # Таблица комментариев к проектам
+    cursor.execute("""
+        CREATE TABLE IF NOT EXISTS ProjectComments (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            job_id INTEGER NOT NULL,
+            user_email TEXT NOT NULL,
+            comment TEXT NOT NULL,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (job_id) REFERENCES Jobs (id)
+        )
+    """)
 
     conn.commit()
     conn.close()
