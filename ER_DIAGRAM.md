@@ -4,89 +4,89 @@
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                USERS                                           │
+│                                USERS                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                          │
-│ email            │ TEXT UNIQUE NOT NULL                                       │
-│ password         │ TEXT NOT NULL                                              │
-│ role             │ TEXT NOT NULL ('client' | 'freelancer')                   │
-│ name             │ TEXT                                                       │
-│ avatar           │ TEXT                                                       │
-│ about_me         │ TEXT                                                       │
-│ activity         │ TEXT                                                       │
-│ skills           │ TEXT                                                       │
-│ rating           │ REAL DEFAULT 0.0                                          │
-│ completed_projects│ INTEGER DEFAULT 0                                        │
-│ phone            │ TEXT                                                       │
-│ telegram         │ TEXT                                                       │
-│ created_at       │ DATETIME DEFAULT CURRENT_TIMESTAMP                        │
-│ portfolio_files  │ TEXT (JSON)                                               │
-│ portfolio_links  │ TEXT                                                       │
+│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                            │
+│ email            │ TEXT UNIQUE NOT NULL                                         │
+│ password         │ TEXT NOT NULL                                                │
+│ role             │ TEXT NOT NULL ('client' | 'freelancer')                      │
+│ name             │ TEXT                                                         │
+│ avatar           │ TEXT                                                         │
+│ about_me         │ TEXT                                                         │
+│ activity         │ TEXT                                                         │
+│ skills           │ TEXT                                                         │
+│ rating           │ REAL DEFAULT 0.0                                             │
+│ completed_projects│ INTEGER DEFAULT 0                                           │
+│ phone            │ TEXT                                                         │
+│ telegram         │ TEXT                                                         │
+│ created_at       │ DATETIME DEFAULT CURRENT_TIMESTAMP                           │
+│ portfolio_files  │ TEXT (JSON)                                                  │
+│ portfolio_links  │ TEXT                                                         │
 └─────────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     │ 1:N
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                                JOBS                                            │
+│                                JOBS                                             │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                          │
-│ title            │ TEXT NOT NULL                                              │
-│ description      │ TEXT NOT NULL                                              │
-│ deadline         │ TEXT NOT NULL                                              │
-│ status           │ TEXT NOT NULL ('open' | 'in_progress' | 'done')           │
-│ creator_email    │ TEXT NOT NULL (FK → Users.email)                          │
-│ priority         │ TEXT DEFAULT 'medium' ('low' | 'medium' | 'high')         │
-│ files            │ TEXT (JSON)                                                │
+│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                            │
+│ title            │ TEXT NOT NULL                                                │
+│ description      │ TEXT NOT NULL                                                │
+│ deadline         │ TEXT NOT NULL                                                │
+│ status           │ TEXT NOT NULL ('open' | 'in_progress' | 'done')              │
+│ creator_email    │ TEXT NOT NULL (FK → Users.email)                             │
+│ priority         │ TEXT DEFAULT 'medium' ('low' | 'medium' | 'high')            │
+│ files            │ TEXT (JSON)                                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     │ 1:N
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                            APPLICATIONS                                        │
+│                            APPLICATIONS                                         │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                          │
-│ job_id           │ INTEGER NOT NULL (FK → Jobs.id)                           │
-│ freelancer_email │ TEXT NOT NULL (FK → Users.email)                          │
-│ status           │ TEXT NOT NULL DEFAULT 'pending'                           │
-│                  │ ('pending' | 'accepted' | 'rejected' | 'completed')       │
-│ UNIQUE(job_id, freelancer_email)                                             │
+│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                            │
+│ job_id           │ INTEGER NOT NULL (FK → Jobs.id)                              │
+│ freelancer_email │ TEXT NOT NULL (FK → Users.email)                             │
+│ status           │ TEXT NOT NULL DEFAULT 'pending'                              │
+│                  │ ('pending' | 'accepted' | 'rejected' | 'completed')          │
+│ UNIQUE(job_id, freelancer_email)                                                │
 └─────────────────────────────────────────────────────────────────────────────────┘
                                     │
                                     │ 1:N
                                     ▼
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              REVIEWS                                           │
+│                              REVIEWS                                            │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                          │
-│ job_id           │ INTEGER NOT NULL (FK → Jobs.id)                           │
-│ freelancer_email │ TEXT NOT NULL (FK → Users.email)                          │
-│ client_email     │ TEXT NOT NULL (FK → Users.email)                          │
-│ rating           │ INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5)     │
-│ comment          │ TEXT                                                       │
-│ created_at       │ DATETIME DEFAULT CURRENT_TIMESTAMP                        │
-│ UNIQUE(job_id, freelancer_email, client_email)                               │
+│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                            │
+│ job_id           │ INTEGER NOT NULL (FK → Jobs.id)                              │
+│ freelancer_email │ TEXT NOT NULL (FK → Users.email)                             │
+│ client_email     │ TEXT NOT NULL (FK → Users.email)                             │
+│ rating           │ INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5)         │
+│ comment          │ TEXT                                                         │
+│ created_at       │ DATETIME DEFAULT CURRENT_TIMESTAMP                           │
+│ UNIQUE(job_id, freelancer_email, client_email)                                  │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                              MESSAGES                                          │
+│                              MESSAGES                                           │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                          │
-│ sender_email     │ TEXT NOT NULL (FK → Users.email)                          │
-│ receiver_email   │ TEXT NOT NULL (FK → Users.email)                          │
-│ job_id           │ INTEGER (FK → Jobs.id, NULL for direct messages)          │
-│ message          │ TEXT NOT NULL                                              │
-│ created_at       │ DATETIME DEFAULT CURRENT_TIMESTAMP                        │
-│ is_read          │ BOOLEAN DEFAULT FALSE                                     │
+│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                            │
+│ sender_email     │ TEXT NOT NULL (FK → Users.email)                             │
+│ receiver_email   │ TEXT NOT NULL (FK → Users.email)                             │
+│ job_id           │ INTEGER (FK → Jobs.id, NULL for direct messages)             │
+│ message          │ TEXT NOT NULL                                                │
+│ created_at       │ DATETIME DEFAULT CURRENT_TIMESTAMP                           │
+│ is_read          │ BOOLEAN DEFAULT FALSE                                        │
 └─────────────────────────────────────────────────────────────────────────────────┘
 
 ┌─────────────────────────────────────────────────────────────────────────────────┐
-│                          PROJECT_COMMENTS                                      │
+│                          PROJECT_COMMENTS                                       │
 ├─────────────────────────────────────────────────────────────────────────────────┤
-│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                          │
-│ job_id           │ INTEGER NOT NULL (FK → Jobs.id)                           │
-│ user_email       │ TEXT NOT NULL (FK → Users.email)                          │
-│ comment          │ TEXT NOT NULL                                              │
-│ created_at       │ DATETIME DEFAULT CURRENT_TIMESTAMP                        │
+│ id (PK)          │ INTEGER PRIMARY KEY AUTOINCREMENT                            │
+│ job_id           │ INTEGER NOT NULL (FK → Jobs.id)                              │
+│ user_email       │ TEXT NOT NULL (FK → Users.email)                             │
+│ comment          │ TEXT NOT NULL                                                │
+│ created_at       │ DATETIME DEFAULT CURRENT_TIMESTAMP                           │
 └─────────────────────────────────────────────────────────────────────────────────┘
 ```
 

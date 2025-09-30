@@ -152,4 +152,4 @@ DATABASE_URL=sqlite:///./freelance.db
 - SQLite за простую базу данных
 
 
-Постится демка на: https://collabhub-re4t.onrender.com/
+Хостится демо-приложение на: https://collabhub-re4t.onrender.com/
