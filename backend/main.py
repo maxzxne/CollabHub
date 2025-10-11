@@ -655,7 +655,17 @@ async def login_post(request: Request, email: str = Form(...), password: str = F
             error = "Неверный пароль"
 
     if error:
-        return templates.TemplateResponse("login.html", {"request": request, "error": error}, status_code=400)
+        # Возвращаем главную страницу с ошибкой в overlay
+        jobs = get_jobs()
+        jobs = [dict(job) if isinstance(job, sqlite3.Row) else job for job in jobs]
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "jobs": jobs,
+            "user": None,
+            "login_error": error,
+            "selected_status": None,
+            "total_jobs_count": len(jobs)
+        }, status_code=400)
 
     # Создаем JWT токен
     access_token = create_access_token(data={"sub": email})
@@ -681,9 +691,17 @@ async def register_post(
 ):
     existing = get_user_by_email(email)
     if existing:
-        return templates.TemplateResponse(
-            "register.html", {"request": request, "error": "Email уже зарегистрирован"}, status_code=400
-        )
+        # Возвращаем главную страницу с ошибкой в overlay
+        jobs = get_jobs()
+        jobs = [dict(job) if isinstance(job, sqlite3.Row) else job for job in jobs]
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "jobs": jobs,
+            "user": None,
+            "register_error": "Email уже зарегистрирован",
+            "selected_status": None,
+            "total_jobs_count": len(jobs)
+        }, status_code=400)
 
     hashed = hash_password(password)
     create_user(email=email, hashed_password=hashed, role=role, name=name, avatar=None)
