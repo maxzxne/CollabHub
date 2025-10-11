@@ -15,7 +15,7 @@ import re
 import json
 
 # Импорты из локальных модулей
-from database import init_db
+from database import init_db, get_connection
 from models import (
     get_user_by_email,
     verify_password,
