@@ -7,12 +7,6 @@
 {% if not user %}
 <div id="auth-overlay" class="auth-overlay fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4">
     <div class="auth-modal w-full max-w-sm sm:max-w-md mx-4">
-        <!-- Кнопка закрытия -->
-        <button onclick="closeAuthOverlay()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
-            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-            </svg>
-        </button>
         
         <!-- Приветственный текст -->
         <div class="text-center mb-6 sm:mb-8">
@@ -374,12 +368,20 @@ switchTab('register');
 switchTab('login');
 {% endif %}
 
+// Блокируем скролл страницы при активном overlay
+document.body.classList.add('overlay-active');
+
 // Предотвращаем закрытие overlay кликом вне формы
 document.getElementById('auth-overlay').addEventListener('click', function(e) {
     if (e.target === this) {
         // Не закрываем overlay
     }
 });
+
+// Восстанавливаем скролл при закрытии overlay (если будет реализовано)
+function closeAuthOverlay() {
+    document.body.classList.remove('overlay-active');
+}
 </script>
 {% endif %}
 {% endblock %}

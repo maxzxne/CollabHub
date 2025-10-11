@@ -166,6 +166,20 @@ body {
 .auth-overlay {
     backdrop-filter: blur(8px);
     background: rgba(0, 0, 0, 0.5);
+    /* Блокируем скролл страницы */
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+/* Блокируем скролл body при активном overlay */
+body.overlay-active {
+    overflow: hidden;
+    position: fixed;
+    width: 100%;
 }
 
 .auth-modal {
