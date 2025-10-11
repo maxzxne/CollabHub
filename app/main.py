@@ -516,56 +516,41 @@ def delete_file(file_path: str):
 
 
 def validate_date(date_str: str) -> str:
-    """Валидирует дату в формате DD.MM.YYYY"""
+    """Валидирует дату в формате YYYY-MM-DD (HTML5 date input)"""
     if not date_str or not date_str.strip():
         raise ValueError("Дата не может быть пустой")
     
     date_str = date_str.strip()
     
-    # Проверяем формат даты (более гибкий)
-    if not re.match(r'^\d{1,2}\.\d{1,2}\.\d{2,4}$', date_str):
-        raise ValueError("Дата должна быть в формате ДД.ММ.ГГГГ (например: 25.12.2025)")
-    
     try:
-        parts = date_str.split('.')
-        if len(parts) != 3:
-            raise ValueError("Неверный формат даты")
-            
-        day, month, year = parts
-        day = int(day)
-        month = int(month)
-        year = int(year)
-        
-        # Если год двухзначный, добавляем 20
-        if year < 100:
-            year += 2000
-        
-        # Получаем текущий год
-        current_year = datetime.now().year
-        
-        # Проверяем ограничения
-        if day < 1 or day > 31:
-            raise ValueError("День должен быть от 1 до 31")
-        if month < 1 or month > 12:
-            raise ValueError("Месяц должен быть от 1 до 12")
-        if year < current_year or year > current_year + 5:
-            raise ValueError(f"Год должен быть от {current_year} до {current_year + 5}")
-        
-        # Проверяем корректность даты
-        date_obj = datetime(year, month, day)
+        # Парсим дату в формате YYYY-MM-DD
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d')
         
         # Проверяем, что дата не в прошлом (с запасом в 1 день)
         today = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
         if date_obj < today:
             raise ValueError("Дата не может быть в прошлом")
         
-        # Возвращаем дату в правильном формате
-        return f"{day:02d}.{month:02d}.{year}"
+        # Возвращаем дату в формате YYYY-MM-DD для сохранения в БД
+        return date_str
         
     except ValueError as e:
-        if "invalid literal" in str(e) or "day is out of range" in str(e):
-            raise ValueError("Некорректная дата")
-        raise e
+        if "time data" in str(e):
+            raise ValueError("Неверный формат даты")
+        raise
+
+
+def format_date_for_display(date_str: str) -> str:
+    """Конвертирует дату из формата YYYY-MM-DD в DD.MM.YYYY для отображения"""
+    if not date_str:
+        return ""
+    
+    try:
+        date_obj = datetime.strptime(date_str, '%Y-%m-%d')
+        return date_obj.strftime('%d.%m.%Y')
+    except ValueError:
+        # Если дата уже в формате DD.MM.YYYY, возвращаем как есть
+        return date_str
 
 
 # ===== ФУНКЦИИ АУТЕНТИФИКАЦИИ И АВТОРИЗАЦИИ =====
@@ -772,6 +757,9 @@ async def home(request: Request, status: str = None):
             job["has_applied"] = has_user_applied_to_job(job["id"], user["email"])
             job["application_status"] = get_user_application_status(job["id"], user["email"])
         
+        # Форматируем дату для отображения
+        job["deadline"] = format_date_for_display(job["deadline"])
+        
         # Получаем имя создателя проекта
         creator = get_user_by_email(job["creator_email"])
         if creator and isinstance(creator, sqlite3.Row):
@@ -882,6 +870,9 @@ async def job_detail(request: Request, job_id: int, user: dict = Depends(require
     # Получаем участников проекта
     participants = get_project_participants(job_id)
     
+    # Форматируем дату для отображения
+    job["deadline"] = format_date_for_display(job["deadline"])
+    
     return templates.TemplateResponse("job_detail.html", {
         "request": request, 
         "job": job, 
@@ -927,6 +918,17 @@ async def edit_job_get(request: Request, job_id: int, user: dict = Depends(requi
     # Проверяем, что пользователь - создатель проекта
     if job["creator_email"] != user["email"]:
         raise HTTPException(status_code=403, detail="Нет доступа")
+    
+    # Конвертируем дату в формат YYYY-MM-DD для HTML5 date input
+    if job["deadline"]:
+        try:
+            # Если дата в формате DD.MM.YYYY, конвертируем в YYYY-MM-DD
+            if '.' in job["deadline"]:
+                date_obj = datetime.strptime(job["deadline"], '%d.%m.%Y')
+                job["deadline"] = date_obj.strftime('%Y-%m-%d')
+        except ValueError:
+            # Если дата уже в правильном формате или невалидна, оставляем как есть
+            pass
     
     return templates.TemplateResponse("edit_job.html", {
         "request": request,
