@@ -5,9 +5,9 @@ services:
       - "10000:10000"
     volumes:
       # Монтируем папку uploads для сохранения файлов
-      - ./backend/uploads:/app/uploads
+      - ./app/uploads:/app/uploads
       # Монтируем базу данных для сохранения данных
-      - ./backend/freelance.db:/app/freelance.db
+      - ./app/freelance.db:/app/freelance.db
     environment:
       - PORT=10000
     restart: unless-stopped
