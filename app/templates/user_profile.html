@@ -19,11 +19,11 @@
                     </span>
                     {% if profile_user.role == 'freelancer' %}
                     <div class="flex items-center space-x-1">
-                        <span class="text-yellow-500">⭐</span>
+                        <span class="text-yellow-500">★</span>
                         <span class="font-medium">{{ profile_user.rating or 0 }}</span>
                     </div>
                     <div class="flex items-center space-x-1">
-                        <span class="text-gray-500">📁</span>
+                        <span class="text-gray-500">📂</span>
                         <span>{{ profile_user.completed_projects or 0 }} проектов</span>
                     </div>
                     {% endif %}
@@ -34,7 +34,7 @@
         <div class="flex space-x-2">
             <a href="/chat/{{ profile_user.email }}" 
                class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition">
-                💬 Написать
+                Написать
             </a>
         </div>
         {% endif %}
@@ -81,7 +81,7 @@
                 {% endif %}
                 {% if profile_user.telegram %}
                 <p class="text-gray-700">
-                    📱 <a href="https://t.me/{{ profile_user.telegram.replace('@', '') }}" 
+                    <a href="https://t.me/{{ profile_user.telegram.replace('@', '') }}" 
                           target="_blank" 
                           class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
                         {{ profile_user.telegram }}
@@ -99,7 +99,7 @@
     <div class="max-w-4xl mx-auto bg-white rounded-lg shadow mt-6">
         <div class="p-6">
             <h2 class="text-2xl font-bold mb-6 flex items-center">
-                <span class="mr-2">🎨</span>
+                <span class="mr-2">📁</span>
                 Портфолио
             </h2>
             
@@ -180,7 +180,7 @@
     <!-- Отзывы для исполнителей -->
     {% if profile_user.role == 'freelancer' and reviews %}
     <div class="border-t pt-6">
-        <h3 class="text-xl font-semibold mb-4">⭐ Отзывы ({{ reviews|length }})</h3>
+        <h3 class="text-xl font-semibold mb-4">★ Отзывы ({{ reviews|length }})</h3>
         <div class="space-y-4">
             {% for review in reviews %}
             <div class="border rounded-lg p-4">

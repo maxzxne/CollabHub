@@ -25,9 +25,9 @@
                         {% if app.status == 'accepted' %}bg-green-100 text-green-800
                         {% elif app.status == 'rejected' %}bg-red-100 text-red-800
                         {% else %}bg-yellow-100 text-yellow-800{% endif %}">
-                        {% if app.status == 'accepted' %}✅ Принят
-                        {% elif app.status == 'rejected' %}❌ Отклонен
-                        {% else %}⏳ Ожидает рассмотрения{% endif %}
+                        {% if app.status == 'accepted' %}Принят
+                        {% elif app.status == 'rejected' %}Отклонен
+                        {% else %}Ожидает рассмотрения{% endif %}
                     </span>
                 </div>
             </div>

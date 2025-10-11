@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="max-w-6xl mx-auto bg-white p-6 rounded-lg shadow mt-6">
-    <h2 class="text-3xl font-bold mb-6">👨‍💻 Фрилансеры</h2>
+    <h2 class="text-3xl font-bold mb-6">Фрилансеры</h2>
     
     {% if freelancers %}
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -38,7 +38,7 @@
             
             <div class="flex items-center justify-between text-sm">
                 <div class="flex items-center space-x-2">
-                    <span class="text-yellow-500">⭐</span>
+                    <span class="text-yellow-500">★</span>
                     <span class="font-medium">{{ freelancer.rating or 0 }}</span>
                 </div>
                 <div class="flex items-center space-x-2">

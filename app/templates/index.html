@@ -274,9 +274,9 @@
                         {% if status == 'accepted' %}bg-gray-200 text-gray-800 border border-gray-300
                         {% elif status == 'rejected' %}bg-gray-100 text-gray-800 border border-gray-200
                         {% else %}bg-gray-150 text-gray-800 border border-gray-250{% endif %}">
-                        {% if status == 'accepted' %}✅ Принят
-                        {% elif status == 'rejected' %}❌ Отклонен
-                        {% else %}⏳ Ожидает рассмотрения{% endif %}
+                        {% if status == 'accepted' %}Принят
+                        {% elif status == 'rejected' %}Отклонен
+                        {% else %}Ожидает рассмотрения{% endif %}
                     </div>
                 {% else %}
                     {% if job['status'] == 'open' %}
@@ -287,17 +287,17 @@
                         </form>
                     {% elif job['status'] == 'in_progress' %}
                         <div class="w-full text-center px-4 py-3 rounded-xl text-sm font-medium bg-blue-100 text-blue-800 border border-blue-200">
-                            🔄 Проект в работе
+                            Проект в работе
                         </div>
                     {% elif job['status'] == 'done' %}
                         <div class="w-full text-center px-4 py-3 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 border border-gray-200">
-                            📋 Проект завершен
+                            Проект завершен
                         </div>
                     {% endif %}
                 {% endif %}
             {% elif not user %}
                 <div class="w-full text-center px-4 py-3 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 border border-gray-200">
-                    🔐 Авторизуйтесь для отклика
+                    Авторизуйтесь для отклика
                 </div>
             {% endif %}
         </div>

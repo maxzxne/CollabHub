@@ -32,7 +32,7 @@
             {% for file_path in job.files %}
             <a href="{{ file_path }}" target="_blank" 
                class="block text-sm text-black hover:text-gray-600 hover:underline">
-                📎 {{ file_path.split('/')[-1] }}
+                {{ file_path.split('/')[-1] }}
             </a>
             {% endfor %}
         </div>
@@ -80,24 +80,24 @@
             <div class="mt-4 flex space-x-2">
                 <form method="post" action="/jobs/{{ job['id'] }}/complete" class="inline">
                     <button type="submit" class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm">
-                        ✅ Завершить проект
+                        Завершить проект
                     </button>
                 </form>
                 <a href="/jobs/{{ job['id'] }}/chat" class="px-3 py-1 bg-black text-white rounded hover:bg-gray-800 transition text-sm">
-                    💬 Чат
+                    Чат
                 </a>
             </div>
         {% elif app_status == 'pending' %}
             <div class="mt-4 px-3 py-1 bg-yellow-100 text-yellow-800 rounded text-sm">
-                ⏳ Ожидает рассмотрения
+                Ожидает рассмотрения
             </div>
         {% elif app_status == 'rejected' %}
             <div class="mt-4 px-3 py-1 bg-red-100 text-red-800 rounded text-sm">
-                ❌ Отклонен
+                Отклонен
             </div>
         {% elif app_status == 'completed' %}
             <div class="mt-4 px-3 py-1 bg-green-100 text-green-800 rounded text-sm">
-                ✅ Проект завершен
+                Проект завершен
             </div>
         {% else %}
             <!-- Показываем кнопку откликнуться только если проект открыт -->
@@ -109,11 +109,11 @@
                 </form>
             {% elif job['status'] == 'in_progress' %}
                 <div class="mt-4 px-3 py-1 bg-blue-100 text-blue-800 rounded text-sm">
-                    🔄 Проект в работе
+                    Проект в работе
                 </div>
             {% elif job['status'] == 'done' %}
                 <div class="mt-4 px-3 py-1 bg-gray-100 text-gray-600 rounded text-sm">
-                    📋 Проект завершен
+                    Проект завершен
                 </div>
             {% endif %}
         {% endif %}
@@ -130,7 +130,7 @@
         {% if has_accepted %}
             <div class="mt-4 flex space-x-2">
                 <a href="/jobs/{{ job['id'] }}/chat" class="px-3 py-1 bg-black text-white rounded hover:bg-gray-800 transition text-sm">
-                    💬 Чат с исполнителем
+                    Чат с исполнителем
                 </a>
                 {% if job['status'] == 'done' %}
                     <!-- Проверяем, есть ли принятый исполнитель для оценки -->
@@ -167,26 +167,26 @@
                             {% elif app.status == 'completed' %}bg-gray-100 text-gray-800
                             {% elif app.status == 'rejected' %}bg-red-100 text-red-800
                             {% else %}bg-yellow-100 text-yellow-800{% endif %}">
-                            {% if app.status == 'accepted' %}✅ Принят
-                            {% elif app.status == 'completed' %}🎉 Успешно завершен
-                            {% elif app.status == 'rejected' %}❌ Отклонен
-                            {% else %}⏳ Ожидает рассмотрения{% endif %}
+                            {% if app.status == 'accepted' %}Принят
+                            {% elif app.status == 'completed' %}Успешно завершен
+                            {% elif app.status == 'rejected' %}Отклонен
+                            {% else %}Ожидает рассмотрения{% endif %}
                         </span>
                     </div>
                     
                     {% if app.status == 'pending' %}
                     <div class="flex space-x-2">
                         <form method="post" action="/applications/{{ app.id }}/accept" class="inline">
-                            <button type="submit" 
-                                    class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm">
-                                ✅ Принять
-                            </button>
-                        </form>
-                        <form method="post" action="/applications/{{ app.id }}/reject" class="inline">
-                            <button type="submit" 
-                                    class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm">
-                                ❌ Отклонить
-                            </button>
+                        <button type="submit" 
+                                class="px-3 py-1 bg-green-500 text-white rounded hover:bg-green-600 transition text-sm">
+                            Принять
+                        </button>
+                    </form>
+                    <form method="post" action="/applications/{{ app.id }}/reject" class="inline">
+                        <button type="submit" 
+                                class="px-3 py-1 bg-red-500 text-white rounded hover:bg-red-600 transition text-sm">
+                            Отклонить
+                        </button>
                         </form>
                     </div>
                     {% endif %}
