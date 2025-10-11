@@ -30,7 +30,7 @@
             </div>
             
             <!-- Форма входа -->
-            <form id="login-form" action="/login" method="post" class="space-y-4">
+            <form id="login-form" action="/login" method="post" class="space-y-4" autocomplete="on">
                 {% if login_error %}
                 <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
                     {{ login_error }}
@@ -50,7 +50,7 @@
             </form>
             
             <!-- Форма регистрации -->
-            <form id="register-form" action="/register" method="post" class="space-y-4 hidden">
+            <form id="register-form" action="/register" method="post" class="space-y-4 hidden" autocomplete="on">
                 {% if register_error %}
                 <div class="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg text-sm">
                     {{ register_error }}

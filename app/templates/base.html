@@ -116,12 +116,12 @@
     </div>
     {% else %}
     <nav class="flex space-x-3">
-        <a href="/login" class="btn-primary text-sm">
+        <button onclick="showAuthOverlay()" class="btn-primary text-sm">
             Войти
-        </a>
-        <a href="/register" class="btn-secondary text-sm">
+        </button>
+        <button onclick="showAuthOverlay()" class="btn-secondary text-sm">
             Регистрация
-        </a>
+        </button>
     </nav>
     {% endif %}
 </header>
@@ -145,6 +145,12 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Show auth overlay function
+function showAuthOverlay() {
+    // Redirect to home page - overlay will be shown automatically for unauthenticated users
+    window.location.href = '/';
+}
 </script>
 
 {% block content %}{% endblock %}

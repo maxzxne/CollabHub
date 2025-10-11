@@ -646,7 +646,8 @@ def require_role(role: str):
 
 @app.get("/login")
 async def login_get(request: Request):
-    return templates.TemplateResponse("login.html", {"request": request, "error": None})
+    # Перенаправляем на главную страницу с overlay
+    return RedirectResponse(url="/", status_code=302)
 
 
 @app.post("/login")
@@ -686,7 +687,8 @@ async def login_post(request: Request, email: str = Form(...), password: str = F
 
 @app.get("/register")
 async def register_get(request: Request):
-    return templates.TemplateResponse("register.html", {"request": request, "error": None})
+    # Перенаправляем на главную страницу с overlay
+    return RedirectResponse(url="/", status_code=302)
 
 
 @app.post("/register")
