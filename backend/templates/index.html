@@ -3,31 +3,122 @@
 {% block title %}CollabHub — Главная{% endblock %}
 
 {% block content %}
+<!-- Overlay для неавторизованных пользователей -->
+{% if not user %}
+<div id="auth-overlay" class="auth-overlay fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div class="auth-modal">
+        <!-- Кнопка закрытия -->
+        <button onclick="closeAuthOverlay()" class="absolute top-4 right-4 text-gray-400 hover:text-gray-600 transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+            </svg>
+        </button>
+        
+        <!-- Приветственный текст -->
+        <div class="text-center mb-8">
+            <h1 class="text-3xl font-bold text-gray-900 mb-4">Добро пожаловать в CollabHub!</h1>
+            <p class="text-gray-600 text-lg leading-relaxed">
+                Современная платформа для фриланса, где заказчики и исполнители находят друг друга. 
+                Создавайте проекты, находите талантливых специалистов и воплощайте идеи в жизнь.
+            </p>
+        </div>
+        
+        <!-- Форма авторизации -->
+        <div class="space-y-6">
+            <!-- Переключатель между входом и регистрацией -->
+            <div class="flex bg-gray-100 rounded-lg p-1">
+                <button id="login-tab" onclick="switchTab('login')" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-white text-black shadow-sm">
+                    Вход
+                </button>
+                <button id="register-tab" onclick="switchTab('register')" class="flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-black">
+                    Регистрация
+                </button>
+            </div>
+            
+            <!-- Форма входа -->
+            <form id="login-form" action="/login" method="post" class="space-y-4">
+                <div>
+                    <input type="email" name="email" placeholder="Email" required 
+                           class="form-input">
+                </div>
+                <div>
+                    <input type="password" name="password" placeholder="Пароль" required 
+                           class="form-input">
+                </div>
+                <button type="submit" class="btn-primary w-full">
+                    Войти
+                </button>
+            </form>
+            
+            <!-- Форма регистрации -->
+            <form id="register-form" action="/register" method="post" class="space-y-4 hidden">
+                <div>
+                    <input type="text" name="name" placeholder="Имя" required 
+                           class="form-input">
+                </div>
+                <div>
+                    <input type="email" name="email" placeholder="Email" required 
+                           class="form-input">
+                </div>
+                <div>
+                    <input type="password" name="password" placeholder="Пароль" required 
+                           class="form-input">
+                </div>
+                <div>
+                    <select name="role" required class="form-select">
+                        <option value="">Выберите роль</option>
+                        <option value="client">Заказчик</option>
+                        <option value="freelancer">Исполнитель</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary w-full">
+                    Зарегистрироваться
+                </button>
+            </form>
+        </div>
+        
+        <!-- Дополнительная информация -->
+        <div class="mt-8 text-center text-sm text-gray-500">
+            <p>Авторизуйтесь, чтобы:</p>
+            <ul class="mt-2 space-y-1">
+                <li>• Создавать и управлять проектами</li>
+                <li>• Откликаться на интересные задачи</li>
+                <li>• Общаться с заказчиками и исполнителями</li>
+                <li>• Оставлять отзывы и получать рейтинги</li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+<!-- Размытый фон для контента -->
+<div class="blur-sm pointer-events-none">
+{% endif %}
+
 <!-- Фильтр статуса + кнопка -->
 <div class="bg-white border-b border-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-4 sm:py-6">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-            <div class="flex flex-wrap gap-2 sm:gap-3">
-                <a href="/" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 {{ 'bg-black text-white shadow-lg' if not selected_status else 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200' }}">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div class="filter-tabs">
+                <a href="/" class="filter-tab {{ 'active' if not selected_status else '' }}">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
                     </svg>
                     Все проекты
                 </a>
-                <a href="/?status=open" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 {{ 'bg-gray-800 text-white shadow-lg' if selected_status=='open' else 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200' }}">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="/?status=open" class="filter-tab {{ 'active' if selected_status=='open' else '' }}">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
-                    Открытые
+                    В поисках исполнителя
                 </a>
-                <a href="/?status=in_progress" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 {{ 'bg-gray-600 text-white shadow-lg' if selected_status=='in_progress' else 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200' }}">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="/?status=in_progress" class="filter-tab {{ 'active' if selected_status=='in_progress' else '' }}">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                     </svg>
                     В работе
                 </a>
-                <a href="/?status=done" class="inline-flex items-center px-4 py-2 rounded-full text-sm font-medium transition-all duration-200 {{ 'bg-gray-500 text-white shadow-lg' if selected_status=='done' else 'bg-white text-gray-700 hover:bg-gray-50 border border-gray-200' }}">
-                    <svg class="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <a href="/?status=done" class="filter-tab {{ 'active' if selected_status=='done' else '' }}">
+                    <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                     </svg>
                     Выполненные
@@ -36,13 +127,19 @@
 
             {% if user and user['role'] == 'client' %}
                 <div class="flex justify-end">
-                    <a href="/jobs/create" class="inline-flex items-center bg-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-full hover:bg-gray-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 text-sm sm:text-base">
-                        <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-1 sm:mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <a href="/jobs/create" class="btn-primary">
+                        <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                         </svg>
                         <span class="hidden sm:inline">Создать проект</span>
-                        <span class="sm:hidden">Создать проект</span>
+                        <span class="sm:hidden">Создать</span>
                     </a>
+                </div>
+            {% elif not user %}
+                <div class="flex justify-end">
+                    <div class="text-sm text-gray-500 px-4 py-2">
+                        Авторизуйтесь для создания проектов
+                    </div>
                 </div>
             {% endif %}
         </div>
@@ -54,7 +151,7 @@
     {% if jobs %}
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6 lg:gap-8">
     {% for job in jobs %}
-    <div class="bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-all duration-300 flex flex-col group cursor-pointer relative overflow-hidden border border-gray-200" 
+    <div class="project-card cursor-pointer group" 
          onclick="window.location.href='/jobs/{{ job['id'] }}'">
         
         <!-- Иконки управления (только для своих проектов) -->
@@ -101,20 +198,13 @@
             
             <!-- Статус и приоритет -->
             <div class="flex items-center gap-2 flex-wrap">
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                    {% if job['status']=='open' %} bg-green-50 text-green-700 border border-green-200
-                    {% elif job['status']=='in_progress' %} bg-yellow-50 text-yellow-700 border border-yellow-200
-                    {% elif job['status']=='done' %} bg-gray-100 text-gray-600 border border-gray-300
-                    {% else %} bg-gray-50 text-gray-600 border border-gray-200 {% endif %}">
-                    {% if job['status']=='open' %}Открыт
+                <span class="status-badge status-{{ job['status'] }}">
+                    {% if job['status']=='open' %}В поисках исполнителя
                     {% elif job['status']=='in_progress' %}В работе
                     {% elif job['status']=='done' %}Завершен
                     {% else %}{{ job['status'] }}{% endif %}
                 </span>
-                <span class="inline-flex items-center px-2.5 py-1 rounded-full text-xs font-medium
-                    {% if job.get('priority')=='high' %} bg-red-50 text-red-700 border border-red-200
-                    {% elif job.get('priority')=='low' %} bg-gray-50 text-gray-600 border border-gray-200
-                    {% else %} bg-blue-50 text-blue-700 border border-blue-200 {% endif %}">
+                <span class="status-badge priority-{{ job.get('priority', 'medium') }}">
                     {% if job.get('priority')=='high' %}Высокий{% elif job.get('priority')=='low' %}Низкий{% else %}Средний{% endif %}
                 </span>
             </div>
@@ -187,8 +277,7 @@
                 {% else %}
                     {% if job['status'] != 'done' %}
                         <form method="post" action="/jobs/{{ job['id'] }}/apply" onclick="event.stopPropagation()">
-                            <button type="submit"
-                                    class="w-full bg-black text-white px-4 py-3 rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                            <button type="submit" class="btn-primary w-full">
                                 Откликнуться
                             </button>
                         </form>
@@ -198,35 +287,82 @@
                         </div>
                     {% endif %}
                 {% endif %}
+            {% elif not user %}
+                <div class="w-full text-center px-4 py-3 rounded-xl text-sm font-medium bg-gray-100 text-gray-600 border border-gray-200">
+                    🔐 Авторизуйтесь для отклика
+                </div>
             {% endif %}
         </div>
     </div>
     {% endfor %}
     </div>
     {% else %}
-    <div class="text-center py-16">
+    <div class="empty-state">
         <div class="max-w-md mx-auto">
-            <svg class="w-24 h-24 text-gray-300 mx-auto mb-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg class="empty-state-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
             </svg>
             {% if total_jobs_count == 0 %}
-            <h3 class="text-xl font-semibold text-gray-600 mb-2">Проекты не найдены</h3>
-            <p class="text-gray-500 mb-6">В системе пока нет проектов</p>
+            <h3 class="empty-state-title">Проекты не найдены</h3>
+            <p class="empty-state-description">В системе пока нет проектов</p>
             {% if user and user['role'] == 'client' %}
-            <a href="/jobs/create" class="inline-flex items-center bg-black text-white px-4 py-2 sm:px-6 sm:py-3 rounded-lg sm:rounded-xl hover:bg-gray-800 transition-all duration-200 font-medium text-sm sm:text-base">
-                <svg class="w-4 h-4 sm:w-5 sm:h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <a href="/jobs/create" class="btn-primary">
+                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
                 </svg>
                 <span class="hidden sm:inline">Создать первый проект</span>
                 <span class="sm:hidden">Создать</span>
             </a>
+            {% elif not user %}
+            <p class="text-gray-500 text-sm">Авторизуйтесь, чтобы создавать проекты</p>
             {% endif %}
             {% else %}
-            <h3 class="text-xl font-semibold text-gray-600 mb-2">Проекты не найдены</h3>
-            <p class="text-gray-500">Пока нет проектов с выбранным статусом</p>
+            <h3 class="empty-state-title">Проекты не найдены</h3>
+            <p class="empty-state-description">Пока нет проектов с выбранным статусом</p>
             {% endif %}
         </div>
     </div>
     {% endif %}
 </main>
+
+<!-- Закрывающий тег для размытого фона -->
+{% if not user %}
+</div>
+{% endif %}
+
+<!-- JavaScript для управления overlay -->
+{% if not user %}
+<script>
+function switchTab(tab) {
+    const loginTab = document.getElementById('login-tab');
+    const registerTab = document.getElementById('register-tab');
+    const loginForm = document.getElementById('login-form');
+    const registerForm = document.getElementById('register-form');
+    
+    if (tab === 'login') {
+        loginTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-white text-black shadow-sm';
+        registerTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-black';
+        loginForm.classList.remove('hidden');
+        registerForm.classList.add('hidden');
+    } else {
+        loginTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-black';
+        registerTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-white text-black shadow-sm';
+        loginForm.classList.add('hidden');
+        registerForm.classList.remove('hidden');
+    }
+}
+
+function closeAuthOverlay() {
+    // Не закрываем overlay, чтобы пользователь обязательно авторизовался
+    // Можно добавить логику для временного скрытия
+}
+
+// Предотвращаем закрытие overlay кликом вне формы
+document.getElementById('auth-overlay').addEventListener('click', function(e) {
+    if (e.target === this) {
+        // Не закрываем overlay
+    }
+});
+</script>
+{% endif %}
 {% endblock %}

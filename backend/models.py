@@ -456,6 +456,10 @@ def has_reviewed_job(job_id: int, client_email: str, freelancer_email: str):
 
 def create_message(sender_email: str, receiver_email: str, message: str, job_id: int = None):
 	"""Создает новое сообщение в чате"""
+	# Проверяем, что пользователь не пытается отправить сообщение самому себе
+	if sender_email == receiver_email:
+		raise ValueError("Нельзя отправить сообщение самому себе")
+	
 	conn = get_connection()
 	cursor = conn.cursor()
 	cursor.execute(

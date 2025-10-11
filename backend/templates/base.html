@@ -5,6 +5,10 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}CollabHub{% endblock %}</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script>
         tailwind.config = {
             theme: {
@@ -24,8 +28,11 @@
 <body class="bg-gray-50 min-h-screen">
 
 <!-- Header -->
-<header class="bg-white border-b border-gray-200 p-3 sm:p-4 flex justify-between items-center sticky top-0 z-50">
-    <a href="/" class="text-lg sm:text-xl font-bold text-black hover:text-gray-600 transition">CollabHub</a>
+<header class="header">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
+        <a href="/" class="text-xl sm:text-2xl font-bold text-black hover:text-gray-600 transition-colors duration-200">
+            CollabHub
+        </a>
     
     {% if user %}
     <!-- User info and burger menu -->
@@ -108,11 +115,11 @@
         </div>
     </div>
     {% else %}
-    <nav class="flex space-x-4">
-        <a href="/login" class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition text-sm font-medium">
+    <nav class="flex space-x-3">
+        <a href="/login" class="btn-primary text-sm">
             Войти
         </a>
-        <a href="/register" class="px-4 py-2 border border-black text-black rounded-lg hover:bg-black hover:text-white transition text-sm font-medium">
+        <a href="/register" class="btn-secondary text-sm">
             Регистрация
         </a>
     </nav>

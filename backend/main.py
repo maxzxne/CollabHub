@@ -89,6 +89,387 @@ app.mount("/uploads", StaticFiles(directory="uploads"), name="uploads")
 # Инициализация базы данных
 init_db()
 
+# Проверяем и создаем тестовые данные при первом запуске
+def check_and_create_test_data():
+    """Проверяет наличие данных и создает тестовые данные при первом запуске"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    # Проверяем, есть ли пользователи в базе
+    cursor.execute("SELECT COUNT(*) FROM Users")
+    user_count = cursor.fetchone()[0]
+    
+    conn.close()
+    
+    # Если пользователей нет, создаем тестовые данные
+    if user_count == 0:
+        print("База данных пуста. Создаем тестовые данные...")
+        create_test_data()
+        print("Тестовые данные созданы успешно!")
+    else:
+        print(f"В базе данных уже есть {user_count} пользователей. Тестовые данные не создаются.")
+
+def create_test_data():
+    """Создает тестовые данные для демонстрации"""
+    conn = get_connection()
+    cursor = conn.cursor()
+    
+    # Тестовые пользователи
+    users = [
+        # Клиенты
+        {
+            'email': 'client1@test.com',
+            'name': 'Александр Петров',
+            'role': 'client',
+            'about_me': 'Предприниматель, занимаюсь разработкой мобильных приложений. Ищу талантливых разработчиков для интересных проектов.',
+            'activity': 'Мобильная разработка, Стартапы',
+            'skills': 'Product Management, UI/UX Design',
+            'phone': '+7 (999) 123-45-67',
+            'telegram': '@alex_petrov'
+        },
+        {
+            'email': 'client2@test.com',
+            'name': 'Мария Сидорова',
+            'role': 'client',
+            'about_me': 'Маркетолог с опытом работы в IT. Нужны специалисты для создания лендингов и рекламных материалов.',
+            'activity': 'Маркетинг, Реклама',
+            'skills': 'Digital Marketing, Analytics',
+            'phone': '+7 (999) 234-56-78',
+            'telegram': '@maria_sidorova'
+        },
+        {
+            'email': 'client3@test.com',
+            'name': 'Дмитрий Козлов',
+            'role': 'client',
+            'about_me': 'Владелец интернет-магазина. Ищу разработчиков для создания и поддержки сайта.',
+            'activity': 'E-commerce, Интернет-торговля',
+            'skills': 'Business Development, Sales',
+            'phone': '+7 (999) 345-67-89',
+            'telegram': '@dmitry_kozlov'
+        },
+        
+        # Фрилансеры
+        {
+            'email': 'freelancer1@test.com',
+            'name': 'Анна Волкова',
+            'role': 'freelancer',
+            'about_me': 'Frontend разработчик с 5-летним опытом. Специализируюсь на React, Vue.js и современном CSS.',
+            'activity': 'Frontend разработка',
+            'skills': 'React, Vue.js, JavaScript, TypeScript, CSS, HTML',
+            'phone': '+7 (999) 456-78-90',
+            'telegram': '@anna_volkova',
+            'rating': 4.8,
+            'completed_projects': 15
+        },
+        {
+            'email': 'freelancer2@test.com',
+            'name': 'Игорь Морозов',
+            'role': 'freelancer',
+            'about_me': 'Backend разработчик на Python и Django. Опыт работы с базами данных и API.',
+            'activity': 'Backend разработка',
+            'skills': 'Python, Django, PostgreSQL, Redis, Docker',
+            'phone': '+7 (999) 567-89-01',
+            'telegram': '@igor_morozov',
+            'rating': 4.6,
+            'completed_projects': 12
+        },
+        {
+            'email': 'freelancer3@test.com',
+            'name': 'Елена Соколова',
+            'role': 'freelancer',
+            'about_me': 'UI/UX дизайнер с креативным подходом. Создаю современные и удобные интерфейсы.',
+            'activity': 'UI/UX дизайн',
+            'skills': 'Figma, Adobe XD, Photoshop, Illustrator, Prototyping',
+            'phone': '+7 (999) 678-90-12',
+            'telegram': '@elena_sokolova',
+            'rating': 4.9,
+            'completed_projects': 20
+        },
+        {
+            'email': 'freelancer4@test.com',
+            'name': 'Сергей Новиков',
+            'role': 'freelancer',
+            'about_me': 'Full-stack разработчик. Работаю с современными технологиями и фреймворками.',
+            'activity': 'Full-stack разработка',
+            'skills': 'Node.js, Express, MongoDB, React, Next.js',
+            'phone': '+7 (999) 789-01-23',
+            'telegram': '@sergey_novikov',
+            'rating': 4.7,
+            'completed_projects': 18
+        },
+        {
+            'email': 'freelancer5@test.com',
+            'name': 'Ольга Кузнецова',
+            'role': 'freelancer',
+            'about_me': 'Копирайтер и контент-менеджер. Создаю качественные тексты для сайтов и соцсетей.',
+            'activity': 'Копирайтинг, Контент-маркетинг',
+            'skills': 'Копирайтинг, SEO, SMM, Контент-планирование',
+            'phone': '+7 (999) 890-12-34',
+            'telegram': '@olga_kuznetsova',
+            'rating': 4.5,
+            'completed_projects': 25
+        }
+    ]
+    
+    # Создаем пользователей
+    for user in users:
+        hashed_password = hash_password("test123")
+        cursor.execute("""
+            INSERT INTO Users (email, password, role, name, about_me, activity, skills, phone, telegram, rating, completed_projects)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        """, (
+            user['email'], hashed_password, user['role'], user['name'], user['about_me'],
+            user['activity'], user['skills'], user['phone'], user['telegram'],
+            user.get('rating'), user.get('completed_projects')
+        ))
+    
+    # Получаем клиентов для создания проектов
+    cursor.execute("SELECT email FROM Users WHERE role = 'client'")
+    clients = [row[0] for row in cursor.fetchall()]
+    
+    # Тестовые проекты
+    jobs = [
+        {
+            'title': 'Разработка мобильного приложения для доставки еды',
+            'description': 'Нужно создать мобильное приложение для iOS и Android с функциями заказа еды, отслеживания доставки и оплаты. Приложение должно быть современным и удобным для пользователей.',
+            'deadline': '15.02.2025',
+            'priority': 'high',
+            'status': 'open',
+            'creator_email': clients[0],
+            'files': '[]'
+        },
+        {
+            'title': 'Создание лендинга для IT-компании',
+            'description': 'Требуется создать современный лендинг для IT-компании с адаптивным дизайном, формой обратной связи и интеграцией с CRM системой.',
+            'deadline': '28.01.2025',
+            'priority': 'medium',
+            'status': 'in_progress',
+            'creator_email': clients[1],
+            'files': '[]'
+        },
+        {
+            'title': 'Дизайн интерфейса для банковского приложения',
+            'description': 'Создание UI/UX дизайна для мобильного банковского приложения. Нужен современный, безопасный и интуитивно понятный интерфейс.',
+            'deadline': '10.03.2025',
+            'priority': 'high',
+            'status': 'open',
+            'creator_email': clients[0],
+            'files': '[]'
+        },
+        {
+            'title': 'Написание текстов для сайта интернет-магазина',
+            'description': 'Требуется написать продающие тексты для главной страницы, карточек товаров и разделов сайта интернет-магазина электроники.',
+            'deadline': '20.01.2025',
+            'priority': 'low',
+            'status': 'done',
+            'creator_email': clients[2],
+            'files': '[]'
+        },
+        {
+            'title': 'Разработка API для системы управления складом',
+            'description': 'Создание REST API для системы управления складом с функциями учета товаров, отчетности и интеграции с внешними системами.',
+            'deadline': '05.02.2025',
+            'priority': 'medium',
+            'status': 'open',
+            'creator_email': clients[1],
+            'files': '[]'
+        },
+        {
+            'title': 'Создание корпоративного сайта',
+            'description': 'Разработка корпоративного сайта с админ-панелью для управления контентом, блогом и новостями компании.',
+            'deadline': '15.03.2025',
+            'priority': 'medium',
+            'status': 'in_progress',
+            'creator_email': clients[2],
+            'files': '[]'
+        },
+        {
+            'title': 'Дизайн логотипа и фирменного стиля',
+            'description': 'Создание логотипа и разработка фирменного стиля для стартапа в сфере образовательных технологий.',
+            'deadline': '25.01.2025',
+            'priority': 'low',
+            'status': 'done',
+            'creator_email': clients[0],
+            'files': '[]'
+        },
+        {
+            'title': 'Интеграция платежной системы',
+            'description': 'Интеграция различных платежных систем (Stripe, PayPal, Сбербанк) в существующее веб-приложение.',
+            'deadline': '12.02.2025',
+            'priority': 'high',
+            'status': 'open',
+            'creator_email': clients[1],
+            'files': '[]'
+        }
+    ]
+    
+    # Создаем проекты
+    for job in jobs:
+        cursor.execute("""
+            INSERT INTO Jobs (title, description, deadline, priority, status, creator_email, files)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
+        """, (
+            job['title'], job['description'], job['deadline'], job['priority'],
+            job['status'], job['creator_email'], job['files']
+        ))
+    
+    # Получаем фрилансеров для создания откликов
+    cursor.execute("SELECT email FROM Users WHERE role = 'freelancer'")
+    freelancers = [row[0] for row in cursor.fetchall()]
+    
+    # Создаем отклики
+    applications = [
+        {'job_id': 1, 'freelancer_email': freelancers[0], 'status': 'pending'},
+        {'job_id': 1, 'freelancer_email': freelancers[3], 'status': 'pending'},
+        {'job_id': 3, 'freelancer_email': freelancers[2], 'status': 'pending'},
+        {'job_id': 3, 'freelancer_email': freelancers[0], 'status': 'pending'},
+        {'job_id': 5, 'freelancer_email': freelancers[1], 'status': 'pending'},
+        {'job_id': 5, 'freelancer_email': freelancers[3], 'status': 'pending'},
+        {'job_id': 8, 'freelancer_email': freelancers[1], 'status': 'pending'},
+        {'job_id': 8, 'freelancer_email': freelancers[3], 'status': 'pending'},
+        {'job_id': 2, 'freelancer_email': freelancers[0], 'status': 'accepted'},
+        {'job_id': 6, 'freelancer_email': freelancers[3], 'status': 'accepted'},
+        {'job_id': 4, 'freelancer_email': freelancers[4], 'status': 'completed'},
+        {'job_id': 7, 'freelancer_email': freelancers[2], 'status': 'completed'},
+    ]
+    
+    for app in applications:
+        cursor.execute("""
+            INSERT INTO Applications (job_id, freelancer_email, status)
+            VALUES (?, ?, ?)
+        """, (app['job_id'], app['freelancer_email'], app['status']))
+    
+    # Создаем отзывы
+    reviews = [
+        {
+            'job_id': 4,
+            'freelancer_email': 'freelancer5@test.com',
+            'client_email': 'client3@test.com',
+            'rating': 5,
+            'comment': 'Отличная работа! Тексты получились очень качественными и продающими. Рекомендую!'
+        },
+        {
+            'job_id': 7,
+            'freelancer_email': 'freelancer3@test.com',
+            'client_email': 'client1@test.com',
+            'rating': 5,
+            'comment': 'Превосходный дизайн! Логотип и фирменный стиль получились именно такими, как я и представлял. Спасибо!'
+        }
+    ]
+    
+    for review in reviews:
+        cursor.execute("""
+            INSERT INTO Reviews (job_id, freelancer_email, client_email, rating, comment)
+            VALUES (?, ?, ?, ?, ?)
+        """, (
+            review['job_id'], review['freelancer_email'], review['client_email'],
+            review['rating'], review['comment']
+        ))
+    
+    # Создаем сообщения
+    messages = [
+        {
+            'sender_email': 'client2@test.com',
+            'receiver_email': 'freelancer1@test.com',
+            'job_id': 2,
+            'message': 'Привет! Как дела с лендингом? Есть ли вопросы?',
+            'created_at': datetime.now() - timedelta(hours=2)
+        },
+        {
+            'sender_email': 'freelancer1@test.com',
+            'receiver_email': 'client2@test.com',
+            'job_id': 2,
+            'message': 'Привет! Все хорошо, работаю над адаптивностью. Скоро покажу промежуточный результат.',
+            'created_at': datetime.now() - timedelta(hours=1, minutes=30)
+        },
+        {
+            'sender_email': 'client2@test.com',
+            'receiver_email': 'freelancer1@test.com',
+            'job_id': 2,
+            'message': 'Отлично! Жду с нетерпением.',
+            'created_at': datetime.now() - timedelta(hours=1)
+        },
+        {
+            'sender_email': 'client3@test.com',
+            'receiver_email': 'freelancer5@test.com',
+            'job_id': 4,
+            'message': 'Спасибо за отличную работу! Тексты получились очень качественными.',
+            'created_at': datetime.now() - timedelta(days=1)
+        },
+        {
+            'sender_email': 'freelancer5@test.com',
+            'receiver_email': 'client3@test.com',
+            'job_id': 4,
+            'message': 'Пожалуйста! Рада была помочь. Если понадобятся еще тексты - обращайтесь!',
+            'created_at': datetime.now() - timedelta(days=1, hours=-1)
+        },
+        {
+            'sender_email': 'freelancer2@test.com',
+            'receiver_email': 'freelancer3@test.com',
+            'job_id': None,
+            'message': 'Привет! Видела твои работы - очень круто! Может, поработаем вместе над проектом?',
+            'created_at': datetime.now() - timedelta(hours=3)
+        },
+        {
+            'sender_email': 'freelancer3@test.com',
+            'receiver_email': 'freelancer2@test.com',
+            'job_id': None,
+            'message': 'Привет! Конечно, было бы здорово! У меня есть несколько интересных проектов.',
+            'created_at': datetime.now() - timedelta(hours=2, minutes=45)
+        }
+    ]
+    
+    for msg in messages:
+        cursor.execute("""
+            INSERT INTO Messages (sender_email, receiver_email, job_id, message, created_at)
+            VALUES (?, ?, ?, ?, ?)
+        """, (
+            msg['sender_email'], msg['receiver_email'], msg['job_id'],
+            msg['message'], msg['created_at']
+        ))
+    
+    # Создаем комментарии
+    comments = [
+        {
+            'job_id': 1,
+            'user_email': 'freelancer1@test.com',
+            'comment': 'Интересный проект! У меня есть опыт разработки подобных приложений. Готов обсудить детали.',
+            'created_at': datetime.now() - timedelta(hours=4)
+        },
+        {
+            'job_id': 1,
+            'user_email': 'freelancer3@test.com',
+            'comment': 'Отличная идея! Могу помочь с дизайном интерфейса, если понадобится.',
+            'created_at': datetime.now() - timedelta(hours=3, minutes=30)
+        },
+        {
+            'job_id': 3,
+            'user_email': 'freelancer2@test.com',
+            'comment': 'Банковские приложения - это серьезно! Нужен опытный backend разработчик?',
+            'created_at': datetime.now() - timedelta(hours=2)
+        },
+        {
+            'job_id': 5,
+            'user_email': 'freelancer4@test.com',
+            'comment': 'API для склада - это мой профиль! Работал с подобными системами. Могу предложить оптимальное решение.',
+            'created_at': datetime.now() - timedelta(hours=1, minutes=15)
+        }
+    ]
+    
+    for comment in comments:
+        cursor.execute("""
+            INSERT INTO ProjectComments (job_id, user_email, comment, created_at)
+            VALUES (?, ?, ?, ?)
+        """, (
+            comment['job_id'], comment['user_email'], comment['comment'], comment['created_at']
+        ))
+    
+    conn.commit()
+    conn.close()
+
+# Проверяем и создаем тестовые данные при запуске
+check_and_create_test_data()
+
 
 # ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С ФАЙЛАМИ =====
 
@@ -135,7 +516,7 @@ def validate_date(date_str: str) -> str:
     
     # Проверяем формат даты (более гибкий)
     if not re.match(r'^\d{1,2}\.\d{1,2}\.\d{2,4}$', date_str):
-        raise ValueError("Дата должна быть в формате ДД.ММ.ГГГГ (например: 25.12.2024)")
+        raise ValueError("Дата должна быть в формате ДД.ММ.ГГГГ (например: 25.12.2025)")
     
     try:
         parts = date_str.split('.')
@@ -151,13 +532,16 @@ def validate_date(date_str: str) -> str:
         if year < 100:
             year += 2000
         
+        # Получаем текущий год
+        current_year = datetime.now().year
+        
         # Проверяем ограничения
         if day < 1 or day > 31:
             raise ValueError("День должен быть от 1 до 31")
         if month < 1 or month > 12:
             raise ValueError("Месяц должен быть от 1 до 12")
-        if year < 2020 or year > 2030:
-            raise ValueError("Год должен быть от 2020 до 2030")
+        if year < current_year or year > current_year + 5:
+            raise ValueError(f"Год должен быть от {current_year} до {current_year + 5}")
         
         # Проверяем корректность даты
         date_obj = datetime(year, month, day)
@@ -315,7 +699,7 @@ async def register_post(
 
 @app.get("/logout")
 async def logout():
-    response = RedirectResponse(url="/login", status_code=302)
+    response = RedirectResponse(url="/", status_code=302)
     response.delete_cookie("user_email")
     response.delete_cookie("access_token")
     return response
@@ -324,36 +708,39 @@ async def logout():
 # ===== ГЛАВНАЯ СТРАНИЦА И ПРОЕКТЫ =====
 
 @app.get("/")
-async def home(request: Request, user: dict = Depends(require_login), status: str = None):
+async def home(request: Request, status: str = None):
+    # Получаем пользователя без обязательной авторизации
+    user = get_current_user(request)
     jobs = get_jobs(status)
     # Конвертируем все Row в dict
     jobs = [dict(job) if isinstance(job, sqlite3.Row) else job for job in jobs]
     
-    # Фильтруем проекты: скрываем те, где уже есть принятый фрилансер
+    # Фильтруем проекты в зависимости от авторизации пользователя
     visible_jobs = []
     for job in jobs:
         # Проверяем, есть ли принятые отклики на этот проект
         applications = get_applications(job["id"])
         has_accepted = any(app["status"] == "accepted" for app in applications)
         
-        # Показываем проект если:
-        # 1. Это проект текущего пользователя (всегда виден создателю) ИЛИ
-        # 2. Проект в статусе "in_progress" или "done" (видны всем) ИЛИ
-        # 3. Нет принятых фрилансеров (открытые проекты) ИЛИ
-        # 4. Пользователь уже откликнулся на этот проект
-        if (job["creator_email"] == user["email"] or 
-            job["status"] in ["in_progress", "done"] or
-            not has_accepted):
-            visible_jobs.append(job)
-        elif user["role"] == "freelancer":
-            has_applied = has_user_applied_to_job(job["id"], user["email"])
-            if has_applied:
+        if user:
+            # Для авторизованных пользователей - обычная логика
+            if (job["creator_email"] == user["email"] or 
+                job["status"] in ["in_progress", "done"] or
+                not has_accepted):
+                visible_jobs.append(job)
+            elif user["role"] == "freelancer":
+                has_applied = has_user_applied_to_job(job["id"], user["email"])
+                if has_applied:
+                    visible_jobs.append(job)
+        else:
+            # Для неавторизованных пользователей показываем только открытые проекты
+            if job["status"] == "open" and not has_accepted:
                 visible_jobs.append(job)
     
-    # Добавляем информацию об откликах для всех пользователей
+    # Добавляем информацию об откликах для авторизованных пользователей
     for job in visible_jobs:
         job["applications"] = get_applications(job["id"])
-        if user["role"] == "freelancer":
+        if user and user["role"] == "freelancer":
             job["has_applied"] = has_user_applied_to_job(job["id"], user["email"])
             job["application_status"] = get_user_application_status(job["id"], user["email"])
         
@@ -941,14 +1328,26 @@ async def send_message_api(
 ):
     """API для отправки сообщения"""
     try:
+        # Проверяем, что пользователь не пытается отправить сообщение самому себе
+        if receiver_email == user["email"]:
+            return {"status": "error", "message": "Нельзя отправить сообщение самому себе"}
+        
+        # Проверяем, что получатель существует
+        receiver = get_user_by_email(receiver_email)
+        if not receiver:
+            return {"status": "error", "message": "Получатель не найден"}
+        
         # Сохраняем сообщение в базу данных
-        create_message(
-            sender_email=user["email"],
-            receiver_email=receiver_email,
-            message=message,
-            job_id=job_id
-        )
-        return {"status": "success", "message": "Сообщение отправлено"}
+        try:
+            create_message(
+                sender_email=user["email"],
+                receiver_email=receiver_email,
+                message=message,
+                job_id=job_id
+            )
+            return {"status": "success", "message": "Сообщение отправлено"}
+        except ValueError as e:
+            return {"status": "error", "message": str(e)}
     except Exception as e:
         return {"status": "error", "message": str(e)}
 
