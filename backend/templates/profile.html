@@ -64,14 +64,24 @@
                 {% if user.phone %}
                 <div>
                     <h5 class="font-medium text-gray-700">Телефон:</h5>
-                    <p class="text-gray-600">{{ user.phone }}</p>
+                    <p class="text-gray-600">
+                        <a href="tel:{{ user.phone }}" class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+                            {{ user.phone }}
+                        </a>
+                    </p>
                 </div>
                 {% endif %}
                 
                 {% if user.telegram %}
                 <div>
                     <h5 class="font-medium text-gray-700">Telegram:</h5>
-                    <p class="text-gray-600">{{ user.telegram }}</p>
+                    <p class="text-gray-600">
+                        <a href="https://t.me/{{ user.telegram.replace('@', '') }}" 
+                           target="_blank" 
+                           class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+                            {{ user.telegram }}
+                        </a>
+                    </p>
                 </div>
                 {% endif %}
                 

@@ -72,10 +72,21 @@
             <h3 class="font-semibold mb-2">Контакты</h3>
             <div class="space-y-1">
                 {% if profile_user.phone %}
-                <p class="text-gray-700">📞 {{ profile_user.phone }}</p>
+                <p class="text-gray-700">
+                    📞 <a href="tel:{{ profile_user.phone }}" 
+                          class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+                        {{ profile_user.phone }}
+                    </a>
+                </p>
                 {% endif %}
                 {% if profile_user.telegram %}
-                <p class="text-gray-700">📱 {{ profile_user.telegram }}</p>
+                <p class="text-gray-700">
+                    📱 <a href="https://t.me/{{ profile_user.telegram.replace('@', '') }}" 
+                          target="_blank" 
+                          class="text-blue-600 hover:text-blue-800 hover:underline transition-colors">
+                        {{ profile_user.telegram }}
+                    </a>
+                </p>
                 {% endif %}
             </div>
         </div>
