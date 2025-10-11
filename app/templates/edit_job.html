@@ -21,9 +21,10 @@
         
         <div>
             <label class="block text-sm font-medium text-gray-700 mb-1">Дедлайн</label>
-            <input type="date" name="deadline" value="{{ job.deadline }}"
+            <input type="date" name="deadline" id="deadline" value="{{ job.deadline }}"
                    class="w-full p-2 border rounded focus:ring-2 focus:ring-blue-500 focus:border-blue-500" required>
             <p class="text-sm text-gray-500 mt-1">Выберите дату дедлайна проекта</p>
+            <div id="date-error" class="text-red-500 text-sm mt-1 hidden">Дата не может быть в прошлом</div>
         </div>
         
         <div>
@@ -47,4 +48,48 @@
         </div>
     </form>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const form = document.querySelector('form');
+    const deadlineInput = document.getElementById('deadline');
+    const dateError = document.getElementById('date-error');
+    const submitButton = form.querySelector('button[type="submit"]');
+    
+    // Устанавливаем минимальную дату (сегодня)
+    const today = new Date().toISOString().split('T')[0];
+    deadlineInput.setAttribute('min', today);
+    
+    function validateDate() {
+        const selectedDate = deadlineInput.value;
+        const today = new Date().toISOString().split('T')[0];
+        
+        if (selectedDate && selectedDate < today) {
+            dateError.classList.remove('hidden');
+            submitButton.disabled = true;
+            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
+            return false;
+        } else {
+            dateError.classList.add('hidden');
+            submitButton.disabled = false;
+            submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
+            return true;
+        }
+    }
+    
+    // Валидация при изменении даты
+    deadlineInput.addEventListener('change', validateDate);
+    
+    // Валидация при отправке формы
+    form.addEventListener('submit', function(e) {
+        if (!validateDate()) {
+            e.preventDefault();
+            deadlineInput.focus();
+        }
+    });
+    
+    // Инициальная валидация
+    validateDate();
+});
+</script>
 {% endblock %}
