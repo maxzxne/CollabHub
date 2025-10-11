@@ -894,6 +894,19 @@ async def job_detail(request: Request, job_id: int, user: dict = Depends(require
 # Отклик на проект
 @app.post("/jobs/{job_id}/apply")
 async def apply_post(request: Request, job_id: int, user: dict = Depends(require_role("freelancer"))):
+    # Получаем проект и проверяем его статус
+    job = get_job_by_id(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Проект не найден")
+    
+    # Конвертируем Row в dict
+    if isinstance(job, sqlite3.Row):
+        job = dict(job)
+    
+    # Проверяем, что проект открыт для откликов
+    if job["status"] != "open":
+        raise HTTPException(status_code=400, detail="На этот проект нельзя откликнуться")
+    
     apply_to_job(job_id, user["email"])
     return RedirectResponse(url=f"/jobs/{job_id}", status_code=302)
 
