@@ -12,7 +12,12 @@
         <div class="border rounded-lg p-4 {% if app.status == 'accepted' %}bg-green-50 border-green-200{% elif app.status == 'rejected' %}bg-red-50 border-red-200{% else %}bg-yellow-50 border-yellow-200{% endif %} flex flex-col">
             <div class="flex-1">
                 <h3 class="text-lg font-semibold text-gray-800 mb-2">{{ app.title }}</h3>
-                <p class="text-sm text-gray-600 mb-2">Статус проекта: {{ app.job_status }}</p>
+                <p class="text-sm text-gray-600 mb-2">Статус проекта: 
+                    {% if app.job_status=='open' %}В поисках исполнителя
+                    {% elif app.job_status=='in_progress' %}В работе
+                    {% elif app.job_status=='done' %}Завершен
+                    {% else %}{{ app.job_status }}{% endif %}
+                </p>
                 <p class="text-sm text-gray-600 mb-3">Заказчик: {{ app.creator_email }}</p>
                 
                 <div class="flex items-center space-x-2 mb-4">
