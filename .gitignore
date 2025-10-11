@@ -175,3 +175,6 @@ secrets.json
 
 # Database access documentation (contains sensitive info)
 DATABASE_ACCESS.md
+
+# Defense questions (not needed for deployment)
+DEFENSE_QUESTIONS.md
