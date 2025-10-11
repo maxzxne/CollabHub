@@ -4,6 +4,8 @@ from fastapi import FastAPI, Request, Form, HTTPException, Depends, UploadFile, 
 from fastapi.responses import RedirectResponse
 from fastapi.templating import Jinja2Templates
 from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.httpsredirect import HTTPSRedirectMiddleware
+from fastapi.middleware.trustedhost import TrustedHostMiddleware
 
 # Стандартные библиотеки Python
 import sqlite3
@@ -70,6 +72,12 @@ def from_json(value):
         return []
 
 templates.env.filters["from_json"] = from_json
+
+# Принудительное перенаправление на HTTPS (только в продакшене)
+if os.getenv("RENDER"):
+    app.add_middleware(HTTPSRedirectMiddleware)
+    # Доверенные хосты для Render
+    app.add_middleware(TrustedHostMiddleware, allowed_hosts=["*.onrender.com", "*.render.com"])
 
 # Монтирование статических файлов
 app.mount("/static", StaticFiles(directory="static"), name="static")
