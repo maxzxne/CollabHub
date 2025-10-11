@@ -531,11 +531,10 @@ def validate_date(date_str: str) -> str:
         if date_obj < today:
             raise ValueError("Дата не может быть в прошлом")
         
-        # Проверяем максимальную дату (через 10 лет)
-        max_date = datetime.now().replace(hour=0, minute=0, second=0, microsecond=0)
-        max_date = max_date.replace(year=max_date.year + 10)
+        # Проверяем максимальную дату (2099 год)
+        max_date = datetime(2099, 12, 31)
         if date_obj > max_date:
-            raise ValueError("Дата не может быть более чем через 10 лет")
+            raise ValueError("Дата не может быть позже 2099 года")
         
         # Возвращаем дату в формате YYYY-MM-DD для сохранения в БД
         return date_str

@@ -56,11 +56,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const dateError = document.getElementById('date-error');
     const submitButton = form.querySelector('button[type="submit"]');
     
-    // Устанавливаем минимальную дату (сегодня) и максимальную дату (через 10 лет)
+    // Устанавливаем минимальную дату (сегодня) и максимальную дату (2099 год)
     const today = new Date().toISOString().split('T')[0];
-    const maxDate = new Date();
-    maxDate.setFullYear(maxDate.getFullYear() + 10);
-    const maxDateStr = maxDate.toISOString().split('T')[0];
+    const maxDateStr = '2099-12-31';
     
     deadlineInput.setAttribute('min', today);
     deadlineInput.setAttribute('max', maxDateStr);
@@ -74,7 +72,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (selectedDate < today) {
                 dateError.textContent = 'Дата не может быть в прошлом';
             } else {
-                dateError.textContent = 'Дата не может быть более чем через 10 лет';
+                dateError.textContent = 'Дата не может быть позже 2099 года';
             }
             submitButton.disabled = true;
             submitButton.classList.add('opacity-50', 'cursor-not-allowed');
