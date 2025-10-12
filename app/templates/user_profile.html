@@ -5,39 +5,43 @@
 {% block content %}
 <div class="max-w-4xl mx-auto card-lg p-6 mt-6">
     <!-- Заголовок профиля -->
-    <div class="flex items-center justify-between mb-6">
-        <div class="flex items-center space-x-4">
+    <div class="mb-6">
+        <div class="flex items-center space-x-4 mb-4">
             <img src="{{ profile_user.avatar or '/static/defaultAvatar.jpg' }}" 
                  alt="{{ profile_user.name }}" 
                  class="w-20 h-20 rounded-full object-cover">
-            <div>
+            <div class="flex-1">
                 <h2 class="text-2xl font-bold">{{ profile_user.name or profile_user.email }}</h2>
                 <p class="text-gray-600">{{ profile_user.email }}</p>
-                <div class="flex items-center space-x-4 mt-2">
-                    <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
-                        {% if profile_user.role == 'freelancer' %}Исполнитель{% else %}Заказчик{% endif %}
-                    </span>
-                    {% if profile_user.role == 'freelancer' %}
-                    <div class="flex items-center space-x-1">
-                        <span class="text-yellow-500">★</span>
-                        <span class="font-medium">{{ profile_user.rating or 0 }}</span>
-                    </div>
-                    <div class="flex items-center space-x-1">
-                        <span class="text-gray-500">📂</span>
-                        <span>{{ profile_user.completed_projects or 0 }} проектов</span>
-                    </div>
-                    {% endif %}
-                </div>
             </div>
         </div>
-        {% if user.email != profile_user.email %}
-        <div class="flex space-x-2">
-            <a href="/chat/{{ profile_user.email }}" 
-               class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition">
-                Написать
-            </a>
+        
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-4">
+                <span class="px-3 py-1 bg-gray-100 text-gray-800 rounded-full text-sm">
+                    {% if profile_user.role == 'freelancer' %}Исполнитель{% else %}Заказчик{% endif %}
+                </span>
+                {% if profile_user.role == 'freelancer' %}
+                <div class="flex items-center space-x-1">
+                    <span class="text-yellow-500">★</span>
+                    <span class="font-medium">{{ profile_user.rating or 0 }}</span>
+                </div>
+                <div class="flex items-center space-x-1">
+                    <span class="text-gray-500">📂</span>
+                    <span>{{ profile_user.completed_projects or 0 }} проектов</span>
+                </div>
+                {% endif %}
+            </div>
+            
+            {% if user.email != profile_user.email %}
+            <div class="flex space-x-2">
+                <a href="/chat/{{ profile_user.email }}" 
+                   class="px-4 py-2 bg-black text-white rounded hover:bg-gray-800 transition">
+                    Написать
+                </a>
+            </div>
+            {% endif %}
         </div>
-        {% endif %}
     </div>
     
     <!-- Информация о пользователе -->
