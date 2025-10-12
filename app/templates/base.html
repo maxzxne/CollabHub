@@ -4,8 +4,10 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>{% block title %}CollabHub{% endblock %}</title>
+    <link rel="icon" type="image/svg+xml" href="/static/images/favicon.svg">
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="/static/css/main.css">
+    <script src="/static/js/main.js"></script>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
@@ -30,8 +32,8 @@
 <!-- Header -->
 <header class="header">
     <div class="w-full px-4 sm:px-6 py-3 sm:py-4 flex justify-between items-center">
-        <a href="/" class="text-xl sm:text-2xl font-bold text-black hover:text-gray-600 transition-colors duration-200">
-            CollabHub
+        <a href="/" class="flex items-center hover:opacity-80 transition-opacity duration-200">
+            <img src="/static/images/logo.svg" alt="CollabHub" class="h-8 sm:h-10 w-auto">
         </a>
     
     {% if user %}
@@ -46,9 +48,7 @@
         
         <!-- Burger menu button -->
         <button id="mobile-menu-button" class="text-gray-700 hover:text-black transition p-1" aria-label="Открыть меню">
-            <svg class="w-5 h-5 sm:w-6 sm:h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
+            <img src="/static/icons/menu.svg" alt="Меню" class="w-5 h-5 sm:w-6 sm:h-6">
         </button>
     </div>
     
@@ -127,25 +127,6 @@
 </header>
 
 <script>
-// Mobile menu toggle
-document.addEventListener('DOMContentLoaded', function() {
-    const mobileMenuButton = document.getElementById('mobile-menu-button');
-    const mobileMenu = document.getElementById('mobile-menu');
-    
-    if (mobileMenuButton && mobileMenu) {
-        mobileMenuButton.addEventListener('click', function() {
-            mobileMenu.classList.toggle('hidden');
-        });
-        
-        // Close menu when clicking outside
-        document.addEventListener('click', function(event) {
-            if (!mobileMenuButton.contains(event.target) && !mobileMenu.contains(event.target)) {
-                mobileMenu.classList.add('hidden');
-            }
-        });
-    }
-});
-
 // Show auth overlay function
 function showAuthOverlay() {
     // Redirect to home page - overlay will be shown automatically for unauthenticated users

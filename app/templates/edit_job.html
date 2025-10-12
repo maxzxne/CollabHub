@@ -49,55 +49,5 @@
     </form>
 </div>
 
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const form = document.querySelector('form');
-    const deadlineInput = document.getElementById('deadline');
-    const dateError = document.getElementById('date-error');
-    const submitButton = form.querySelector('button[type="submit"]');
-    
-    // Устанавливаем минимальную дату (сегодня) и максимальную дату (2099 год)
-    const today = new Date().toISOString().split('T')[0];
-    const maxDateStr = '2099-12-31';
-    
-    deadlineInput.setAttribute('min', today);
-    deadlineInput.setAttribute('max', maxDateStr);
-    
-    function validateDate() {
-        const selectedDate = deadlineInput.value;
-        const today = new Date().toISOString().split('T')[0];
-        
-        if (selectedDate && (selectedDate < today || selectedDate > maxDateStr)) {
-            dateError.classList.remove('hidden');
-            if (selectedDate < today) {
-                dateError.textContent = 'Дата не может быть в прошлом';
-            } else {
-                dateError.textContent = 'Дата не может быть позже 2099 года';
-            }
-            submitButton.disabled = true;
-            submitButton.classList.add('opacity-50', 'cursor-not-allowed');
-            return false;
-        } else {
-            dateError.classList.add('hidden');
-            submitButton.disabled = false;
-            submitButton.classList.remove('opacity-50', 'cursor-not-allowed');
-            return true;
-        }
-    }
-    
-    // Валидация при изменении даты
-    deadlineInput.addEventListener('change', validateDate);
-    
-    // Валидация при отправке формы
-    form.addEventListener('submit', function(e) {
-        if (!validateDate()) {
-            e.preventDefault();
-            deadlineInput.focus();
-        }
-    });
-    
-    // Инициальная валидация
-    validateDate();
-});
-</script>
+<script src="/static/js/forms.js"></script>
 {% endblock %}

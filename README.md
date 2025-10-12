@@ -24,15 +24,32 @@ uvicorn main:app --host 0.0.0.0 --port 10000
 ```
 CollabHub/
 ├── app/                    # Основное приложение
-│   ├── main.py            # FastAPI приложение
-│   ├── models.py          # Модели БД
-│   ├── database.py        # Подключение к БД
-│   ├── templates/         # HTML шаблоны
-│   ├── static/           # CSS, JS, изображения
-│   └── uploads/          # Загруженные файлы
-├── docs/                  # Документация
+│   ├── main.py            # FastAPI приложение (1716 строк)
+│   ├── models.py          # Модели БД (727 строк)
+│   ├── database.py        # Подключение к БД (168 строк)
+│   ├── constants.py       # Константы приложения (90 строк)
+│   ├── utils.py           # Утилиты (121 строка)
+│   ├── templates/         # HTML шаблоны (20 файлов)
+│   ├── static/            # Статические ресурсы
+│   │   ├── css/           # Стили (main.css)
+│   │   ├── js/            # JavaScript файлы
+│   │   │   ├── main.js    # Основные функции
+│   │   │   ├── auth.js    # Авторизация
+│   │   │   └── forms.js   # Валидация форм
+│   │   ├── images/        # Изображения
+│   │   │   ├── logo.svg   # Логотип проекта
+│   │   │   └── favicon.svg # Иконка сайта
+│   │   └── icons/         # Иконки интерфейса
+│   └── uploads/           # Загруженные файлы
+├── tests/                 # Тесты
+│   ├── conftest.py        # Конфигурация тестов
+│   ├── test_auth.py       # Тесты авторизации
+│   ├── test_models.py     # Тесты моделей
+│   └── test_api.py        # Тесты API
 ├── requirements.txt       # Зависимости Python
 ├── render.yaml           # Конфигурация Render
+├── Dockerfile            # Docker конфигурация
+├── docker-compose.yml    # Docker Compose
 └── README.md             # Этот файл
 ```
 
@@ -49,7 +66,23 @@ CollabHub/
 
 - **Backend**: FastAPI, SQLite, JWT
 - **Frontend**: HTML5, Tailwind CSS, JavaScript
-- **Деплой**: Render.com
+- **Тестирование**: pytest, httpx
+- **Деплой**: Docker (локально) и Render.com (для тестирования и демонстрации в сети)
+
+## 🧪 Тестирование
+
+Для запуска тестов:
+
+```bash
+# Установка зависимостей для тестирования
+pip install pytest httpx
+
+# Запуск тестов
+pytest tests/
+
+# Запуск конкретного теста
+pytest tests/test_auth.py -v
+```
 
 ## 📚 Документация
 

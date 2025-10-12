@@ -315,9 +315,7 @@
             <p class="empty-state-description">В системе пока нет проектов</p>
             {% if user and user['role'] == 'client' %}
             <a href="/jobs/create" class="btn-primary">
-                <svg class="icon-sm" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                </svg>
+                <img src="/static/icons/plus.svg" alt="Плюс" class="icon-sm">
                 <span class="hidden sm:inline">Создать первый проект</span>
                 <span class="sm:hidden">Создать</span>
             </a>
@@ -340,52 +338,14 @@
 
 <!-- JavaScript для управления overlay -->
 {% if not user %}
+<script src="/static/js/auth.js"></script>
 <script>
-function switchTab(tab) {
-    const loginTab = document.getElementById('login-tab');
-    const registerTab = document.getElementById('register-tab');
-    const loginForm = document.getElementById('login-form');
-    const registerForm = document.getElementById('register-form');
-    
-    if (tab === 'login') {
-        loginTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-white text-black shadow-sm';
-        registerTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-black';
-        loginForm.classList.remove('hidden');
-        registerForm.classList.add('hidden');
-    } else {
-        loginTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all text-gray-600 hover:text-black';
-        registerTab.className = 'flex-1 py-2 px-4 rounded-md text-sm font-medium transition-all bg-white text-black shadow-sm';
-        loginForm.classList.add('hidden');
-        registerForm.classList.remove('hidden');
-    }
-}
-
-function closeAuthOverlay() {
-    // Не закрываем overlay, чтобы пользователь обязательно авторизовался
-    // Можно добавить логику для временного скрытия
-}
-
 // Автоматически переключаемся на нужную вкладку при ошибке
 {% if register_error %}
 switchTab('register');
 {% elif login_error %}
 switchTab('login');
 {% endif %}
-
-// Блокируем скролл страницы при активном overlay
-document.body.classList.add('overlay-active');
-
-// Предотвращаем закрытие overlay кликом вне формы
-document.getElementById('auth-overlay').addEventListener('click', function(e) {
-    if (e.target === this) {
-        // Не закрываем overlay
-    }
-});
-
-// Восстанавливаем скролл при закрытии overlay (если будет реализовано)
-function closeAuthOverlay() {
-    document.body.classList.remove('overlay-active');
-}
 </script>
 {% endif %}
 {% endblock %}
