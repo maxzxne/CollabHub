@@ -1,0 +1,1967 @@
+Профессиональное образовательное учреждение частное 
+«Колледж менеджмента»
+
+
+Специальность_________________________________________________
+(полное наименование специальности в соответствии с ФГОС)
+
+ДИПЛОМНАЯ РАБОТА
+
+по __________________________________________________________________
+(учебная дисциплина либо междисциплинарный курс)
+
+Тема: "Разработка веб-приложения для поиска исполнителей и заказчиков проектов"
+
+
+Студента(ки)________________________________________________________
+(ФИО в родительном падеже) 
+____________________________отделения _________ курса группа _________
+(очно-заочное либо заочное)
+
+______________________________20___г.
+дата сдачи работы
+____________________________________
+подпись студента
+     Преподаватель 
+____________________________________
+фамилия, инициалы
+____________________________________
+подпись преподавателя
+______________________________20___г.
+
+     Оценка_____________________________
+
+
+
+
+
+
+
+
+
+Архангельск 2025
+СОДЕРЖАНИЕ
+
+Введение	3
+1 Анализ и разработка требований к веб-приложению для поиска исполнителей и заказчиков проектов	6
+1.1 Назначение и область применения	6
+1.2 Постановка задачи	6
+1.3 Описание алгоритма функционирования веб-приложения	7
+1.4 Обоснование выбора программного обеспечения	7
+2 Проектирование веб-приложения для поиска исполнителей и заказчиков проектов	9
+2.1 Проектирование причинно-следственной диаграммы	9
+2.2 Проектирование DFD-диаграмм первого и второго уровня	10
+2.3 Проектирование UML-диаграмм стереотипов	12
+2.4 Проектирование прототипа веб-приложения	14
+3 Проектирование и разработка базы данных для веб-приложения (при наличии)	15
+3.1 Проектирование базы данных	15
+3.2 Разработка базы данных	18
+3.3 Подключение базы данных к веб-приложению	19
+4 Разработка веб-приложения для поиска исполнителей и заказчиков проектов	21
+4.1 Разработка пользовательского интерфейса	21
+4.2 Разработка функционала веб-приложения	23
+4.3 Создание инсталляционного ПО	25
+5 Спецификация программы	27
+6 Тестирование веб-приложения	29
+7 Руководство пользователя	32
+7.1 Общие сведения	32
+7.2 Инструкция по работе	32
+8 Руководство администратора (при наличии)	34
+9 Организация охраны труда и техника безопасности	36
+9.1 Требования охраны труда при работе с ПК	36
+9.2 Техника безопасности при работе с ПК	37
+Заключение	38
+Список использованных источников	39
+
+Введение
+
+В современном мире информационные технологии активно развиваются и интегрируются в различные сферы деятельности, включая бизнес и предпринимательство. В последние годы наблюдается значительный рост фриланс-индустрии и удаленной работы, что требует создания специализированных платформ для взаимодействия между заказчиками и исполнителями проектов.
+
+Веб-приложения для поиска исполнителей и заказчиков проектов имеют ряд преимуществ перед традиционными методами поиска работы:
+
+• глобальность. Использование веб-платформ позволяет заказчикам находить исполнителей по всему миру, а фрилансерам работать с клиентами из разных стран,
+• доступность. Веб-приложения доступны 24/7 из любой точки мира при наличии интернет-соединения,
+• эффективность. Платформы автоматизируют процессы поиска, отбора и взаимодействия между участниками,
+• прозрачность. Системы рейтингов и отзывов обеспечивают доверие между сторонами.
+
+Актуальность работы: в настоящее время фриланс-рынок активно развивается. По данным исследований, количество фрилансеров в мире превышает 1.5 миллиарда человек, а объем рынка фриланс-услуг составляет более 1 триллиона долларов. Веб-приложения для поиска исполнителей и заказчиков проектов становятся неотъемлемой частью современной экономики, обеспечивая гибкость трудовых отношений и возможности для удаленной работы.
+
+В настоящее время существует множество платформ для фриланса, однако многие из них имеют недостатки:
+
+• сложность интерфейса. Многие платформы имеют перегруженный и неинтуитивный интерфейс,
+• высокие комиссии. Некоторые платформы взимают значительные комиссии с пользователей,
+• недостаточная защита. Проблемы с безопасностью платежей и защитой интеллектуальной собственности.
+
+Цель данного дипломного проекта заключается в создании веб-приложения «CollabHub», которое поможет заказчикам находить квалифицированных исполнителей, а фрилансерам - интересные проекты. Веб-приложение будет упрощать процесс поиска и взаимодействия между участниками рынка фриланс-услуг.
+
+Веб-приложение CollabHub будет включать в себя следующие компоненты:
+
+• система регистрации и авторизации пользователей,
+• каталог проектов с возможностью поиска и фильтрации,
+• система откликов и управления заявками,
+• встроенная система сообщений для общения,
+• система рейтингов и отзывов,
+• управление профилями пользователей.
+
+Веб-приложение будет обладать современным и интуитивно понятным интерфейсом, адаптированным для различных устройств.
+
+Разработка веб-приложения CollabHub позволит повысить эффективность взаимодействия между заказчиками и исполнителями проектов, создав удобную и безопасную платформу для сотрудничества.
+
+Для реализации поставленной цели необходимо решить следующие задачи:
+
+• анализ существующих решений и определение требований к системе,
+• проектирование архитектуры веб-приложения: определение компонентов, выбор технологий, разработка схемы базы данных,
+• разработка пользовательского интерфейса и пользовательского опыта,
+• реализация функционала веб-приложения, включая API, систему аутентификации, управление данными,
+• тестирование приложения на корректность, производительность и безопасность,
+• развертывание и настройка производственной среды.
+
+1 Анализ и разработка требований к веб-приложению для поиска исполнителей и заказчиков проектов
+
+1.1 Назначение и область применения
+
+Разрабатываемый программный продукт является веб-приложением «CollabHub» для поиска исполнителей и заказчиков проектов. Веб-приложение предназначено для создания платформы взаимодействия между заказчиками проектов и фрилансерами. Разрабатываемое приложение представляет собой веб-платформу, позволяющую:
+
+• регистрироваться и авторизоваться в системе,
+• создавать и просматривать проекты,
+• подавать отклики на проекты,
+• общаться через встроенную систему сообщений,
+• управлять профилями и портфолио,
+• оставлять отзывы и рейтинги.
+
+Пользователями этого веб-приложения будут являться заказчики проектов, фрилансеры, компании, ищущие удаленных сотрудников, а также администраторы системы для модерации контента и управления платформой.
+
+1.2 Постановка задачи
+
+Разрабатываемое веб-приложение должно предоставлять функционал для поиска и взаимодействия между заказчиками и исполнителями проектов. Также в приложении нужно предусмотреть возможность создания проектов, подачи откликов, общения между участниками и оценки качества выполненной работы.
+
+Исходя из вышеизложенного, приложение должно выполнять следующие задачи:
+• иметь интуитивно понятный веб-интерфейс с адаптивным дизайном,
+• предоставлять систему регистрации и авторизации пользователей с ролями (заказчик/фрилансер/администратор),
+• обеспечивать создание, редактирование, просмотр и удаление проектов,
+• предоставлять возможность подачи откликов на проекты и управления заявками,
+• включать систему сообщений для общения между пользователями,
+• предоставлять функционал оценки и отзывов за выполненные работы,
+• обеспечивать управление профилями и портфолио пользователей,
+• включать систему комментариев к проектам,
+• предоставлять административные функции для модерации контента и управления системой.
+
+Веб-приложение должно состоять из набора страниц и компонентов. На главной странице необходимо разместить каталог проектов с возможностью поиска и фильтрации, а также навигационное меню для доступа к различным разделам:
+• просмотр и создание проектов,
+• управление откликами,
+• система сообщений,
+• управление профилем.
+
+При выборе проекта пользователь должен иметь возможность просмотреть детальную информацию и подать отклик (для фрилансеров) или управлять откликами (для заказчиков).
+
+1.3 Описание алгоритма функционирования веб-приложения
+
+Данное веб-приложение состоит из следующих основных модулей:
+
+• модуль аутентификации и авторизации (login, register, logout),
+• модуль управления проектами (создание, редактирование, просмотр, удаление),
+• модуль системы откликов (подача откликов, управление заявками),
+• модуль системы сообщений (чат между пользователями),
+• модуль управления профилями (редактирование профиля, портфолио),
+• модуль системы рейтингов и отзывов (оценка выполненных работ),
+• модуль комментариев к проектам.
+
+Веб-приложение CollabHub развертывается на веб-сервере и доступно через браузер. Данные хранятся в базе данных SQLite, а файлы (аватары, портфолио) сохраняются в файловой системе сервера.
+
+1.4 Обоснование выбора программного обеспечения
+
+Процесс разработки требует выбора необходимого технического и программного обеспечения.
+
+Для проектирования диаграмм был использован интернет-сервис draw.io. Данный сервис имеет ряд преимуществ:
+
+• возможность проектировать различные виды диаграмм с сохранением в облачном хранилище,
+• большое количество шаблонов для проектирования диаграмм.
+
+В качестве языка программирования выбран Python с фреймворком FastAPI, так как он обеспечивает высокую производительность, простоту разработки и встроенную поддержку современного веб-API. Для фронтенда используется HTML5, CSS3 и JavaScript с фреймворком Tailwind CSS для создания современного адаптивного интерфейса.
+
+Для разработки приложения используется интегрированная среда разработки Visual Studio Code, которая имеет следующие преимущества:
+
+• поддержка множества языков программирования,
+• встроенная поддержка Git,
+• богатая экосистема расширений.
+
+Минимальные системные требования для работоспособности веб-приложения CollabHub:
+
+• операционная система Windows 10/Linux/macOS,
+• Python 3.8 и выше,
+• процессор с тактовой частотой 2.0 ГГц и выше,
+• оперативная память минимум 4 ГБ,
+• объем свободного места на жестком диске не менее 1 ГБ.
+
+2 Проектирование веб-приложения для поиска исполнителей и заказчиков проектов
+
+2.1 Проектирование причинно-следственной диаграммы
+
+Причинно-следственная диаграмма – инструмент, позволяющий выявить наиболее существенные причины, влияющие на конечный результат [2]. На рисунке 1 изображена причинно-следственная диаграмма веб-приложения CollabHub.
+
+Рисунок 1 – Веб-приложение CollabHub. Диаграмма причинно-следственная
+
+На данной диаграмме отражено, что веб-приложение CollabHub имеет два типа данных. Данные разделены на пользовательские и системные, субъектом является пользователь (заказчик или фрилансер).
+
+Основные причинно-следственные связи в системе:
+
+1. Пользовательские данные:
+- Причина: Необходимость в выполнении проекта
+  Следствие: Заказчик регистрируется в системе и создает проект с описанием требований
+- Причина: Поиск работы и проектов
+  Следствие: Фрилансер регистрируется в системе и создает профиль с портфолио
+- Причина: Заинтересованность в конкретном проекте
+  Следствие: Фрилансер подает отклик на проект с сопроводительным сообщением
+- Причина: Необходимость общения в процессе работы
+  Следствие: Использование системы сообщений между заказчиком и исполнителем
+- Причина: Завершение проекта и оценка качества работы
+  Следствие: Оставление отзывов и обновление рейтингов участников
+
+2. Системные данные:
+- Причина: Регистрация пользователей в системе
+  Следствие: Создание учетных записей с ролями (заказчик/фрилансер)
+- Причина: Создание проектов заказчиками
+  Следствие: Формирование базы данных доступных проектов
+- Причина: Подача откликов фрилансерами
+  Следствие: Создание базы данных откликов и заявок
+- Причина: Взаимодействие между пользователями
+  Следствие: Генерация сообщений и истории переписки
+- Причина: Оценка выполненной работы
+  Следствие: Обновление рейтингов и статистики пользователей
+
+Основные компоненты системы:
+
+Пользовательские данные включают:
+• Профили пользователей (заказчики и фрилансеры) с личной информацией, навыками и рейтингами
+• Проекты с детальным описанием, требованиями, сроками и приоритетами
+• Отклики и заявки на проекты с сопроводительными сообщениями
+• Сообщения между пользователями в рамках проектов
+• Отзывы и рейтинги за выполненную работу
+
+Системные данные включают:
+• Учетные записи пользователей с аутентификацией и авторизацией
+• Статистику использования платформы и активности пользователей
+• Логи системы для отслеживания действий и ошибок
+• Настройки конфигурации веб-приложения
+• Резервные копии данных для обеспечения надежности
+
+Взаимодействие субъектов с данными:
+
+Пользователь (заказчик, фрилансер или администратор) взаимодействует с веб-приложением через браузер, обращаясь к различным разделам системы. В зависимости от роли пользователя, система предоставляет соответствующий функционал:
+
+- Заказчик создает проекты, просматривает отклики, выбирает исполнителей, общается с фрилансерами и оставляет отзывы
+- Фрилансер просматривает доступные проекты, подает отклики, общается с заказчиками, выполняет работу и получает оценки
+- Администратор модерирует контент, управляет проектами и комментариями, просматривает статистику системы
+
+Система CollabHub обрабатывает все пользовательские запросы, обеспечивает безопасность данных, поддерживает целостность информации и предоставляет удобный интерфейс для взаимодействия между участниками фриланс-рынка.
+
+2.2 Проектирование DFD-диаграмм первого и второго уровня
+
+Для полного описания движения данных внутри приложения спроектированы DFD диаграммы первого и второго уровня.
+
+DFD-диаграмма (диаграмма потока данных) – методология графического структурного анализа, описывающая внешние по отношению к системе источники и адресаты данных, логические функции, потоки данных и хранилища данных. Цель DFD представления – продемонстрировать, как каждый процесс преобразует свои входные данные в выходные, а также выявить отношения между этими процессами.
+
+На рисунке 2 изображена DFD-диаграмма первого уровня веб-приложения CollabHub.
+
+Рисунок 2 – Веб-приложение CollabHub. DFD-диаграмма первого уровня
+
+Пользователь взаимодействует с веб-интерфейсом, который обрабатывает запросы и взаимодействует с базой данных для получения и сохранения информации.
+
+На рисунке 3 изображена DFD-диаграмма второго уровня веб-приложения CollabHub.
+
+Рисунок 3 – Веб-приложение CollabHub. DFD-диаграмма второго уровня
+
+На данной диаграмме показано, что пользователь взаимодействует с веб-приложением через браузер, обращаясь к различным страницам и функциям приложения. Система обрабатывает запросы, взаимодействует с базой данных и файловой системой для получения и сохранения данных.
+
+2.3 Проектирование UML-диаграмм стереотипов
+
+UML (Unified Modeling Language) – язык графического описания для объектного моделирования в области разработки программного обеспечения. Используя UML, разработчики могут создавать диаграммы классов, диаграммы вариантов использования, диаграммы последовательностей и другие виды диаграмм.
+
+UML-диаграммы стереотипов используются для создания новых элементов моделирования, получаемых из существующих, но имеющих определенные свойства, которые подходят для конкретной проблемы предметной области.
+
+На рисунке 4 представлена UML-диаграмма стереотипов веб-приложения CollabHub.
+
+Рисунок 4 – Веб-приложение CollabHub. UML-диаграмма стереотипов
+
+На данной диаграмме показано, что пользователь может взаимодействовать со следующими основными компонентами системы:
+
+• модуль управления проектами,
+• модуль системы откликов,
+• модуль системы сообщений,
+• модуль управления профилями.
+
+2.4 Проектирование прототипа веб-приложения
+
+Прототип – модель, прообраз конечного продукта. Для описания прототипа веб-приложения CollabHub выбрана интерактивная модель. Интерактивный прототип представляет собой схематичное изображение пользовательского интерфейса с возможностью взаимодействия.
+
+На рисунке 5 представлен прототип главной страницы веб-приложения CollabHub.
+
+Рисунок 5 – Веб-приложение CollabHub. Прототип главной страницы
+
+3 Проектирование и разработка базы данных для веб-приложения (при наличии)
+
+3.1 Проектирование базы данных
+
+Для веб-приложения CollabHub была спроектирована реляционная база данных SQLite, включающая следующие основные таблицы:
+
+• Users – таблица пользователей (заказчики, фрилансеры и администраторы),
+• Jobs – таблица проектов,
+• Applications – таблица откликов на проекты,
+• Messages – таблица сообщений между пользователями,
+• Reviews – таблица отзывов и рейтингов.
+
+Схема базы данных обеспечивает нормализацию данных и исключает дублирование информации.
+
+Структура таблицы Users:
+
+```sql
+CREATE TABLE Users (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    email TEXT UNIQUE NOT NULL,
+    password TEXT NOT NULL,
+    name TEXT NOT NULL,
+    role TEXT NOT NULL CHECK (role IN ('client', 'freelancer')),
+    avatar TEXT,
+    bio TEXT,
+    skills TEXT,
+    rating REAL DEFAULT 0.0,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+```
+
+Структура таблицы Jobs:
+
+```sql
+CREATE TABLE Jobs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    title TEXT NOT NULL,
+    description TEXT NOT NULL,
+    creator_email TEXT NOT NULL,
+    status TEXT DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'completed', 'cancelled')),
+    priority TEXT DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
+    deadline DATE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (creator_email) REFERENCES Users(email)
+);
+```
+
+Структура таблицы Applications:
+
+```sql
+CREATE TABLE Applications (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id INTEGER NOT NULL,
+    freelancer_email TEXT NOT NULL,
+    status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
+    message TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (job_id) REFERENCES Jobs(id),
+    FOREIGN KEY (freelancer_email) REFERENCES Users(email),
+    UNIQUE(job_id, freelancer_email)
+);
+```
+
+Структура таблицы Messages:
+
+```sql
+CREATE TABLE Messages (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    sender_email TEXT NOT NULL,
+    receiver_email TEXT NOT NULL,
+    message TEXT NOT NULL,
+    job_id INTEGER,
+    is_read BOOLEAN DEFAULT FALSE,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (sender_email) REFERENCES Users(email),
+    FOREIGN KEY (receiver_email) REFERENCES Users(email),
+    FOREIGN KEY (job_id) REFERENCES Jobs(id)
+);
+```
+
+Структура таблицы Reviews:
+
+```sql
+CREATE TABLE Reviews (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    job_id INTEGER NOT NULL,
+    reviewer_email TEXT NOT NULL,
+    reviewee_email TEXT NOT NULL,
+    rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+    comment TEXT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (job_id) REFERENCES Jobs(id),
+    FOREIGN KEY (reviewer_email) REFERENCES Users(email),
+    FOREIGN KEY (reviewee_email) REFERENCES Users(email),
+    UNIQUE(job_id, reviewer_email, reviewee_email)
+);
+```
+
+Создание индексов для оптимизации производительности:
+
+```sql
+CREATE INDEX idx_users_email ON Users(email);
+CREATE INDEX idx_jobs_creator ON Jobs(creator_email);
+CREATE INDEX idx_jobs_status ON Jobs(status);
+CREATE INDEX idx_applications_job ON Applications(job_id);
+CREATE INDEX idx_applications_freelancer ON Applications(freelancer_email);
+CREATE INDEX idx_messages_sender ON Messages(sender_email);
+CREATE INDEX idx_messages_receiver ON Messages(receiver_email);
+CREATE INDEX idx_reviews_reviewee ON Reviews(reviewee_email);
+```
+
+3.2 Разработка базы данных
+
+База данных была реализована с использованием SQLite. Созданы все необходимые таблицы с соответствующими полями, индексами и ограничениями целостности. Реализованы функции для работы с базой данных, включая CRUD операции для всех сущностей.
+
+Пример функции получения пользователя по email:
+
+```python
+def get_user_by_email(email: str):
+    """Получение пользователя по email"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    cursor.execute("SELECT * FROM Users WHERE email = ?", (email,))
+    user = cursor.fetchone()
+    conn.close()
+    return user
+```
+
+Пример функции создания пользователя:
+
+```python
+def create_user(email: str, password: str, name: str, role: str):
+    """Создание нового пользователя"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Проверяем, существует ли пользователь
+    cursor.execute("SELECT id FROM Users WHERE email = ?", (email,))
+    if cursor.fetchone():
+        conn.close()
+        raise ValueError("Пользователь с таким email уже существует")
+    
+    # Хешируем пароль
+    hashed_password = hash_password(password)
+    
+    # Создаем пользователя
+    cursor.execute("""
+        INSERT INTO Users (email, password, name, role)
+        VALUES (?, ?, ?, ?)
+    """, (email, hashed_password, name, role))
+    
+    conn.commit()
+    conn.close()
+    return cursor.lastrowid
+```
+
+Пример функции получения списка проектов:
+
+```python
+def get_jobs(status: str = None, creator_email: str = None):
+    """Получение списка проектов с фильтрацией"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    query = """
+        SELECT j.*, u.name as creator_name, u.avatar as creator_avatar
+        FROM Jobs j
+        JOIN Users u ON j.creator_email = u.email
+    """
+    params = []
+    
+    if status:
+        query += " WHERE j.status = ?"
+        params.append(status)
+    elif creator_email:
+        query += " WHERE j.creator_email = ?"
+        params.append(creator_email)
+    
+    query += " ORDER BY j.created_at DESC"
+    
+    cursor.execute(query, params)
+    jobs = cursor.fetchall()
+    conn.close()
+    return jobs
+```
+
+Пример функции создания проекта:
+
+```python
+def create_job(title: str, description: str, creator_email: str, 
+               deadline: str = None, priority: str = "medium"):
+    """Создание нового проекта"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO Jobs (title, description, creator_email, deadline, priority)
+        VALUES (?, ?, ?, ?, ?)
+    """, (title, description, creator_email, deadline, priority))
+    
+    conn.commit()
+    conn.close()
+    return cursor.lastrowid
+```
+
+Пример функции подачи отклика на проект:
+
+```python
+def apply_to_job(job_id: int, freelancer_email: str, message: str = ""):
+    """Подача отклика на проект"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Проверяем, что проект существует и открыт
+    cursor.execute("SELECT status FROM Jobs WHERE id = ?", (job_id,))
+    job = cursor.fetchone()
+    if not job:
+        conn.close()
+        raise ValueError("Проект не найден")
+    if job[0] != "open":
+        conn.close()
+        raise ValueError("На этот проект нельзя откликнуться")
+    
+    # Проверяем, что пользователь еще не откликался
+    cursor.execute("""
+        SELECT id FROM Applications 
+        WHERE job_id = ? AND freelancer_email = ?
+    """, (job_id, freelancer_email))
+    if cursor.fetchone():
+        conn.close()
+        raise ValueError("Вы уже откликались на этот проект")
+    
+    # Создаем отклик
+    cursor.execute("""
+        INSERT INTO Applications (job_id, freelancer_email, message)
+        VALUES (?, ?, ?)
+    """, (job_id, freelancer_email, message))
+    
+    conn.commit()
+    conn.close()
+    return cursor.lastrowid
+```
+
+Пример функции получения откликов на проект:
+
+```python
+def get_applications(job_id: int):
+    """Получение откликов на проект"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        SELECT a.*, u.name as freelancer_name, u.avatar as freelancer_avatar,
+               u.rating as freelancer_rating, u.skills as freelancer_skills
+        FROM Applications a
+        JOIN Users u ON a.freelancer_email = u.email
+        WHERE a.job_id = ?
+        ORDER BY a.created_at DESC
+    """, (job_id,))
+    
+    applications = cursor.fetchall()
+    conn.close()
+    return applications
+```
+
+Пример функции создания сообщения:
+
+```python
+def create_message(sender_email: str, receiver_email: str, 
+                  message: str, job_id: int = None):
+    """Создание сообщения"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    cursor.execute("""
+        INSERT INTO Messages (sender_email, receiver_email, message, job_id)
+        VALUES (?, ?, ?, ?)
+    """, (sender_email, receiver_email, message, job_id))
+    
+    conn.commit()
+    conn.close()
+    return cursor.lastrowid
+```
+
+Пример функции обновления статистики фрилансера:
+
+```python
+def update_freelancer_stats(freelancer_email: str):
+    """Обновление рейтинга и статистики фрилансера"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Получаем все отзывы о фрилансере
+    cursor.execute("""
+        SELECT rating FROM Reviews 
+        WHERE reviewee_email = ?
+    """, (freelancer_email,))
+    
+    reviews = cursor.fetchall()
+    if reviews:
+        # Вычисляем средний рейтинг
+        ratings = [review[0] for review in reviews]
+        avg_rating = sum(ratings) / len(ratings)
+        
+        # Обновляем рейтинг в таблице Users
+        cursor.execute("""
+            UPDATE Users 
+            SET rating = ? 
+            WHERE email = ?
+        """, (avg_rating, freelancer_email))
+        
+        conn.commit()
+    
+    conn.close()
+```
+
+3.3 Подключение базы данных к веб-приложению
+
+База данных подключается к веб-приложению через модуль database.py, который обеспечивает установление соединения и выполнение SQL-запросов. Реализована система миграций для обновления структуры базы данных.
+
+Пример функции подключения к базе данных:
+
+```python
+import sqlite3
+import os
+
+def get_db_connection():
+    """Получение соединения с базой данных SQLite"""
+    conn = sqlite3.connect('freelance.db')
+    conn.row_factory = sqlite3.Row
+    return conn
+```
+
+Пример функции инициализации базы данных:
+
+```python
+def init_db():
+    """Инициализация базы данных и создание таблиц"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Создание таблицы пользователей
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Users (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            email TEXT UNIQUE NOT NULL,
+            password TEXT NOT NULL,
+            name TEXT NOT NULL,
+            role TEXT NOT NULL CHECK (role IN ('client', 'freelancer')),
+            avatar TEXT,
+            bio TEXT,
+            skills TEXT,
+            rating REAL DEFAULT 0.0,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        )
+    ''')
+    
+    # Создание таблицы проектов
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Jobs (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            title TEXT NOT NULL,
+            description TEXT NOT NULL,
+            creator_email TEXT NOT NULL,
+            status TEXT DEFAULT 'open' CHECK (status IN ('open', 'in_progress', 'completed', 'cancelled')),
+            priority TEXT DEFAULT 'medium' CHECK (priority IN ('low', 'medium', 'high')),
+            deadline DATE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (creator_email) REFERENCES Users(email)
+        )
+    ''')
+    
+    # Создание таблицы откликов
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Applications (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            job_id INTEGER NOT NULL,
+            freelancer_email TEXT NOT NULL,
+            status TEXT DEFAULT 'pending' CHECK (status IN ('pending', 'accepted', 'rejected')),
+            message TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (job_id) REFERENCES Jobs(id),
+            FOREIGN KEY (freelancer_email) REFERENCES Users(email),
+            UNIQUE(job_id, freelancer_email)
+        )
+    ''')
+    
+    # Создание таблицы сообщений
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Messages (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            sender_email TEXT NOT NULL,
+            receiver_email TEXT NOT NULL,
+            message TEXT NOT NULL,
+            job_id INTEGER,
+            is_read BOOLEAN DEFAULT FALSE,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (sender_email) REFERENCES Users(email),
+            FOREIGN KEY (receiver_email) REFERENCES Users(email),
+            FOREIGN KEY (job_id) REFERENCES Jobs(id)
+        )
+    ''')
+    
+    # Создание таблицы отзывов
+    cursor.execute('''
+        CREATE TABLE IF NOT EXISTS Reviews (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            job_id INTEGER NOT NULL,
+            reviewer_email TEXT NOT NULL,
+            reviewee_email TEXT NOT NULL,
+            rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
+            comment TEXT,
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            FOREIGN KEY (job_id) REFERENCES Jobs(id),
+            FOREIGN KEY (reviewer_email) REFERENCES Users(email),
+            FOREIGN KEY (reviewee_email) REFERENCES Users(email),
+            UNIQUE(job_id, reviewer_email, reviewee_email)
+        )
+    ''')
+    
+    # Создание индексов для оптимизации
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_users_email ON Users(email)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_jobs_creator ON Jobs(creator_email)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_jobs_status ON Jobs(status)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_applications_job ON Applications(job_id)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_applications_freelancer ON Applications(freelancer_email)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_messages_sender ON Messages(sender_email)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_messages_receiver ON Messages(receiver_email)')
+    cursor.execute('CREATE INDEX IF NOT EXISTS idx_reviews_reviewee ON Reviews(reviewee_email)')
+    
+    conn.commit()
+    conn.close()
+```
+
+Пример функции работы с транзакциями:
+
+```python
+def execute_transaction(queries, params_list):
+    """Выполнение нескольких запросов в рамках одной транзакции"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    try:
+        for query, params in zip(queries, params_list):
+            cursor.execute(query, params)
+        conn.commit()
+        return True
+    except Exception as e:
+        conn.rollback()
+        print(f"Ошибка транзакции: {e}")
+        return False
+    finally:
+        conn.close()
+```
+
+Пример функции создания резервной копии:
+
+```python
+import shutil
+from datetime import datetime
+
+def backup_database():
+    """Создание резервной копии базы данных"""
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    backup_filename = f"freelance_backup_{timestamp}.db"
+    
+    try:
+        shutil.copy2('freelance.db', backup_filename)
+        print(f"Резервная копия создана: {backup_filename}")
+        return backup_filename
+    except Exception as e:
+        print(f"Ошибка создания резервной копии: {e}")
+        return None
+```
+
+Пример функции проверки целостности данных:
+
+```python
+def check_data_integrity():
+    """Проверка целостности данных в базе"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    integrity_checks = [
+        # Проверка внешних ключей
+        "SELECT COUNT(*) FROM Jobs WHERE creator_email NOT IN (SELECT email FROM Users)",
+        "SELECT COUNT(*) FROM Applications WHERE job_id NOT IN (SELECT id FROM Jobs)",
+        "SELECT COUNT(*) FROM Applications WHERE freelancer_email NOT IN (SELECT email FROM Users)",
+        "SELECT COUNT(*) FROM Messages WHERE sender_email NOT IN (SELECT email FROM Users)",
+        "SELECT COUNT(*) FROM Messages WHERE receiver_email NOT IN (SELECT email FROM Users)",
+        "SELECT COUNT(*) FROM Reviews WHERE job_id NOT IN (SELECT id FROM Jobs)",
+        "SELECT COUNT(*) FROM Reviews WHERE reviewer_email NOT IN (SELECT email FROM Users)",
+        "SELECT COUNT(*) FROM Reviews WHERE reviewee_email NOT IN (SELECT email FROM Users)"
+    ]
+    
+    issues = []
+    for check in integrity_checks:
+        cursor.execute(check)
+        count = cursor.fetchone()[0]
+        if count > 0:
+            issues.append(f"Найдено {count} нарушений целостности")
+    
+    conn.close()
+    return issues
+```
+
+Пример функции миграции базы данных:
+
+```python
+def migrate_database():
+    """Выполнение миграций базы данных"""
+    conn = get_db_connection()
+    cursor = conn.cursor()
+    
+    # Проверяем версию схемы
+    cursor.execute("PRAGMA user_version")
+    current_version = cursor.fetchone()[0]
+    
+    migrations = [
+        # Миграция 1: Добавление поля skills в таблицу Users
+        "ALTER TABLE Users ADD COLUMN skills TEXT",
+        # Миграция 2: Добавление поля priority в таблицу Jobs
+        "ALTER TABLE Jobs ADD COLUMN priority TEXT DEFAULT 'medium'",
+        # Миграция 3: Создание индекса для оптимизации поиска
+        "CREATE INDEX IF NOT EXISTS idx_jobs_deadline ON Jobs(deadline)"
+    ]
+    
+    try:
+        for migration in migrations:
+            cursor.execute(migration)
+        
+        # Обновляем версию схемы
+        cursor.execute(f"PRAGMA user_version = {current_version + 1}")
+        conn.commit()
+        print(f"Миграция выполнена успешно. Версия схемы: {current_version + 1}")
+    except Exception as e:
+        conn.rollback()
+        print(f"Ошибка миграции: {e}")
+    finally:
+        conn.close()
+```
+
+4 Разработка веб-приложения для поиска исполнителей и заказчиков проектов
+
+4.1 Разработка пользовательского интерфейса
+
+Пользовательский интерфейс разработан с использованием HTML5, CSS3 и JavaScript. Применен фреймворк Tailwind CSS для создания современного адаптивного дизайна. Интерфейс адаптирован для различных устройств и разрешений экрана.
+
+Система шаблонов FastAPI
+
+Веб-приложение CollabHub использует систему шаблонов FastAPI с движком Jinja2 для генерации HTML-страниц. Шаблоны позволяют создавать динамические веб-страницы с возможностью вставки данных из Python-кода.
+
+Структура шаблонов:
+
+```
+templates/
+├── base.html                    # Базовый шаблон
+├── index.html                   # Главная страница
+├── profile.html                 # Профиль пользователя
+├── create_job.html              # Создание проекта
+├── job_detail.html              # Детали проекта
+├── applications_client.html     # Отклики для заказчика
+├── applications_freelancer.html # Отклики для фрилансера
+├── messages.html                # Сообщения
+├── chat.html                    # Чат
+├── project_chat.html            # Чат по проекту
+├── reviews_client.html          # Отзывы заказчика
+├── reviews_freelancer.html      # Отзывы фрилансера
+├── review_form.html             # Форма отзыва
+├── profiles.html                # Список пользователей (с фильтрацией по ролям)
+├── user_profile.html            # Профиль другого пользователя
+├── apply_confirm.html           # Подтверждение отклика
+├── edit_job.html                # Редактирование проекта
+└── error.html                   # Страница ошибки
+```
+
+Пример базового шаблона (base.html):
+
+```html
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}CollabHub{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="icon" href="/static/images/favicon.ico">
+</head>
+<body class="bg-gray-50">
+    <!-- Навигационное меню -->
+    <nav class="bg-white shadow-lg">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between h-16">
+                <div class="flex items-center">
+                    <a href="/" class="text-xl font-bold text-blue-600">CollabHub</a>
+                </div>
+                <div class="flex items-center space-x-4">
+                    {% if user %}
+                        <a href="/profile" class="text-gray-700 hover:text-blue-600">Профиль</a>
+                        <a href="/messages" class="text-gray-700 hover:text-blue-600">Сообщения</a>
+                        {% if user.role == 'client' %}
+                            <a href="/jobs/create" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Создать проект</a>
+                        {% endif %}
+                        <a href="/logout" class="text-gray-700 hover:text-blue-600">Выйти</a>
+                    {% else %}
+                        <a href="/login" class="text-gray-700 hover:text-blue-600">Войти</a>
+                        <a href="/register" class="bg-blue-600 text-white px-4 py-2 rounded hover:bg-blue-700">Регистрация</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Основной контент -->
+    <main class="max-w-7xl mx-auto py-6 px-4">
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Подвал -->
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p>&copy; 2025 CollabHub. Все права защищены.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/main.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>
+```
+
+Пример главной страницы (index.html):
+
+```html
+{% extends "base.html" %}
+
+{% block title %}Главная - CollabHub{% endblock %}
+
+{% block content %}
+<div class="mb-8">
+    <h1 class="text-3xl font-bold text-gray-900 mb-4">Добро пожаловать в CollabHub</h1>
+    <p class="text-gray-600">Найдите исполнителей для ваших проектов или предложите свои услуги</p>
+</div>
+
+<!-- Форма поиска -->
+<div class="bg-white rounded-lg shadow-md p-6 mb-8">
+    <form method="GET" action="/" class="flex gap-4">
+        <input type="text" name="search" placeholder="Поиск проектов..." 
+               value="{{ search_query or '' }}" 
+               class="flex-1 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+        <select name="status" class="px-4 py-2 border border-gray-300 rounded-lg">
+            <option value="">Все статусы</option>
+            <option value="open" {% if status_filter == 'open' %}selected{% endif %}>Открытые</option>
+            <option value="in_progress" {% if status_filter == 'in_progress' %}selected{% endif %}>В работе</option>
+        </select>
+        <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+            Найти
+        </button>
+    </form>
+</div>
+
+<!-- Список проектов -->
+<div class="grid gap-6">
+    {% for job in jobs %}
+    <div class="bg-white rounded-lg shadow-md p-6 hover:shadow-lg transition-shadow">
+        <div class="flex justify-between items-start mb-4">
+            <h3 class="text-xl font-semibold text-gray-900">
+                <a href="/jobs/{{ job.id }}" class="hover:text-blue-600">{{ job.title }}</a>
+            </h3>
+            <span class="px-3 py-1 text-sm rounded-full 
+                {% if job.status == 'open' %}bg-green-100 text-green-800
+                {% elif job.status == 'in_progress' %}bg-yellow-100 text-yellow-800
+                {% elif job.status == 'completed' %}bg-blue-100 text-blue-800
+                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                {{ job.status }}
+            </span>
+        </div>
+        
+        <p class="text-gray-600 mb-4">{{ job.description[:200] }}{% if job.description|length > 200 %}...{% endif %}</p>
+        
+        <div class="flex justify-between items-center text-sm text-gray-500">
+            <div class="flex items-center">
+                <img src="{{ job.creator_avatar or '/static/defaultAvatar.jpg' }}" 
+                     alt="Аватар" class="w-6 h-6 rounded-full mr-2">
+                <span>{{ job.creator_name }}</span>
+            </div>
+            <div class="flex items-center space-x-4">
+                {% if job.deadline %}
+                <span>📅 {{ job.deadline }}</span>
+                {% endif %}
+                <span>⭐ {{ job.priority }}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+{% if not jobs %}
+<div class="text-center py-12">
+    <p class="text-gray-500 text-lg">Проекты не найдены</p>
+</div>
+{% endif %}
+{% endblock %}
+```
+
+Пример страницы создания проекта (create_job.html):
+
+```html
+{% extends "base.html" %}
+
+{% block title %}Создать проект - CollabHub{% endblock %}
+
+{% block content %}
+<div class="max-w-2xl mx-auto">
+    <h1 class="text-3xl font-bold text-gray-900 mb-8">Создать новый проект</h1>
+    
+    <form method="POST" action="/jobs/create" class="bg-white rounded-lg shadow-md p-6">
+        {% if error %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+            {{ error }}
+        </div>
+        {% endif %}
+        
+        <div class="mb-6">
+            <label for="title" class="block text-sm font-medium text-gray-700 mb-2">Название проекта</label>
+            <input type="text" id="title" name="title" required
+                   class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                   placeholder="Введите название проекта">
+        </div>
+        
+        <div class="mb-6">
+            <label for="description" class="block text-sm font-medium text-gray-700 mb-2">Описание проекта</label>
+            <textarea id="description" name="description" rows="6" required
+                      class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                      placeholder="Опишите детали проекта, требования и ожидания"></textarea>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+            <div>
+                <label for="deadline" class="block text-sm font-medium text-gray-700 mb-2">Срок выполнения</label>
+                <input type="date" id="deadline" name="deadline"
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+            </div>
+            
+            <div>
+                <label for="priority" class="block text-sm font-medium text-gray-700 mb-2">Приоритет</label>
+                <select id="priority" name="priority"
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent">
+                    <option value="low">Низкий</option>
+                    <option value="medium" selected>Средний</option>
+                    <option value="high">Высокий</option>
+                </select>
+            </div>
+        </div>
+        
+        <div class="flex justify-end space-x-4">
+            <a href="/" class="px-6 py-2 border border-gray-300 text-gray-700 rounded-lg hover:bg-gray-50">
+                Отмена
+            </a>
+            <button type="submit" class="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                Создать проект
+            </button>
+        </div>
+    </form>
+</div>
+{% endblock %}
+```
+
+Пример страницы деталей проекта (job_detail.html):
+
+```html
+{% extends "base.html" %}
+
+{% block title %}{{ job.title }} - CollabHub{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto">
+    <!-- Заголовок проекта -->
+    <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+        <div class="flex justify-between items-start mb-4">
+            <h1 class="text-3xl font-bold text-gray-900">{{ job.title }}</h1>
+            <span class="px-3 py-1 text-sm rounded-full 
+                {% if job.status == 'open' %}bg-green-100 text-green-800
+                {% elif job.status == 'in_progress' %}bg-yellow-100 text-yellow-800
+                {% elif job.status == 'completed' %}bg-blue-100 text-blue-800
+                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                {{ job.status }}
+            </span>
+        </div>
+        
+        <div class="flex items-center mb-4">
+            <img src="{{ job.creator_avatar or '/static/defaultAvatar.jpg' }}" 
+                 alt="Аватар" class="w-10 h-10 rounded-full mr-3">
+            <div>
+                <p class="font-medium text-gray-900">{{ job.creator_name }}</p>
+                <p class="text-sm text-gray-500">{{ job.created_at }}</p>
+            </div>
+        </div>
+        
+        <div class="text-gray-700 whitespace-pre-wrap">{{ job.description }}</div>
+        
+        {% if job.deadline %}
+        <div class="mt-4 text-sm text-gray-600">
+            <span class="font-medium">Срок выполнения:</span> {{ job.deadline }}
+        </div>
+        {% endif %}
+    </div>
+    
+    <!-- Действия для разных ролей -->
+    {% if user %}
+        {% if user.role == 'freelancer' and job.status == 'open' %}
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <h3 class="text-lg font-semibold mb-4">Подать отклик</h3>
+            <form method="POST" action="/jobs/{{ job.id }}/apply">
+                <textarea name="message" rows="3" 
+                          class="w-full px-4 py-2 border border-gray-300 rounded-lg mb-4"
+                          placeholder="Расскажите о своем опыте и почему вы подходите для этого проекта"></textarea>
+                <button type="submit" class="bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700">
+                    Подать отклик
+                </button>
+            </form>
+        </div>
+        {% elif user.role == 'client' and user.email == job.creator_email %}
+        <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+            <div class="flex space-x-4">
+                <a href="/jobs/{{ job.id }}/edit" class="bg-yellow-600 text-white px-6 py-2 rounded-lg hover:bg-yellow-700">
+                    Редактировать
+                </a>
+                <a href="/jobs/{{ job.id }}/applications" class="bg-green-600 text-white px-6 py-2 rounded-lg hover:bg-green-700">
+                    Просмотреть отклики
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    {% endif %}
+    
+    <!-- Отклики на проект -->
+    {% if applications %}
+    <div class="bg-white rounded-lg shadow-md p-6">
+        <h3 class="text-lg font-semibold mb-4">Отклики на проект ({{ applications|length }})</h3>
+        <div class="space-y-4">
+            {% for app in applications %}
+            <div class="border border-gray-200 rounded-lg p-4">
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center">
+                        <img src="{{ app.freelancer_avatar or '/static/defaultAvatar.jpg' }}" 
+                             alt="Аватар" class="w-8 h-8 rounded-full mr-3">
+                        <div>
+                            <p class="font-medium">{{ app.freelancer_name }}</p>
+                            <p class="text-sm text-gray-500">⭐ {{ "%.1f"|format(app.freelancer_rating) }}</p>
+                        </div>
+                    </div>
+                    <span class="px-2 py-1 text-xs rounded-full 
+                        {% if app.status == 'pending' %}bg-yellow-100 text-yellow-800
+                        {% elif app.status == 'accepted' %}bg-green-100 text-green-800
+                        {% else %}bg-red-100 text-red-800{% endif %}">
+                        {{ app.status }}
+                    </span>
+                </div>
+                {% if app.message %}
+                <p class="text-gray-700">{{ app.message }}</p>
+                {% endif %}
+                {% if app.freelancer_skills %}
+                <div class="mt-2">
+                    <span class="text-sm text-gray-500">Навыки:</span>
+                    <span class="text-sm text-gray-700">{{ app.freelancer_skills }}</span>
+                </div>
+                {% endif %}
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}
+```
+
+Описание всех страниц приложения:
+
+1. Главная страница (index.html) - отображение списка проектов с возможностью поиска и фильтрации
+2. Профиль пользователя (profile.html) - управление личными данными, навыками и портфолио
+3. Создание проекта (create_job.html) - форма для заказчиков по созданию новых проектов
+4. Детали проекта (job_detail.html) - полная информация о проекте и откликах
+5. Отклики заказчика (applications_client.html) - управление откликами на созданные проекты
+6. Отклики фрилансера (applications_freelancer.html) - просмотр поданных откликов
+7. Сообщения (messages.html) - список всех переписок пользователя
+8. Чат (chat.html) - интерфейс общения между пользователями
+9. Чат по проекту (project_chat.html) - общение в рамках конкретного проекта
+10. Отзывы заказчика (reviews_client.html) - оставленные отзывы о фрилансерах
+11. Отзывы фрилансера (reviews_freelancer.html) - полученные отзывы от заказчиков
+12. Форма отзыва (review_form.html) - создание нового отзыва
+13. Список пользователей (profiles.html) - каталог всех пользователей с фильтрацией по ролям (заказчики/фрилансеры)
+14. Профиль другого пользователя (user_profile.html) - просмотр чужого профиля
+15. Подтверждение отклика (apply_confirm.html) - подтверждение подачи отклика
+16. Редактирование проекта (edit_job.html) - изменение данных проекта
+17. Страница ошибки (error.html) - отображение системных ошибок
+18. Административная панель (admin_panel.html) - главная страница администратора с обзором системы
+19. Управление комментариями (admin_comments.html) - просмотр и удаление комментариев администратором
+20. Управление проектами (admin_jobs.html) - просмотр и удаление проектов администратором
+
+Адаптивный дизайн
+
+Все шаблоны используют Tailwind CSS для создания адаптивного интерфейса, который корректно отображается на:
+- Мобильных устройствах (320px+)
+- Планшетах (768px+)
+- Настольных компьютерах (1024px+)
+- Широких мониторах (1280px+)
+
+JavaScript функциональность
+
+Дополнительная интерактивность реализована через JavaScript:
+- Асинхронная отправка сообщений
+- Динамическое обновление статусов
+- Валидация форм в реальном времени
+- Анимации и переходы
+
+4.2 Разработка функционала веб-приложения
+
+Функционал веб-приложения реализован с использованием фреймворка FastAPI. Созданы API endpoints для всех основных операций:
+
+• аутентификация и авторизация пользователей,
+• управление проектами,
+• система откликов,
+• система сообщений,
+• управление профилями.
+
+Пример реализации endpoint'а авторизации:
+
+```python
+@app.post("/login")
+async def login_post(request: Request, email: str = Form(...), password: str = Form(...)):
+    """Авторизация пользователя"""
+    user = get_user_by_email(email)
+    error = None
+    
+    if not user:
+        error = "Пользователь не найден"
+    else:
+        if isinstance(user, sqlite3.Row):
+            user = dict(user)
+        if not verify_password(password, user["password"]):
+            error = "Неверный пароль"
+
+    if error:
+        return templates.TemplateResponse("index.html", {
+            "request": request,
+            "login_error": error
+        }, status_code=400)
+
+    # Создаем JWT токен
+    access_token = create_access_token(data={"sub": email})
+    
+    response = RedirectResponse(url="/", status_code=302)
+    response.set_cookie(key="user_email", value=email, httponly=True)
+    response.set_cookie(key="access_token", value=access_token, httponly=True)
+    return response
+```
+
+Пример реализации endpoint'а создания проекта:
+
+```python
+@app.post("/jobs/create")
+async def create_job_post(
+    request: Request,
+    user: dict = Depends(require_role("client")),
+    title: str = Form(...),
+    description: str = Form(...),
+    deadline: str = Form(...),
+    priority: str = Form("medium")
+):
+    """Создание нового проекта"""
+    try:
+        create_job(
+            title=title,
+            description=description,
+            deadline=deadline,
+            creator_email=user["email"],
+            priority=priority
+        )
+        return RedirectResponse(url="/", status_code=302)
+    except Exception as e:
+        return templates.TemplateResponse("create_job.html", {
+            "request": request,
+            "user": user,
+            "error": str(e)
+        }, status_code=400)
+```
+
+Пример реализации endpoint'а отклика на проект:
+
+```python
+@app.post("/jobs/{job_id}/apply")
+async def apply_post(request: Request, job_id: int, user: dict = Depends(require_role("freelancer"))):
+    """Отклик на проект"""
+    job = get_job_by_id(job_id)
+    if not job:
+        raise HTTPException(status_code=404, detail="Проект не найден")
+    
+    if job["status"] != "open":
+        raise HTTPException(status_code=400, detail="На этот проект нельзя откликнуться")
+    
+    apply_to_job(job_id, user["email"])
+    return RedirectResponse(url=f"/jobs/{job_id}", status_code=302)
+```
+
+Пример реализации endpoint'а отправки сообщения:
+
+```python
+@app.post("/api/messages/send")
+async def send_message_api(
+    request: Request,
+    user: dict = Depends(require_login),
+    receiver_email: str = Form(...),
+    message: str = Form(...),
+    job_id: int = Form(None)
+):
+    """API для отправки сообщения"""
+    try:
+        if receiver_email == user["email"]:
+            return {"status": "error", "message": "Нельзя отправить сообщение самому себе"}
+        
+        receiver = get_user_by_email(receiver_email)
+        if not receiver:
+            return {"status": "error", "message": "Получатель не найден"}
+        
+        create_message(
+            sender_email=user["email"],
+            receiver_email=receiver_email,
+            message=message,
+            job_id=job_id
+        )
+        return {"status": "success", "message": "Сообщение отправлено"}
+    except ValueError as e:
+        return {"status": "error", "message": str(e)}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+```
+
+4.3 Создание инсталляционного ПО
+
+Для развертывания веб-приложения CollabHub созданы различные варианты инсталляционного ПО в зависимости от целевой среды использования. Применены современные технологии контейнеризации и облачного развертывания для обеспечения гибкости и масштабируемости системы.
+
+Docker-контейнеризация для локальной разработки и продакшена
+
+Для обеспечения портабельности и простоты развертывания веб-приложение CollabHub упаковано в Docker-контейнер. Docker позволяет создать изолированную среду выполнения с предустановленными зависимостями, что обеспечивает консистентность работы приложения в различных окружениях.
+
+Пример Dockerfile:
+
+```dockerfile
+# Используем официальный Python образ
+FROM python:3.11-slim
+
+# Устанавливаем рабочую директорию
+WORKDIR /app
+
+# Копируем файл зависимостей
+COPY requirements.txt .
+
+# Устанавливаем зависимости
+RUN pip install --no-cache-dir -r requirements.txt
+
+# Копируем исходный код приложения
+COPY . .
+
+# Создаем необходимые директории
+RUN mkdir -p uploads/avatars uploads/portfolio uploads/projects
+
+# Устанавливаем права доступа
+RUN chmod -R 755 uploads/
+
+# Открываем порт
+EXPOSE 8000
+
+# Запускаем приложение
+CMD ["uvicorn", "main:app", "--host", "0.0.0.0", "--port", "8000"]
+```
+
+Пример docker-compose.yml для локальной разработки:
+
+```yaml
+version: '3.8'
+
+services:
+  web:
+    build: .
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./uploads:/app/uploads
+      - ./freelance.db:/app/freelance.db
+    environment:
+      - PYTHONPATH=/app
+      - ENVIRONMENT=development
+    restart: unless-stopped
+    
+  nginx:
+    image: nginx:alpine
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+      - ./uploads:/var/www/uploads
+    depends_on:
+      - web
+    restart: unless-stopped
+```
+
+Конфигурация Nginx для локального развертывания:
+
+```nginx
+events {
+    worker_connections 1024;
+}
+
+http {
+    upstream app {
+        server web:8000;
+    }
+    
+    server {
+        listen 80;
+        server_name localhost;
+        
+        # Максимальный размер загружаемых файлов
+        client_max_body_size 10M;
+        
+        # Статические файлы
+        location /static/ {
+            alias /var/www/static/;
+            expires 1y;
+            add_header Cache-Control "public, immutable";
+        }
+        
+        # Загруженные файлы
+        location /uploads/ {
+            alias /var/www/uploads/;
+            expires 1y;
+            add_header Cache-Control "public";
+        }
+        
+        # Основное приложение
+        location / {
+            proxy_pass http://app;
+            proxy_set_header Host $host;
+            proxy_set_header X-Real-IP $remote_addr;
+            proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+            proxy_set_header X-Forwarded-Proto $scheme;
+            
+            # Таймауты
+            proxy_connect_timeout 30s;
+            proxy_send_timeout 30s;
+            proxy_read_timeout 30s;
+        }
+    }
+}
+```
+
+Развертывание на Render.com для тестирования функционала в сети
+
+Для тестирования функционала веб-приложения в реальной сетевой среде используется платформа Render.com. Данная платформа предоставляет бесплатный хостинг для тестирования и демонстрации возможностей приложения, с возможностью последующего перехода на платные планы для постоянной работы.
+
+Конфигурационный файл render.yaml для автоматического развертывания:
+
+```yaml
+services:
+  - type: web
+    name: collabhub
+    env: python
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHONPATH
+        value: /opt/render/project/src
+      - key: ENVIRONMENT
+        value: production
+    disk:
+      name: collabhub-disk
+      mountPath: /opt/render/project/src/uploads
+      sizeGB: 1
+```
+
+Переменные окружения для продакшена на Render:
+
+```bash
+# Основные настройки
+PYTHONPATH=/app
+ENVIRONMENT=production
+
+# Настройки базы данных
+DATABASE_URL=sqlite:///./freelance.db
+
+# Настройки безопасности
+SECRET_KEY=your-secret-key-here
+JWT_SECRET_KEY=your-jwt-secret-key
+
+# Настройки файлов
+UPLOAD_DIR=/app/uploads
+MAX_FILE_SIZE=10485760  # 10MB
+
+# Настройки логирования
+LOG_LEVEL=INFO
+LOG_FILE=/app/logs/app.log
+```
+
+Скрипт инициализации базы данных для продакшена:
+
+```python
+#!/usr/bin/env python3
+"""
+Скрипт инициализации базы данных для продакшена
+"""
+
+import os
+import sys
+from pathlib import Path
+
+# Добавляем путь к приложению
+sys.path.append(str(Path(__file__).parent))
+
+from database import init_db, create_test_data
+from models import create_user, create_job
+
+def main():
+    """Инициализация базы данных"""
+    print("Инициализация базы данных...")
+    
+    # Создаем базу данных
+    init_db()
+    print("✓ База данных создана")
+    
+    # Создаем тестовые данные
+    create_test_data()
+    print("✓ Тестовые данные добавлены")
+    
+    # Создаем администратора
+    try:
+        create_user(
+            email="admin@collabhub.com",
+            password="admin123",
+            name="Администратор",
+            role="client"
+        )
+        print("✓ Администратор создан")
+    except ValueError:
+        print("! Администратор уже существует")
+    
+    print("Инициализация завершена!")
+
+if __name__ == "__main__":
+    main()
+```
+
+Скрипт резервного копирования:
+
+```bash
+#!/bin/bash
+# Скрипт резервного копирования данных
+
+BACKUP_DIR="/app/backups"
+DATE=$(date +%Y%m%d_%H%M%S)
+BACKUP_FILE="collabhub_backup_${DATE}.tar.gz"
+
+# Создаем директорию для бэкапов
+mkdir -p $BACKUP_DIR
+
+# Создаем резервную копию
+tar -czf "${BACKUP_DIR}/${BACKUP_FILE}" \
+    freelance.db \
+    uploads/ \
+    logs/
+
+# Удаляем старые бэкапы (старше 7 дней)
+find $BACKUP_DIR -name "collabhub_backup_*.tar.gz" -mtime +7 -delete
+
+echo "Резервная копия создана: ${BACKUP_FILE}"
+```
+
+Мониторинг и логирование
+
+Для отслеживания состояния приложения настроено логирование:
+
+```python
+import logging
+import os
+from datetime import datetime
+
+def setup_logging():
+    """Настройка системы логирования"""
+    
+    # Создаем директорию для логов
+    log_dir = "logs"
+    os.makedirs(log_dir, exist_ok=True)
+    
+    # Настраиваем формат логов
+    log_format = '%(asctime)s - %(name)s - %(levelname)s - %(message)s'
+    
+    # Настраиваем файловое логирование
+    logging.basicConfig(
+        level=logging.INFO,
+        format=log_format,
+        handlers=[
+            logging.FileHandler(f'{log_dir}/app_{datetime.now().strftime("%Y%m%d")}.log'),
+            logging.StreamHandler()
+        ]
+    )
+    
+    return logging.getLogger(__name__)
+```
+
+Health Check endpoint для мониторинга:
+
+```python
+@app.get("/health")
+async def health_check():
+    """Проверка состояния приложения"""
+    try:
+        # Проверяем подключение к БД
+        conn = get_db_connection()
+        cursor = conn.cursor()
+        cursor.execute("SELECT 1")
+        conn.close()
+        
+        return {
+            "status": "healthy",
+            "timestamp": datetime.now().isoformat(),
+            "database": "connected",
+            "version": "1.0.0"
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "timestamp": datetime.now().isoformat(),
+            "error": str(e)
+        }
+```
+
+Процесс развертывания
+
+1. Подготовка окружения:
+   - Установка Docker и Docker Compose
+   - Клонирование репозитория
+   - Настройка переменных окружения
+
+2. Сборка и запуск локально:
+   ```bash
+   # Сборка контейнера
+   docker-compose build
+   
+   # Запуск сервисов
+   docker-compose up -d
+   
+   # Проверка статуса
+   docker-compose ps
+   ```
+
+3. Инициализация:
+   ```bash
+   # Инициализация базы данных
+   docker-compose exec web python init_db.py
+   
+   # Проверка здоровья
+   curl http://localhost/health
+   ```
+
+4. Развертывание на Render:
+   - Подключение GitHub репозитория к Render
+   - Настройка переменных окружения
+   - Автоматическое развертывание при каждом push
+
+5. Мониторинг:
+   ```bash
+   # Просмотр логов
+   docker-compose logs -f web
+   
+   # Статистика ресурсов
+   docker stats
+   ```
+
+Автоматическое обновление
+
+Для автоматического обновления приложения настроен webhook:
+
+```python
+@app.post("/webhook/deploy")
+async def deploy_webhook(request: Request):
+    """Webhook для автоматического развертывания"""
+    try:
+        # Проверяем подпись GitHub
+        signature = request.headers.get("X-Hub-Signature-256")
+        if not verify_github_signature(request.body(), signature):
+            raise HTTPException(status_code=401, detail="Invalid signature")
+        
+        # Выполняем обновление
+        subprocess.run(["git", "pull"], check=True)
+        subprocess.run(["docker-compose", "build"], check=True)
+        subprocess.run(["docker-compose", "up", "-d"], check=True)
+        
+        return {"status": "success", "message": "Deployment completed"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+```
+
+Преимущества выбранного подхода:
+
+• Docker обеспечивает консистентность между локальной разработкой и продакшеном
+• Render.com предоставляет бесплатную платформу для тестирования с возможностью масштабирования
+• Автоматическое развертывание ускоряет процесс обновления
+• Мониторинг и логирование обеспечивают надежность системы
+• Резервное копирование гарантирует сохранность данных
+
+Система обеспечивает надежное развертывание, мониторинг и автоматическое обновление веб-приложения CollabHub как в локальной среде разработки, так и в производственной среде для постоянной работы.
+
+5 Спецификация программы
+
+Рекомендуемые системные требования для использования веб-приложения CollabHub:
+
+• операционная система Windows 10/Linux/macOS,
+• Python 3.8 и выше,
+• процессор с тактовой частотой 2.0 ГГц и выше,
+• оперативная память минимум 4 ГБ,
+• объем свободного места на жестком диске не менее 1 ГБ.
+
+Исполняемый файл веб-приложения CollabHub имеет название main.py. Помимо основного файла в проект включены файлы, описанные в таблице 1.
+
+Таблица 1 – Описание файлов, входящих в проект
+Обозначение	Наименование	Применение
+main.py	Основной файл приложения	Содержит FastAPI приложение и все маршруты
+models.py	Модуль моделей	Содержит функции для работы с базой данных
+database.py	Модуль базы данных	Содержит функции подключения к БД и инициализации
+utils.py	Утилиты	Содержит вспомогательные функции
+requirements.txt	Зависимости	Содержит список необходимых Python пакетов
+Dockerfile	Контейнер	Содержит конфигурацию для Docker
+docker-compose.yml	Композиция	Содержит настройки для Docker Compose
+render.yaml	Деплой	Содержит конфигурацию для развертывания на Render
+
+Помимо данных файлов в проекте используются файлы в формате HTML для шаблонов, CSS для стилей и JavaScript для интерактивности.
+
+6 Тестирование веб-приложения
+
+Функциональное тестирование – это тестирование ПО в целях проверки реализуемости функциональных требований, то есть способности ПО в определённых условиях решать задачи, нужные пользователям. Функциональное тестирование бывает двух видов: тестирование методом «белого ящика» и тестирование методом «черного ящика».
+
+В качестве метода тестирования выбран метод «черного ящика», так как тестирование проводится с позиции конечного пользователя, что помогает выявить неправильно реализованные функции, ошибки интерфейса.
+
+В результате разработки веб-приложения было проведено полное тестирование программного продукта, результаты которого представлены по каждому модулю в отдельных таблицах 2-6.
+
+Таблица 2 – Тестирование системы регистрации и авторизации веб-приложения CollabHub
+Входные данные	Ожидаемый результат	Фактический результат
+Регистрация с корректными данными (email: test@test.com, пароль: 123456, роль: фрилансер)	Успешная регистрация и перенаправление на главную страницу	Пользователь успешно зарегистрирован, перенаправлен на главную страницу
+Регистрация с существующим email	Ошибка "Email уже зарегистрирован"	Отображается ошибка "Email уже зарегистрирован"
+Регистрация с некорректным email	Ошибка валидации email	Отображается ошибка валидации email
+Авторизация с корректными данными	Успешная авторизация и перенаправление на главную страницу	Пользователь успешно авторизован, перенаправлен на главную страницу
+Авторизация с неверным паролем	Ошибка "Неверный пароль"	Отображается ошибка "Неверный пароль"
+Авторизация с несуществующим email	Ошибка "Пользователь не найден"	Отображается ошибка "Пользователь не найден"
+
+В процессе тестирования системы регистрации и авторизации методом «черного ящика» ошибок не выявлено, система функционирует корректно.
+
+Таблица 3 – Тестирование системы управления проектами веб-приложения CollabHub
+Входные данные	Ожидаемый результат	Фактический результат
+Создание проекта заказчиком с корректными данными	Проект успешно создан и отображается в списке	Проект создан, появился в списке проектов
+Создание проекта без названия	Ошибка валидации "Название обязательно"	Отображается ошибка валидации
+Создание проекта без описания	Ошибка валидации "Описание обязательно"	Отображается ошибка валидации
+Редактирование проекта создателем	Проект успешно отредактирован	Изменения сохранены и отображаются
+Редактирование проекта не создателем	Ошибка доступа "Нет прав на редактирование"	Отображается ошибка доступа
+Удаление проекта создателем	Проект успешно удален	Проект удален из списка
+Просмотр детальной информации о проекте	Отображается полная информация о проекте	Вся информация корректно отображается
+
+В процессе тестирования системы управления проектами методом «черного ящика» ошибок не выявлено, система функционирует корректно.
+
+Таблица 4 – Тестирование системы откликов веб-приложения CollabHub
+Входные данные	Ожидаемый результат	Фактический результат
+Подача отклика фрилансером на открытый проект	Отклик успешно подан	Отклик появился в списке откликов проекта
+Подача повторного отклика тем же фрилансером	Ошибка "Вы уже откликались на этот проект"	Отображается ошибка о повторном отклике
+Подача отклика на закрытый проект	Ошибка "На этот проект нельзя откликнуться"	Отображается ошибка о недоступности проекта
+Принятие отклика заказчиком	Статус отклика изменен на "принят"	Статус отклика обновлен
+Отклонение отклика заказчиком	Статус отклика изменен на "отклонен"	Статус отклика обновлен
+Просмотр списка откликов на проект	Отображается список всех откликов	Все отклики корректно отображаются
+
+В процессе тестирования системы откликов методом «черного ящика» ошибок не выявлено, система функционирует корректно.
+
+Таблица 5 – Тестирование системы сообщений веб-приложения CollabHub
+Входные данные	Ожидаемый результат	Фактический результат
+Отправка сообщения между пользователями	Сообщение успешно отправлено	Сообщение появилось в чате
+Отправка пустого сообщения	Ошибка "Сообщение не может быть пустым"	Отображается ошибка валидации
+Отправка сообщения самому себе	Ошибка "Нельзя отправить сообщение самому себе"	Отображается ошибка
+Просмотр истории сообщений	Отображается вся история переписки	Все сообщения корректно отображаются
+Отметка сообщений как прочитанных	Статус сообщений изменен на "прочитано"	Статус сообщений обновлен
+Отправка сообщения с прикреплением файла	Файл успешно прикреплен к сообщению	Файл корректно отображается в чате
+
+В процессе тестирования системы сообщений методом «черного ящика» ошибок не выявлено, система функционирует корректно.
+
+Таблица 6 – Тестирование системы рейтингов и отзывов веб-приложения CollabHub
+Входные данные	Ожидаемый результат	Фактический результат
+Оставление отзыва заказчиком за выполненную работу	Отзыв успешно создан	Отзыв появился в профиле фрилансера
+Оставление отзыва с оценкой 5 звезд	Рейтинг фрилансера обновлен	Рейтинг корректно пересчитан
+Оставление отзыва с оценкой 1 звезда	Рейтинг фрилансера обновлен	Рейтинг корректно пересчитан
+Попытка оставить повторный отзыв	Ошибка "Вы уже оставляли отзыв"	Отображается ошибка о повторном отзыве
+Просмотр отзывов о фрилансере	Отображаются все отзывы	Все отзывы корректно отображаются
+Оставление отзыва без текста	Ошибка "Текст отзыва обязателен"	Отображается ошибка валидации
+
+В процессе тестирования системы рейтингов и отзывов методом «черного ящика» ошибок не выявлено, система функционирует корректно.
+
+Таблица 7 – Тестирование пользовательского интерфейса веб-приложения CollabHub
+Входные данные	Ожидаемый результат	Фактический результат
+Открытие главной страницы	Страница загружается корректно	Страница загружена, все элементы отображаются
+Навигация по меню	Переходы между страницами работают	Все переходы выполняются корректно
+Адаптивность на мобильном устройстве	Интерфейс адаптируется под размер экрана	Интерфейс корректно отображается на мобильном
+Адаптивность на планшете	Интерфейс адаптируется под размер экрана	Интерфейс корректно отображается на планшете
+Загрузка страницы на медленном соединении	Страница загружается с индикатором загрузки	Отображается индикатор загрузки
+Обработка ошибок сервера	Отображается страница ошибки	Корректно отображается страница ошибки
+
+В процессе тестирования пользовательского интерфейса методом «черного ящика» ошибок не выявлено, интерфейс функционирует корректно.
+
+Все тесты прошли успешно, ошибок не выявлено. Веб-приложение CollabHub готово к использованию.
+
+7 Руководство пользователя
+
+Веб-приложение CollabHub представляет собой платформу для поиска исполнителей и заказчиков проектов. Система обеспечивает полный цикл работы с проектами: от создания и поиска до выполнения и оценки результатов.
+
+Для работы с системой требуется современный веб-браузер (Chrome 90+, Firefox 88+, Safari 14+, Edge 90+), стабильное интернет-соединение со скоростью не менее 1 Мбит/с, разрешение экрана не менее 1024x768 пикселей, включенный JavaScript и поддержка cookies.
+
+Регистрация и авторизация
+
+Для регистрации пользователь переходит на главную страницу, нажимает кнопку "Регистрация", заполняет форму с указанием email, пароля, имени, фамилии и выбирает роль (заказчик/фрилансер). Роль администратора создается автоматически системой и недоступна для выбора при регистрации. После нажатия "Зарегистрироваться" происходит перенаправление на главную страницу.
+
+Для входа в систему пользователь нажимает "Войти", вводит email и пароль, нажимает "Войти" и при успешной авторизации перенаправляется на главную страницу.
+
+Работа с проектами
+
+Заказчики создают проекты через кнопку "Создать проект", заполняют название, описание, срок выполнения и приоритет. После создания проект становится доступным для откликов.
+
+Все пользователи могут просматривать проекты на главной странице, использовать поиск по ключевым словам и статусу, просматривать детальную информацию по клику на название проекта.
+
+Создатель проекта может редактировать его через кнопку "Редактировать" на странице проекта.
+
+Система откликов и сообщений
+
+Фрилансеры подают отклики через кнопку "Подать отклик" на странице проекта, вводят сопроводительное сообщение и отправляют отклик.
+
+Заказчики управляют откликами через кнопку "Просмотреть отклики", могут принять или отклонить отклики.
+
+Пользователи общаются через раздел "Сообщения", выбирают собеседника, вводят текст и отправляют сообщения. История переписки сохраняется автоматически.
+
+Управление профилем
+
+Пользователи редактируют профили через раздел "Профиль", изменяют имя, биографию, навыки и контактную информацию. Для загрузки аватара выбирают изображение (JPG, PNG, до 5 МБ).
+
+Фрилансеры добавляют работы в портфолио через секцию "Портфолио", заполняют название проекта, описание и загружают файлы.
+
+Система рейтингов и безопасность
+
+После завершения проекта заказчик оставляет отзыв через кнопку "Оставить отзыв", выбирает оценку (1-5 звезд) и пишет комментарий. Рейтинг рассчитывается автоматически.
+
+Для просмотра профилей других пользователей переходят в раздел "Пользователи", используют фильтры по ролям и кликают на имя пользователя.
+
+Система обеспечивает безопасность через зашифрованные пароли, HTTPS-соединение, защищенные сессии и резервные копии. Личная информация не передается третьим лицам.
+
+При проблемах пользователь проверяет требования к системе, очищает кэш браузера, проверяет интернет-соединение и обращается в техническую поддержку.
+
+Административные функции
+
+Администратор системы имеет доступ к специальным функциям модерации контента. После входа в систему с учетной записью администратора (admin@collabhub.com / admin123) в главном меню появляется ссылка "Админ-панель".
+
+Через административную панель администратор может:
+- Просматривать общую статистику системы (количество проектов, пользователей, комментариев)
+- Управлять проектами: просматривать все проекты в системе и удалять неподходящие
+- Управлять комментариями: просматривать все комментарии к проектам и удалять нарушающие правила
+- Получать быстрый доступ к последним комментариям с возможностью их удаления
+
+Все административные действия защищены проверкой прав доступа и требуют подтверждения перед выполнением.
+
+Техника безопасности при работе с системой
+
+При работе с системой необходимо соблюдать правила охраны труда, включая соблюдение правил пожарной и электробезопасности, выполнение требований эксплуатации оборудования. Запрещается курить и принимать пищу на рабочих местах, использовать неисправное оборудование. При аварийных ситуациях необходимо прекратить работу, отключить оборудование и сообщить руководителю.
+
+8 Руководство администратора
+
+Веб-приложение CollabHub включает функции административного управления системой. Администратор имеет доступ к модерации контента, управлению проектами и комментариями, а также просмотру статистики системы.
+
+Для доступа к административным функциям необходимо войти в систему с учетной записью администратора:
+- Email: admin@collabhub.com
+- Пароль: admin123
+
+Административная панель
+
+После входа в систему администратор получает доступ к специальному разделу "Админ-панель" через главное меню. Административная панель предоставляет обзор системы с ключевыми метриками: общее количество проектов, пользователей и комментариев.
+
+Управление проектами
+
+Администратор может просматривать все проекты в системе через раздел "Управление проектами". Для каждого проекта отображается:
+- Название и описание проекта
+- Статус (открыт, в работе, завершен)
+- Приоритет (высокий, средний, низкий)
+- Информация о создателе
+- Дата дедлайна
+
+Администратор имеет возможность удалить любой проект из системы. При удалении проекта автоматически удаляются все связанные данные: отклики, комментарии, отзывы и сообщения.
+
+Управление комментариями
+
+Администратор может просматривать все комментарии к проектам через раздел "Управление комментариями". Для каждого комментария отображается:
+- Автор комментария с аватаром
+- Проект, к которому оставлен комментарий
+- Текст комментария
+- Дата и время создания
+
+Администратор имеет возможность удалить любой комментарий, если он нарушает правила платформы или содержит неподходящий контент.
+
+Быстрые действия
+
+На главной странице административной панели администратор может:
+- Просматривать последние комментарии с возможностью быстрого удаления
+- Получать общую статистику системы
+- Переходить к детальному управлению проектами и комментариями
+
+Безопасность административных функций
+
+Все административные функции защищены проверкой прав доступа на уровне сервера. Только пользователи с ролью "admin" могут получить доступ к административным разделам. При попытке несанкционированного доступа система возвращает ошибку 403 (Доступ запрещен).
+
+Техника безопасности для администраторов
+
+К работам по администрированию системы допускаются лица, достигшие 18 лет, прошедшие вводный инструктаж и проверку знаний требований охраны труда. При работе с серверным оборудованием необходимо соблюдать температурный режим и делать регулярные перерывы.
+
+9 Организация охраны труда и техника безопасности
+
+9.1 Требования охраны труда при работе с ПК
+
+При работе с веб-приложением необходимо соблюдать требования охраны труда при работе с компьютером, включая правильную организацию рабочего места, соблюдение режима работы и использование эргономичного оборудования.
+
+9.2 Техника безопасности при работе с ПК
+
+Необходимо соблюдать правила техники безопасности при работе с компьютерной техникой, включая правильное подключение оборудования, соблюдение температурного режима и защиту от электромагнитного излучения.
+
+Заключение
+
+В ходе выполнения дипломного проекта создано веб-приложение CollabHub для поиска исполнителей и заказчиков проектов.
+
+Целью дипломного проекта является разработка веб-приложения, включающего в себя систему управления проектами, откликами, сообщениями, профилями пользователей и административные функции для модерации контента.
+
+В ходе реализации поставленной цели изучены особенности современных веб-приложений и фреймворков. Выполнен анализ предметной области, на основании которого подобраны технологии разработки и архитектура системы.
+
+Для достижения поставленной цели были решены следующие задачи:
+
+• выбрана тема веб-приложения,
+• спроектирована архитектура приложения: определена структура базы данных, выбраны технологии, разработан пользовательский интерфейс,
+• разработана архитектура системы для ее реализации,
+• написан программный код веб-приложения, включая API, интерфейс, функциональные модули, управление данными,
+• приложение протестировано на корректность, производительность и безопасность,
+• успешно развернуто и используется веб-приложение.
+
+Разработанное веб-приложение CollabHub обеспечивает удобное взаимодействие между заказчиками и исполнителями проектов, предоставляет все необходимые инструменты для эффективной работы на фриланс-рынке, а также включает административные функции для модерации контента и управления системой. Приложение имеет современный интуитивно-понятный интерфейс с поддержкой трех ролей пользователей: заказчики, фрилансеры и администраторы.
+
+В процессе тестирования веб-приложения CollabHub ошибок не выявлено, приложение функционирует корректно.
+
+Список использованных источников
+
+1. FastAPI Documentation [Электронный ресурс] // Режим доступа: https://fastapi.tiangolo.com/ - свободный
+2. Python Documentation [Электронный ресурс] // Режим доступа: https://docs.python.org/3/ - свободный
+3. SQLite Documentation [Электронный ресурс] // Режим доступа: https://www.sqlite.org/docs.html - свободный
+4. Tailwind CSS Documentation [Электронный ресурс] // Режим доступа: https://tailwindcss.com/docs - свободный
+5. Docker Documentation [Электронный ресурс] // Режим доступа: https://docs.docker.com/ - свободный
+6. Render Documentation [Электронный ресурс] // Режим доступа: https://render.com/docs - свободный
+7. HTML5 Specification [Электронный ресурс] // Режим доступа: https://html.spec.whatwg.org/ - свободный
+8. CSS3 Specification [Электронный ресурс] // Режим доступа: https://www.w3.org/Style/CSS/ - свободный
+9. JavaScript Documentation [Электронный ресурс] // Режим доступа: https://developer.mozilla.org/en-US/docs/Web/JavaScript - свободный
+10. Web Development Best Practices [Электронный ресурс] // Режим доступа: https://web.dev/ - свободный
