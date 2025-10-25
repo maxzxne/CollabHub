@@ -195,10 +195,19 @@ def update_job(job_id, title, description, deadline, status, priority: str = Non
 	conn.close()
 
 def delete_job(job_id):
-	"""Удаляет проект из базы данных"""
+	"""Удаляет проект из базы данных и все связанные данные"""
 	conn = get_connection()
 	cursor = conn.cursor()
+	
+	# Удаляем все связанные данные
+	cursor.execute("DELETE FROM ProjectComments WHERE job_id=?", (job_id,))
+	cursor.execute("DELETE FROM Reviews WHERE job_id=?", (job_id,))
+	cursor.execute("DELETE FROM Applications WHERE job_id=?", (job_id,))
+	cursor.execute("DELETE FROM Messages WHERE job_id=?", (job_id,))
+	
+	# Удаляем сам проект
 	cursor.execute("DELETE FROM Jobs WHERE id=?", (job_id,))
+	
 	conn.commit()
 	conn.close()
 	return True
@@ -643,6 +652,15 @@ def create_project_comment(job_id: int, user_email: str, comment: str):
 	conn.commit()
 	conn.close()
 
+def delete_project_comment(comment_id: int):
+	"""Удаляет комментарий к проекту (админская функция)"""
+	conn = get_connection()
+	cursor = conn.cursor()
+	cursor.execute("DELETE FROM ProjectComments WHERE id = ?", (comment_id,))
+	conn.commit()
+	conn.close()
+	return True
+
 def get_project_comments(job_id: int):
 	"""Получает все комментарии к проекту"""
 	conn = get_connection()
@@ -654,6 +672,21 @@ def get_project_comments(job_id: int):
 		WHERE c.job_id = ?
 		ORDER BY c.created_at ASC
 	""", (job_id,))
+	comments = cursor.fetchall()
+	conn.close()
+	return comments
+
+def get_all_project_comments():
+	"""Получает все комментарии в системе (админская функция)"""
+	conn = get_connection()
+	cursor = conn.cursor()
+	cursor.execute("""
+		SELECT c.*, u.name as user_name, u.avatar as user_avatar, j.title as job_title
+		FROM ProjectComments c
+		JOIN Users u ON c.user_email = u.email
+		JOIN Jobs j ON c.job_id = j.id
+		ORDER BY c.created_at DESC
+	""")
 	comments = cursor.fetchall()
 	conn.close()
 	return comments
@@ -718,6 +751,51 @@ def get_project_participants(job_id: int):
 		participants.append(dict(freelancer))
 	
 	return participants
+
+
+# ===== АДМИНИСТРАТИВНЫЕ ФУНКЦИИ =====
+
+def create_admin_user():
+	"""Создает перманентного администратора системы"""
+	conn = get_connection()
+	cursor = conn.cursor()
+	
+	# Проверяем, существует ли уже админ
+	cursor.execute("SELECT id FROM Users WHERE email = ?", ("admin@collabhub.com",))
+	existing_admin = cursor.fetchone()
+	
+	if existing_admin:
+		print("Администратор уже существует")
+		conn.close()
+		return
+	
+	# Создаем администратора
+	admin_password = hash_password("admin123")
+	cursor.execute("""
+		INSERT INTO Users (email, password, role, name, about_me, activity, skills)
+		VALUES (?, ?, ?, ?, ?, ?, ?)
+	""", (
+		"admin@collabhub.com",
+		admin_password,
+		"admin",
+		"Системный администратор",
+		"Администратор платформы CollabHub. Управляет системой и обеспечивает порядок.",
+		"Системное администрирование",
+		"Администрирование, Модерация, Управление системой"
+	))
+	
+	conn.commit()
+	conn.close()
+	print("Перманентный администратор создан: admin@collabhub.com / admin123")
+
+def is_admin(user_email: str) -> bool:
+	"""Проверяет, является ли пользователь администратором"""
+	conn = get_connection()
+	cursor = conn.cursor()
+	cursor.execute("SELECT role FROM Users WHERE email = ?", (user_email,))
+	user = cursor.fetchone()
+	conn.close()
+	return user and user['role'] == 'admin'
 
 
 

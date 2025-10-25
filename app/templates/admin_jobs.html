@@ -1,0 +1,117 @@
+{% extends "base.html" %}
+
+{% block title %}Управление проектами - CollabHub{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <h1 class="text-3xl font-bold text-gray-900 mb-2">Управление проектами</h1>
+                <p class="text-gray-600">Просмотр и удаление проектов в системе</p>
+            </div>
+            <a href="/admin" class="btn-secondary">
+                ← Назад к админ-панели
+            </a>
+        </div>
+    </div>
+
+    {% if jobs %}
+    <div class="bg-white rounded-lg shadow-md overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-200">
+            <h2 class="text-lg font-semibold text-gray-900">Все проекты ({{ jobs|length }})</h2>
+        </div>
+        
+        <div class="divide-y divide-gray-200">
+            {% for job in jobs %}
+            <div class="px-6 py-4">
+                <div class="flex justify-between items-start">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-3 mb-2">
+                            <h3 class="text-lg font-medium text-gray-900">{{ job.title }}</h3>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                {% if job.status == 'open' %}bg-green-100 text-green-800
+                                {% elif job.status == 'in_progress' %}bg-blue-100 text-blue-800
+                                {% elif job.status == 'done' %}bg-gray-100 text-gray-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {% if job.status == 'open' %}Открыт
+                                {% elif job.status == 'in_progress' %}В работе
+                                {% elif job.status == 'done' %}Завершен
+                                {% else %}{{ job.status }}{% endif %}
+                            </span>
+                            <span class="px-2 py-1 text-xs font-medium rounded-full
+                                {% if job.priority == 'high' %}bg-red-100 text-red-800
+                                {% elif job.priority == 'medium' %}bg-yellow-100 text-yellow-800
+                                {% elif job.priority == 'low' %}bg-green-100 text-green-800
+                                {% else %}bg-gray-100 text-gray-800{% endif %}">
+                                {% if job.priority == 'high' %}Высокий приоритет
+                                {% elif job.priority == 'medium' %}Средний приоритет
+                                {% elif job.priority == 'low' %}Низкий приоритет
+                                {% else %}{{ job.priority }}{% endif %}
+                            </span>
+                        </div>
+                        
+                        <p class="text-gray-600 mb-2">{{ job.description[:200] }}{% if job.description|length > 200 %}...{% endif %}</p>
+                        
+                        <div class="flex items-center space-x-4 text-sm text-gray-500">
+                            <span>Создатель: {{ job.creator_email }}</span>
+                            <span>Дедлайн: {{ job.deadline }}</span>
+                            <span>ID: {{ job.id }}</span>
+                        </div>
+                    </div>
+                    
+                    <div class="ml-4 flex space-x-2">
+                        <a href="/jobs/{{ job.id }}" 
+                           class="px-3 py-1 text-sm font-medium text-blue-600 hover:text-blue-800 hover:bg-blue-50 rounded transition">
+                            Просмотр
+                        </a>
+                        <button onclick="deleteJob({{ job.id }})" 
+                                class="px-3 py-1 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition">
+                            Удалить
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% else %}
+    <div class="bg-white rounded-lg shadow-md p-8 text-center">
+        <svg class="w-12 h-12 text-gray-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
+        </svg>
+        <h3 class="text-lg font-medium text-gray-900 mb-2">Проектов пока нет</h3>
+        <p class="text-gray-600">Когда пользователи начнут создавать проекты, они появятся здесь.</p>
+    </div>
+    {% endif %}
+</div>
+
+<script>
+async function deleteJob(jobId) {
+    if (!confirm('Вы уверены, что хотите удалить этот проект? Это действие нельзя отменить и удалит все связанные данные (отклики, комментарии, отзывы).')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/jobs/${jobId}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Проект успешно удален');
+            location.reload();
+        } else {
+            alert('Ошибка при удалении проекта: ' + result.message);
+        }
+    } catch (error) {
+        alert('Ошибка при удалении проекта');
+        console.error('Error:', error);
+    }
+}
+</script>
+{% endblock %}

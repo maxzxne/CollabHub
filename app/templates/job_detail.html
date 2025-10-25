@@ -11,6 +11,13 @@
             </svg>
             Назад к списку
         </a>
+        
+        {% if user and user.role == 'admin' %}
+        <button onclick="deleteJob({{ job.id }})" 
+                class="px-3 py-1 text-sm font-medium text-red-600 hover:text-red-800 hover:bg-red-50 rounded transition">
+            Удалить проект
+        </button>
+        {% endif %}
     </div>
     <h2 class="text-2xl font-bold mb-4">{{ job['title'] }}</h2>
     <p class="mb-4 text-gray-700">{{ job['description'] }}</p>
@@ -234,6 +241,14 @@
                         </div>
                         <p class="text-gray-700">{{ comment.comment }}</p>
                     </div>
+                    {% if user and user.role == 'admin' %}
+                    <div class="ml-2">
+                        <button onclick="deleteComment({{ comment.id }})" 
+                                class="text-red-600 hover:text-red-800 text-sm font-medium">
+                            Удалить
+                        </button>
+                    </div>
+                    {% endif %}
                 </div>
             </div>
             {% endfor %}
@@ -248,4 +263,62 @@
         {% endif %}
     </div>
 </div>
+
+{% if user and user.role == 'admin' %}
+<script>
+async function deleteJob(jobId) {
+    if (!confirm('Вы уверены, что хотите удалить этот проект? Это действие нельзя отменить и удалит все связанные данные (отклики, комментарии, отзывы).')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/jobs/${jobId}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Проект успешно удален');
+            window.location.href = '/';
+        } else {
+            alert('Ошибка при удалении проекта: ' + result.message);
+        }
+    } catch (error) {
+        alert('Ошибка при удалении проекта');
+        console.error('Error:', error);
+    }
+}
+
+async function deleteComment(commentId) {
+    if (!confirm('Вы уверены, что хотите удалить этот комментарий?')) {
+        return;
+    }
+    
+    try {
+        const response = await fetch(`/admin/comments/${commentId}/delete`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            }
+        });
+        
+        const result = await response.json();
+        
+        if (result.status === 'success') {
+            alert('Комментарий удален');
+            location.reload();
+        } else {
+            alert('Ошибка: ' + result.message);
+        }
+    } catch (error) {
+        alert('Ошибка при удалении комментария');
+    }
+}
+</script>
+{% endif %}
+
 {% endblock %}

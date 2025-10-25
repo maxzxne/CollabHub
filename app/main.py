@@ -56,6 +56,10 @@ from models import (
     get_all_users_with_filters,
     get_project_participants,
     get_unread_messages_count,
+    delete_project_comment,
+    get_all_project_comments,
+    create_admin_user,
+    is_admin,
 )
 
 # Создание экземпляра FastAPI приложения
@@ -478,6 +482,9 @@ def create_test_data():
 # Проверяем и создаем тестовые данные при запуске
 check_and_create_test_data()
 
+# Создаем перманентного администратора
+create_admin_user()
+
 
 # ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ ДЛЯ РАБОТЫ С ФАЙЛАМИ =====
 
@@ -630,6 +637,15 @@ def require_role(role: str):
             raise HTTPException(status_code=403, detail="Нет доступа")
         return user
     return role_checker
+
+
+def require_admin():
+    """Декоратор для проверки административных прав"""
+    def admin_checker(user: dict = Depends(require_login)):
+        if not is_admin(user["email"]):
+            raise HTTPException(status_code=403, detail="Требуются административные права")
+        return user
+    return admin_checker
 
 
 # ===== МАРШРУТЫ АУТЕНТИФИКАЦИИ =====
@@ -1669,6 +1685,76 @@ async def remove_portfolio_link(request: Request, user: dict = Depends(require_l
     user["portfolio_links"] = updated_links_str
     
     return {"success": True}
+
+
+# ===== АДМИНИСТРАТИВНЫЕ МАРШРУТЫ =====
+
+@app.get("/admin")
+async def admin_panel(request: Request, user: dict = Depends(require_admin)):
+    """Панель администратора"""
+    # Получаем статистику системы
+    all_jobs = get_jobs()
+    all_users = get_all_users_with_filters()
+    all_comments = get_all_project_comments()
+    
+    # Конвертируем в dict
+    all_jobs = [dict(job) if isinstance(job, sqlite3.Row) else job for job in all_jobs]
+    all_users = [dict(u) if isinstance(u, sqlite3.Row) else u for u in all_users]
+    all_comments = [dict(c) if isinstance(c, sqlite3.Row) else c for c in all_comments]
+    
+    return templates.TemplateResponse("admin_panel.html", {
+        "request": request,
+        "user": user,
+        "jobs": all_jobs,
+        "users": all_users,
+        "comments": all_comments
+    })
+
+
+@app.post("/admin/comments/{comment_id}/delete")
+async def admin_delete_comment(request: Request, comment_id: int, user: dict = Depends(require_admin)):
+    """Удаление комментария администратором"""
+    try:
+        delete_project_comment(comment_id)
+        return {"status": "success", "message": "Комментарий удален"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.post("/admin/jobs/{job_id}/delete")
+async def admin_delete_job(request: Request, job_id: int, user: dict = Depends(require_admin)):
+    """Удаление проекта администратором"""
+    try:
+        delete_job(job_id)
+        return {"status": "success", "message": "Проект удален"}
+    except Exception as e:
+        return {"status": "error", "message": str(e)}
+
+
+@app.get("/admin/comments")
+async def admin_comments(request: Request, user: dict = Depends(require_admin)):
+    """Страница управления комментариями"""
+    comments = get_all_project_comments()
+    comments = [dict(c) if isinstance(c, sqlite3.Row) else c for c in comments]
+    
+    return templates.TemplateResponse("admin_comments.html", {
+        "request": request,
+        "user": user,
+        "comments": comments
+    })
+
+
+@app.get("/admin/jobs")
+async def admin_jobs(request: Request, user: dict = Depends(require_admin)):
+    """Страница управления проектами"""
+    jobs = get_jobs()
+    jobs = [dict(job) if isinstance(job, sqlite3.Row) else job for job in jobs]
+    
+    return templates.TemplateResponse("admin_jobs.html", {
+        "request": request,
+        "user": user,
+        "jobs": jobs
+    })
 
 
 # ===== ОБРАБОТЧИКИ ОШИБОК =====
