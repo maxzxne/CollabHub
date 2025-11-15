@@ -9,16 +9,23 @@ def get_connection():
     """Создает подключение к базе данных SQLite"""
     conn = sqlite3.connect(DB_NAME)
     conn.row_factory = sqlite3.Row  # Возвращает результаты как словари
+    # Включаем поддержку внешних ключей в SQLite
+    conn.execute("PRAGMA foreign_keys = ON")
     return conn
 
 def init_db():
     """Инициализирует базу данных и создает все необходимые таблицы"""
     conn = get_connection()
     cursor = conn.cursor()
+    # Включаем поддержку внешних ключей ПЕРЕД созданием таблиц
+    cursor.execute("PRAGMA foreign_keys = ON")
     
     # Таблица пользователей
+    # Удаляем старую таблицу для пересоздания с правильной структурой
+    cursor.execute("DROP TABLE IF EXISTS Users")
+    # Commit не нужен здесь, так как мы сразу создаем новую таблицу
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Users (
+        CREATE TABLE Users (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             email TEXT UNIQUE NOT NULL,
             password TEXT NOT NULL,
@@ -32,7 +39,9 @@ def init_db():
             completed_projects INTEGER DEFAULT 0,
             phone TEXT,
             telegram TEXT,
-            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+            portfolio_files TEXT,
+            portfolio_links TEXT
         )
     """)
     
@@ -88,8 +97,10 @@ def init_db():
         pass
     
     # Таблица проектов/заданий
+    # Удаляем старую таблицу если она существует без FOREIGN KEY
+    cursor.execute("DROP TABLE IF EXISTS Jobs")
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Jobs (
+        CREATE TABLE Jobs (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             title TEXT NOT NULL,
             description TEXT NOT NULL,
@@ -97,7 +108,8 @@ def init_db():
             status TEXT NOT NULL,
             creator_email TEXT NOT NULL,
             priority TEXT DEFAULT 'medium',
-            files TEXT
+            files TEXT,
+            FOREIGN KEY (creator_email) REFERENCES Users (email)
         )
     """)
 
@@ -113,19 +125,23 @@ def init_db():
         pass
     
     # Таблица откликов фрилансеров на проекты
+    cursor.execute("DROP TABLE IF EXISTS Applications")
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Applications (
+        CREATE TABLE Applications (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_id INTEGER NOT NULL,
             freelancer_email TEXT NOT NULL,
             status TEXT NOT NULL DEFAULT 'pending',
-            UNIQUE(job_id, freelancer_email)
+            UNIQUE(job_id, freelancer_email),
+            FOREIGN KEY (job_id) REFERENCES Jobs (id),
+            FOREIGN KEY (freelancer_email) REFERENCES Users (email)
         )
     """)
     
     # Таблица отзывов клиентов о фрилансерах
+    cursor.execute("DROP TABLE IF EXISTS Reviews")
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Reviews (
+        CREATE TABLE Reviews (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_id INTEGER NOT NULL,
             freelancer_email TEXT NOT NULL,
@@ -133,32 +149,41 @@ def init_db():
             rating INTEGER NOT NULL CHECK (rating >= 1 AND rating <= 5),
             comment TEXT,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            UNIQUE(job_id, freelancer_email, client_email)
+            UNIQUE(job_id, freelancer_email, client_email),
+            FOREIGN KEY (job_id) REFERENCES Jobs (id),
+            FOREIGN KEY (freelancer_email) REFERENCES Users (email),
+            FOREIGN KEY (client_email) REFERENCES Users (email)
         )
     """)
     
     # Таблица сообщений в чате
+    cursor.execute("DROP TABLE IF EXISTS Messages")
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS Messages (
+        CREATE TABLE Messages (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             sender_email TEXT NOT NULL,
             receiver_email TEXT NOT NULL,
             job_id INTEGER,
             message TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            is_read BOOLEAN DEFAULT FALSE
+            is_read BOOLEAN DEFAULT FALSE,
+            FOREIGN KEY (sender_email) REFERENCES Users (email),
+            FOREIGN KEY (receiver_email) REFERENCES Users (email),
+            FOREIGN KEY (job_id) REFERENCES Jobs (id)
         )
     """)
     
     # Таблица комментариев к проектам
+    cursor.execute("DROP TABLE IF EXISTS ProjectComments")
     cursor.execute("""
-        CREATE TABLE IF NOT EXISTS ProjectComments (
+        CREATE TABLE ProjectComments (
             id INTEGER PRIMARY KEY AUTOINCREMENT,
             job_id INTEGER NOT NULL,
             user_email TEXT NOT NULL,
             comment TEXT NOT NULL,
             created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-            FOREIGN KEY (job_id) REFERENCES Jobs (id)
+            FOREIGN KEY (job_id) REFERENCES Jobs (id),
+            FOREIGN KEY (user_email) REFERENCES Users (email)
         )
     """)
 

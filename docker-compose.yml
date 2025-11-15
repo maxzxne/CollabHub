@@ -6,8 +6,8 @@ services:
     volumes:
       # Монтируем папку uploads для сохранения файлов
       - ./app/uploads:/app/uploads
-      # Монтируем базу данных для сохранения данных
-      - ./app/freelance.db:/app/freelance.db
+      # Временно отключено для пересоздания базы с FOREIGN KEY
+      # - ./freelance.db:/app/freelance.db
     environment:
       - PORT=10000
     restart: unless-stopped
